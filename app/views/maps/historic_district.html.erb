@@ -1,0 +1,29 @@
+<div class="map-container">
+  <div id="sites" data-latitude=<%= @mhd_center_lat %> data-longitude=<%= @mhd_center_lng %>>
+    <h2>Marquette Historic District</h2>
+
+    <div id="map"></div>
+
+    <ol>
+      <% @sites.each do |site| %>
+        <li class="site-list-item"
+          data-latitude=<%=site.latitude %>
+          data-longitude=<%= site.longitude %>
+          data-id=<%= site.id %>
+          data-name=<%= site.historic_name %>
+        >
+            <h4>
+              <%= site.historic_name %>
+            </h4>
+            <p>
+              <%= site.address %>
+            </p>
+        </li>
+        <% end %>
+    </ol>
+  </div>
+</div>
+
+<%=
+  javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{ENV['GOOGLE_MAPS_API_KEY']}" # &callback=initMap
+%>

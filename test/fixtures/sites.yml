@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  historic_name: MyString
+  address: MyString
+  original_owner: MyString
+  current_owner: MyString
+  description: MyText
+  architect: MyString
+  architectural_style: MyString
+  latitude: 9.99
+  longitude: 9.99
+  survey_year: 1
+  built_year: 1
+
+two:
+  historic_name: MyString
+  address: MyString
+  original_owner: MyString
+  current_owner: MyString
+  description: MyText
+  architect: MyString
+  architectural_style: MyString
+  latitude: 9.99
+  longitude: 9.99
+  survey_year: 1
+  built_year: 1

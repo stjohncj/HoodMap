@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@stimulus-components/lightbox": "^4.0.0"
+  }
+}

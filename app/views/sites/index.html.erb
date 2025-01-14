@@ -1,0 +1,49 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Sites" %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Address</th>
+      <th>Built year</th>
+      <th>Survey year</th>
+      <th>Description</th>
+      <th>Latitude</th>
+      <th>Longitude</th>
+      <th>Original owner</th>
+      <th>Current owner</th>
+      <th>Historic name</th>
+      <th>Architect</th>
+      <th>Architectural style</th>
+      <th>First Image</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @sites.each do |site| %>
+      <tr>
+        <td><%= site.address %></td>
+        <td><%= site.built_year %></td>
+        <td><%= site.survey_year %></td>
+        <td><%= site.description %></td>
+        <td><%= site.latitude %></td>
+        <td><%= site.longitude %></td>
+        <td><%= site.original_owner %></td>
+        <td><%= site.current_owner %></td>
+        <td><%= site.historic_name %></td>
+        <td><%= site.architect %></td>
+        <td><%= site.architectural_style %></td>
+        <td><%= image_tag(site.images.first.variant(resize_to_fill: [100,100])) if site.images.attached? %></td>
+        <td><%= link_to 'Show', site %></td>
+        <td><%= link_to 'Edit', edit_site_path(site) %></td>
+        <td><%= link_to 'Destroy', site, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "New site", new_site_path %>

@@ -1,0 +1,63 @@
+<div id="<%= dom_id site %>">
+  <p>
+    <strong>Historic name:</strong>
+    <%= site.historic_name %>
+  </p>
+
+  <p>
+    <strong>Address:</strong>
+    <%= site.address %>
+  </p>
+
+  <p>
+    <strong>Original owner:</strong>
+    <%= site.original_owner %>
+  </p>
+
+  <p>
+    <strong>Current owner:</strong>
+    <%= site.current_owner %>
+  </p>
+
+  <p>
+    <strong>Description:</strong>
+    <%= site.description %>
+  </p>
+
+  <p>
+    <strong>Architect:</strong>
+    <%= site.architect %>
+  </p>
+
+  <p>
+    <strong>Architectural style:</strong>
+    <%= site.architectural_style %>
+  </p>
+
+  <p>
+    <strong>Latitude:</strong>
+    <%= site.latitude %>
+  </p>
+
+  <p>
+    <strong>Longitude:</strong>
+    <%= site.longitude %>
+  </p>
+
+  <p>
+    <strong>Survey year:</strong>
+    <%= site.survey_year %>
+  </p>
+
+  <p>
+    <strong>Built year:</strong>
+    <%= site.built_year %>
+  </p>
+
+  <p>
+    <% @site.images.each do |image| %>
+      <%= url_for(image) %>
+      <%= image_tag(image) %>
+    <% end %>
+  </p>
+</div>

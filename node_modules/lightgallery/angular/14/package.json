@@ -1,0 +1,31 @@
+{
+  "name": "lightgallery/angular/14",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^14.2.0",
+    "@angular/core": "^14.2.0"
+  },
+  "dependencies": {
+    "tslib": "^2.3.0"
+  },
+  "module": "fesm2015/lightgallery-angular-14.mjs",
+  "es2020": "fesm2020/lightgallery-angular-14.mjs",
+  "esm2020": "esm2020/lightgallery-angular-14.mjs",
+  "fesm2020": "fesm2020/lightgallery-angular-14.mjs",
+  "fesm2015": "fesm2015/lightgallery-angular-14.mjs",
+  "typings": "index.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./index.d.ts",
+      "esm2020": "./esm2020/lightgallery-angular-14.mjs",
+      "es2020": "./fesm2020/lightgallery-angular-14.mjs",
+      "es2015": "./fesm2015/lightgallery-angular-14.mjs",
+      "node": "./fesm2015/lightgallery-angular-14.mjs",
+      "default": "./fesm2020/lightgallery-angular-14.mjs"
+    }
+  },
+  "sideEffects": false
+}

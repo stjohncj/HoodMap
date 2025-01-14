@@ -1,0 +1,79 @@
+<%= form_with(model: site) do |form| %>
+  <% if site.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(site.errors.count, "error") %> prohibited this site from being saved:</h2>
+
+      <ul>
+        <% site.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :historic_name, style: "display: block" %>
+    <%= form.text_field :historic_name %>
+  </div>
+
+  <div>
+    <%= form.label :address, style: "display: block" %>
+    <%= form.text_field :address %>
+  </div>
+
+  <div>
+    <%= form.label :original_owner, style: "display: block" %>
+    <%= form.text_field :original_owner %>
+  </div>
+
+  <div>
+    <%= form.label :current_owner, style: "display: block" %>
+    <%= form.text_field :current_owner %>
+  </div>
+
+  <div>
+    <%= form.label :description, style: "display: block" %>
+    <%= form.textarea :description %>
+  </div>
+
+  <div>
+    <%= form.label :architect, style: "display: block" %>
+    <%= form.text_field :architect %>
+  </div>
+
+  <div>
+    <%= form.label :architectural_style, style: "display: block" %>
+    <%= form.text_field :architectural_style %>
+  </div>
+
+  <div>
+    <%= form.label :latitude, style: "display: block" %>
+    <%= form.text_field :latitude %>
+  </div>
+
+  <div>
+    <%= form.label :longitude, style: "display: block" %>
+    <%= form.text_field :longitude %>
+  </div>
+
+  <div>
+    <%= form.label :survey_year, style: "display: block" %>
+    <%= form.number_field :survey_year %>
+  </div>
+
+  <div>
+    <%= form.label :built_year, style: "display: block" %>
+    <%= form.number_field :built_year %>
+  </div>
+
+  <div class="field">
+    <% site.images.each do |image| %>
+      <%= form.hidden_field :images, multiple: true, value: image.signed_id %>
+    <% end %>
+    <%= form.file_field :images, multiple: true %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
