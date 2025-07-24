@@ -1,10 +1,16 @@
 async function initMap() {
+  // Check if map container exists (only initialize on map page)
+  const coords = document.getElementById("sites");
+  if (!coords) return;
+  
+  // Prevent multiple initializations
+  if (window.mapInitialized) return;
+  window.mapInitialized = true;
+
   // Request needed libraries.
   const { Map } = await google.maps.importLibrary("maps");
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
   const { PinElement } = await google.maps.importLibrary("marker");
-
-  const coords = document.getElementById("sites");
   const center = {
     lat: parseFloat(coords.getAttribute("data-latitude")),
     lng: parseFloat(coords.getAttribute("data-longitude"))
@@ -101,4 +107,18 @@ function displayClickedProperty(site) {
   window.location.href = "/houses/" + site.getAttribute("data-id");
 }
 
-initMap();
+// Reset initialization flag when navigating away
+document.addEventListener('turbo:before-visit', () => {
+  window.mapInitialized = false;
+});
+
+// Initialize map on page load and Turbo visits
+document.addEventListener('DOMContentLoaded', initMap);
+document.addEventListener('turbo:load', initMap);
+
+// Fallback for immediate execution if DOM is already loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMap);
+} else {
+  initMap();
+}
