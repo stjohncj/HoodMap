@@ -55,6 +55,11 @@ async function initMap() {
       });
       marker.content = newContent;
     });
+    
+    // Make sidebar list items clickable
+    site.addEventListener("click", () => {
+      window.location.href = "/houses/" + site.getAttribute("data-id");
+    });
   });
 
   // Fit the map to show all markers with some padding
