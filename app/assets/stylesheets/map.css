@@ -302,3 +302,247 @@
 .custom-marker:hover .house-icon {
   transform: scale(1.1);
 }
+
+/* Modal Styles */
+.site-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  max-width: 900px;
+  max-height: 90vh;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease-out;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+}
+
+.modal-close {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 1);
+  color: #374151;
+  transform: scale(1.1);
+}
+
+.modal-body {
+  overflow-y: auto;
+  max-height: 90vh;
+  padding: 0;
+}
+
+/* Loading and Error States */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  font-size: 1.2rem;
+  color: #6b7280;
+}
+
+.loading-spinner i {
+  margin-right: 0.75rem;
+  font-size: 1.5rem;
+}
+
+.error-message {
+  padding: 4rem;
+  text-align: center;
+  color: #dc2626;
+  font-size: 1.1rem;
+}
+
+/* Modal Site Content */
+.site-modal-detail {
+  padding: 0;
+}
+
+.modal-site-header {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+.modal-site-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.modal-site-address {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+.modal-site-year {
+  font-size: 1rem;
+  color: #60a5fa;
+  font-weight: 500;
+  margin: 0.5rem 0 0 0;
+}
+
+.modal-site-content {
+  padding: 2rem;
+}
+
+.modal-image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.modal-gallery-item.featured {
+  grid-column: 1 / -1;
+}
+
+.modal-gallery-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.modal-gallery-item.featured .modal-gallery-image {
+  height: 300px;
+}
+
+.modal-gallery-image:hover {
+  transform: scale(1.02);
+}
+
+.modal-site-description {
+  margin-bottom: 2rem;
+}
+
+.modal-site-description h4,
+.modal-site-details h4 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.modal-site-description p {
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+.modal-detail-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.modal-detail-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.modal-detail-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.modal-detail-value {
+  color: #6b7280;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .site-modal {
+    padding: 1rem;
+    align-items: flex-start;
+    padding-top: 2rem;
+  }
+  
+  .modal-content {
+    max-height: 95vh;
+    margin-top: 0;
+  }
+  
+  .modal-site-header {
+    padding: 1.5rem;
+  }
+  
+  .modal-site-header h2 {
+    font-size: 1.5rem;
+  }
+  
+  .modal-site-content {
+    padding: 1.5rem;
+  }
+  
+  .modal-image-gallery {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-detail-item {
+    grid-template-columns: 1fr;
+  }
+}

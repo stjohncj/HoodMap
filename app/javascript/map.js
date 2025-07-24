@@ -55,7 +55,7 @@ async function initMap() {
 
     // Add event listeners to the marker's element/content
     marker.content.addEventListener("click", () => {
-      window.location.href = "/houses/" + site.getAttribute("data-id");
+      showSiteModal(site.getAttribute("data-id"));
     });
 
     marker.content.addEventListener("mouseover", () => {
@@ -68,7 +68,7 @@ async function initMap() {
     
     // Make sidebar list items clickable
     site.addEventListener("click", () => {
-      window.location.href = "/houses/" + site.getAttribute("data-id");
+      showSiteModal(site.getAttribute("data-id"));
     });
   });
 
@@ -108,8 +108,75 @@ function buildContent(site) {
 
 function displayClickedProperty(site) {
   console.log('display clicked property');
-  window.location.href = "/houses/" + site.getAttribute("data-id");
+  showSiteModal(site.getAttribute("data-id"));
 }
+
+// Modal functionality
+async function showSiteModal(siteId) {
+  const modal = document.getElementById('site-modal');
+  const modalContent = document.getElementById('modal-site-content');
+  
+  // Show loading state
+  modalContent.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+  modal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  
+  try {
+    // Fetch site content
+    const response = await fetch(`/modal/houses/${siteId}`);
+    const html = await response.text();
+    modalContent.innerHTML = html;
+  } catch (error) {
+    console.error('Error loading site details:', error);
+    modalContent.innerHTML = '<div class="error-message">Error loading site details. Please try again.</div>';
+  }
+}
+
+function closeSiteModal() {
+  const modal = document.getElementById('site-modal');
+  modal.style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+// Make closeSiteModal available globally
+window.closeSiteModal = closeSiteModal;
+
+// Close modal on Escape key
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeSiteModal();
+  }
+});
+
+// Add event listeners for modal close elements
+document.addEventListener('DOMContentLoaded', () => {
+  // Close button event listener
+  const closeButton = document.querySelector('.modal-close');
+  if (closeButton) {
+    closeButton.addEventListener('click', closeSiteModal);
+  }
+  
+  // Backdrop click event listener
+  const backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closeSiteModal);
+  }
+});
+
+// Also add listeners on turbo:load for Turbo navigation
+document.addEventListener('turbo:load', () => {
+  // Close button event listener
+  const closeButton = document.querySelector('.modal-close');
+  if (closeButton) {
+    closeButton.addEventListener('click', closeSiteModal);
+  }
+  
+  // Backdrop click event listener
+  const backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closeSiteModal);
+  }
+});
 
 // Reset initialization flag when navigating away
 document.addEventListener('turbo:before-visit', () => {

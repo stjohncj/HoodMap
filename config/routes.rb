@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "maps#historic_district", as: :historic_district_map
   get "houses/:id" => "maps#house", as: :house
+  get "modal/houses/:id" => "maps#house_modal", as: :house_modal
 end
