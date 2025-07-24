@@ -16,7 +16,8 @@ async function initMap() {
     mapId: "MARQUETTE_HISTORIC_DISTRICT",
   });
 
-
+  // Create bounds to fit all markers
+  const bounds = new google.maps.LatLngBounds();
   const sites = document.querySelectorAll("li.site-list-item");
   sites.forEach(site => {
     // console.log("site is ", site);
@@ -24,12 +25,18 @@ async function initMap() {
     const pinNoGlyph = new google.maps.marker.PinElement({
       glyph: "",
     });
+
+    const position = {
+      lat: parseFloat(site.getAttribute("data-latitude")),
+      lng: parseFloat(site.getAttribute("data-longitude"))
+    };
+
+    // Add this position to bounds
+    bounds.extend(position);
+
     const marker = new google.maps.marker.AdvancedMarkerElement({
       title: site.getAttribute("data-historic-name"),
-      position: {
-        lat: parseFloat(site.getAttribute("data-latitude")),
-        lng: parseFloat(site.getAttribute("data-longitude"))
-      },
+      position: position,
       map: map,
       gmpClickable: true,
       gmpDraggable: false,
@@ -49,6 +56,20 @@ async function initMap() {
       marker.content = newContent;
     });
   });
+
+  // Fit the map to show all markers with some padding
+  if (!bounds.isEmpty()) {
+    map.fitBounds(bounds, {
+      padding: 50 // Add 50px padding around the bounds
+    });
+
+    // Set a maximum zoom level to prevent zooming in too much for a single marker
+    google.maps.event.addListenerOnce(map, 'bounds_changed', function () {
+      if (map.getZoom() > 20) {
+        map.setZoom(20);
+      }
+    });
+  }
 
 }
 

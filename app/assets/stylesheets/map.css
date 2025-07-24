@@ -2,19 +2,139 @@
  * Always set the map height explicitly to define the size of the div element
  * that contains the map.
  */
+
+/* Map container layout */
+.map-container {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 1024px) {
+  .map-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
 #map {
   width: 100%;
-  height: 800px;
+  height: 600px;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
+  #map {
+    height: 500px;
+  }
+}
+
+/* Site list sidebar */
+.sites-sidebar {
+  background: white;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  height: 600px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .sites-sidebar {
+    height: 400px;
+  }
+}
+
+.sites-sidebar h2 {
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+  font-size: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  flex-shrink: 0;
+}
+
+.sites-sidebar ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem;
+}
+
+/* Custom scrollbar styling */
+.sites-sidebar ol::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sites-sidebar ol::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.sites-sidebar ol::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.sites-sidebar ol::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.site-list-item {
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.site-list-item:hover {
+  background: #f3f4f6;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.site-list-item h4 {
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+  font-size: 1.1rem;
+}
+
+.site-list-item p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
 }
 
 /* HTML marker styles */
 .marker-tag {
-  background-color: #4285F4;
-  border-radius: 8px;
-  color: #FFFFFF;
-  font-size: 14px;
-  padding: 10px 15px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-radius: 0.75rem;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0.75rem 1rem;
   position: relative;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.marker-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
 }
 
 .marker-tag::after {
@@ -27,5 +147,25 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-top: 8px solid #4285F4;
+  border-top: 8px solid #1d4ed8;
+}
+
+/* Page header */
+.page-header {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: white;
+  padding: 3rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 0.5rem 0 0 0;
+  font-size: 1.1rem;
+  opacity: 0.9;
 }

@@ -1,65 +1,200 @@
-<div class="min-h-screen py-12 sm:pt-20" data-controller="gallery">
+<div class="container" data-controller="gallery">
+  <div class="site-detail">
+    <div class="site-header">
+      <h1><%= site.historic_name %></h1>
+      <p class="site-address"><%= site.address %></p>
+      <% if site.built_year %>
+        <p class="site-year">Built: <%= site.built_year %></p>
+      <% end %>
+    </div>
 
-<div id="<%= dom_id site %>">
-  <p>
-    <strong>Historic name:</strong>
-    <%= site.historic_name %>
-  </p>
+    <div class="site-content">
+      <div class="site-main">
+        <% if site.images.any? %>
+          <div class="image-gallery">
+            <% site.images.each_with_index do |image, index| %>
+              <div class="gallery-item <%= 'featured' if index == 0 %>">
+                <%= image_tag(image, alt: site.historic_name, class: "gallery-image") %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
 
-  <p>
-    <strong>Address:</strong>
-    <%= site.address %>
-  </p>
+        <% if site.description.present? %>
+          <div class="site-description">
+            <h3>Description</h3>
+            <p><%= site.description %></p>
+          </div>
+        <% end %>
+      </div>
 
-  <p>
-    <strong>Original owner:</strong>
-    <%= site.original_owner %>
-  </p>
+      <div class="site-sidebar">
+        <div class="site-details-card">
+          <h3>Property Details</h3>
+          <div class="detail-grid">
+            <% if site.original_owner.present? %>
+              <div class="detail-item">
+                <span class="detail-label">Original Owner</span>
+                <span class="detail-value"><%= site.original_owner %></span>
+              </div>
+            <% end %>
 
-  <p>
-    <strong>Current owner:</strong>
-    <%= site.current_owner %>
-  </p>
+            <% if site.current_owner.present? %>
+              <div class="detail-item">
+                <span class="detail-label">Current Owner</span>
+                <span class="detail-value"><%= site.current_owner %></span>
+              </div>
+            <% end %>
 
-  <p>
-    <strong>Description:</strong>
-    <%= site.description %>
-  </p>
+            <% if site.architect.present? %>
+              <div class="detail-item">
+                <span class="detail-label">Architect</span>
+                <span class="detail-value"><%= site.architect %></span>
+              </div>
+            <% end %>
 
-  <p>
-    <strong>Architect:</strong>
-    <%= site.architect %>
-  </p>
+            <% if site.architectural_style.present? %>
+              <div class="detail-item">
+                <span class="detail-label">Architectural Style</span>
+                <span class="detail-value"><%= site.architectural_style %></span>
+              </div>
+            <% end %>
 
-  <p>
-    <strong>Architectural style:</strong>
-    <%= site.architectural_style %>
-  </p>
+            <% if site.survey_year.present? %>
+              <div class="detail-item">
+                <span class="detail-label">Survey Year</span>
+                <span class="detail-value"><%= site.survey_year %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
 
-  <p>
-    <strong>Latitude:</strong>
-    <%= site.latitude %>
-  </p>
-
-  <p>
-    <strong>Longitude:</strong>
-    <%= site.longitude %>
-  </p>
-
-  <p>
-    <strong>Survey year:</strong>
-    <%= site.survey_year %>
-  </p>
-
-  <p>
-    <strong>Built year:</strong>
-    <%= site.built_year %>
-  </p>
-
-  <p>
-    <% @site.images.each do |image| %>
-      <%= url_for(image) %>
-      <%= image_tag(image) %>
-    <% end %>
-  </p>
+        <% if site.latitude.present? && site.longitude.present? %>
+          <div class="location-card">
+            <h3>Location</h3>
+            <p>Latitude: <%= site.latitude %></p>
+            <p>Longitude: <%= site.longitude %></p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+.site-detail {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.site-header {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.site-header h1 {
+  margin: 0 0 0.5rem 0;
+  color: #1f2937;
+}
+
+.site-address {
+  font-size: 1.1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.site-year {
+  font-size: 1rem;
+  color: #2563eb;
+  font-weight: 500;
+  margin: 0.5rem 0 0 0;
+}
+
+.site-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .site-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.gallery-item.featured {
+  grid-column: 1 / -1;
+}
+
+.gallery-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gallery-item.featured .gallery-image {
+  height: 400px;
+}
+
+.gallery-image:hover {
+  transform: scale(1.02);
+}
+
+.site-description h3 {
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.site-details-card, .location-card {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.site-details-card h3, .location-card h3 {
+  margin: 0 0 1rem 0;
+  color: #1f2937;
+}
+
+.detail-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.detail-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.detail-value {
+  color: #6b7280;
+}
+
+.location-card p {
+  margin: 0.5rem 0;
+  font-family: monospace;
+  color: #6b7280;
+}
+</style>

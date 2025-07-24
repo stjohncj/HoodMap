@@ -1,0 +1,162 @@
+<div class="board-members">
+  <h3>Board of Directors</h3>
+
+  <div class="board-grid">
+    <div class="board-member">
+      <div class="member-role">President</div>
+      <div class="member-name">Kirt Johnson</div>
+      <div class="member-contact">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:kirtj@verizon.net">kirtj@verizon.net</a>
+        </div>
+        <div class="contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>P.O. Box 332, Kewaunee, WI 54216</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-member">
+      <div class="member-role">Secretary & Webmaster</div>
+      <div class="member-name vacant">Christian St. John</div>
+      <div class="member-contact">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <a href="mailto:chris@stjohnstudios.com">chris@stjohnstudios.com</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-member">
+      <div class="member-role">Board Member</div>
+      <div class="member-name vacant">Lori Garrity</div>
+      <div class="member-contact">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span class="vacant">lgarrity80@gmail.com</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="board-member">
+      <div class="member-role">Board Member</div>
+      <div class="member-name vacant">Amy Bunyard</div>
+      <div class="member-contact">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span class="vacant">Email TBD</span>
+        </div>
+      </div>
+    </div>
+
+        <div class="board-member">
+      <div class="member-role">Board Member</div>
+      <div class="member-name vacant">Wendy Shelton</div>
+      <div class="member-contact">
+        <div class="contact-item">
+          <i class="fas fa-envelope"></i>
+          <span class="vacant">wendykewaunee@gmail.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.board-members h3 {
+  margin-bottom: 2rem;
+  color: #1f2937;
+  font-size: 1.75rem;
+  text-align: center;
+  border-bottom: 3px solid #2563eb;
+  padding-bottom: 1rem;
+}
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.board-member {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.board-member:hover {
+  background: #f1f5f9;
+  border-color: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+.member-role {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.member-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.member-name.vacant {
+  color: #6b7280;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.member-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.contact-item i {
+  color: #2563eb;
+  width: 16px;
+  text-align: center;
+}
+
+.contact-item a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.contact-item a:hover {
+  text-decoration: underline;
+}
+
+.contact-item .vacant {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .board-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .board-member {
+    padding: 1.25rem;
+  }
+}
+</style>

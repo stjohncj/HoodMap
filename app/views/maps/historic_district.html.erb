@@ -1,12 +1,20 @@
 <script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
 <%= stylesheet_link_tag "map", "data-turbo-track": "reload" %>
 
+<div class="page-header">
+  <div class="container">
+    <h1>Marquette Historic District</h1>
+    <p>Explore over 40 historic homes dating from 1881 to 1938 in Kewaunee, Wisconsin</p>
+  </div>
+</div>
+
 <div class="map-container">
   <div id="sites" data-latitude=<%= @mhd_center_lat %> data-longitude=<%= @mhd_center_lng %>>
-    <h2>Marquette Historic District</h2>
-
     <div id="map"></div>
+  </div>
 
+  <div class="sites-sidebar">
+    <h2>Historic Sites</h2>
     <ol>
       <% @sites.each do |site| %>
         <li class="site-list-item"
@@ -18,14 +26,23 @@
           data-description="<%= site.description %>"
           data-built-year="<%= site.built_year %>"
         >
-            <h4>
-              <%= site.historic_name %>
-            </h4>
-            <p>
-              <%= site.address %>
-            </p>
+            <h4><%= site.historic_name %></h4>
+            <p><%= site.address %></p>
+            <% if site.built_year %>
+              <p><small>Built: <%= site.built_year %></small></p>
+            <% end %>
         </li>
-        <% end %>
+      <% end %>
     </ol>
+  </div>
+</div>
+
+<div class="container">
+  <div class="content-section">
+    <%= render 'shared/about' %>
+  </div>
+
+  <div class="content-section">
+    <%= render 'shared/members' %>
   </div>
 </div>
