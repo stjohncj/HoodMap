@@ -1,8 +1,24 @@
+// Map configuration constants
+const MAP_ZOOM_INITIAL = 16; // Initial zoom level when map loads
+// Minimum zoom level after fitting bounds to ensure detail
+// This is set higher to avoid zooming out too far when fitting bounds
+// and to ensure markers are still visible
+// Adjusted to 17 to ensure markers are clearly visible after bounds fit
+// This prevents the map from zooming out too much when fitting bounds
+// and ensures markers are still clearly visible
+const MAP_ZOOM_MIN_AFTER_BOUNDS = 17;
+// Maximum zoom level for bounding to prevent excessive zooming in
+// This is set to 20 to allow for detailed views of markers
+// but prevents the map from zooming in too far when fitting bounds
+// This ensures that the map does not zoom in too much when fitting bounds
+// and that markers remain visible at a reasonable level of detail
+const MAP_BOUNDING_ZOOM_MAX = 20;
+
 async function initMap() {
   // Check if map container exists (only initialize on map page)
   const coords = document.getElementById("sites");
   if (!coords) return;
-  
+
   // Prevent multiple initializations
   if (window.mapInitialized) return;
   window.mapInitialized = true;
@@ -17,7 +33,7 @@ async function initMap() {
   };
 
   const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 16,
+    zoom: MAP_ZOOM_INITIAL,
     center: center,
     mapId: "MARQUETTE_HISTORIC_DISTRICT",
   });
@@ -65,7 +81,7 @@ async function initMap() {
       });
       marker.content = newContent;
     });
-    
+
     // Make sidebar list items clickable
     site.addEventListener("click", () => {
       showSiteModal(site.getAttribute("data-id"));
@@ -75,13 +91,16 @@ async function initMap() {
   // Fit the map to show all markers with some padding
   if (!bounds.isEmpty()) {
     map.fitBounds(bounds, {
-      padding: 50 // Add 50px padding around the bounds
+      padding: 10 // Even less padding for closer zoom
     });
 
-    // Set a maximum zoom level to prevent zooming in too much for a single marker
+    // Set zoom bounds after fitBounds to ensure good detail level
     google.maps.event.addListenerOnce(map, 'bounds_changed', function () {
-      if (map.getZoom() > 20) {
-        map.setZoom(20);
+      const currentZoom = map.getZoom();
+      if (currentZoom < MAP_ZOOM_MIN_AFTER_BOUNDS) {
+        map.setZoom(MAP_ZOOM_MIN_AFTER_BOUNDS);
+      } else if (currentZoom > MAP_BOUNDING_ZOOM_MAX) {
+        map.setZoom(MAP_BOUNDING_ZOOM_MAX);
       }
     });
   }
@@ -113,14 +132,17 @@ function displayClickedProperty(site) {
 
 // Modal functionality
 async function showSiteModal(siteId) {
+  // Exit fullscreen mode if currently active
+  await exitFullscreenIfActive();
+
   const modal = document.getElementById('site-modal');
   const modalContent = document.getElementById('modal-site-content');
-  
+
   // Show loading state
   modalContent.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-  modal.style.display = 'block';
-  document.body.style.overflow = 'hidden';
-  
+  modal.style.display = 'flex';
+  // Don't prevent body scrolling since modal only covers map area
+
   try {
     // Fetch site content
     const response = await fetch(`/modal/houses/${siteId}`);
@@ -132,10 +154,36 @@ async function showSiteModal(siteId) {
   }
 }
 
+// Function to exit fullscreen mode if currently active
+async function exitFullscreenIfActive() {
+  if (document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement) {
+
+    try {
+      if (document.exitFullscreen) {
+        await document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+        await document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+        await document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+        await document.msExitFullscreen();
+      }
+
+      // Add a small delay to ensure fullscreen exit completes
+      await new Promise(resolve => setTimeout(resolve, 100));
+    } catch (error) {
+      console.log('Could not exit fullscreen:', error);
+    }
+  }
+}
+
 function closeSiteModal() {
   const modal = document.getElementById('site-modal');
   modal.style.display = 'none';
-  document.body.style.overflow = 'auto';
+  // Don't prevent body scrolling since modal only covers map area
 }
 
 // Make closeSiteModal available globally
@@ -155,9 +203,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (closeButton) {
     closeButton.addEventListener('click', closeSiteModal);
   }
-  
+
   // Backdrop click event listener
-  const backdrop = document.querySelector('.modal-backdrop');
+  const backdrop = document.querySelector('.modal-backdrop-map');
   if (backdrop) {
     backdrop.addEventListener('click', closeSiteModal);
   }
@@ -170,9 +218,9 @@ document.addEventListener('turbo:load', () => {
   if (closeButton) {
     closeButton.addEventListener('click', closeSiteModal);
   }
-  
+
   // Backdrop click event listener
-  const backdrop = document.querySelector('.modal-backdrop');
+  const backdrop = document.querySelector('.modal-backdrop-map');
   if (backdrop) {
     backdrop.addEventListener('click', closeSiteModal);
   }

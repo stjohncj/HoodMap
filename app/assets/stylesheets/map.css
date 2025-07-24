@@ -13,6 +13,10 @@
   padding: 0 1rem;
 }
 
+#sites {
+  position: relative;
+}
+
 @media (max-width: 1024px) {
   .map-container {
     grid-template-columns: 1fr;
@@ -303,7 +307,46 @@
   transform: scale(1.1);
 }
 
-/* Modal Styles */
+/* Map-specific Modal Styles */
+.site-modal-map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.modal-backdrop-map {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  border-radius: 1rem;
+}
+
+.modal-content-map {
+  position: relative;
+  background: white;
+  border-radius: 1rem;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+  animation: modalSlideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Original Modal Styles (for backward compatibility) */
 .site-modal {
   position: fixed;
   top: 0;
@@ -384,8 +427,10 @@
 
 .modal-body {
   overflow-y: auto;
-  max-height: 90vh;
+  flex: 1;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Loading and Error States */
@@ -443,12 +488,29 @@
 
 .modal-site-content {
   padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.modal-content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+  height: 100%;
+}
+
+.modal-main-content {
+  overflow-y: auto;
+}
+
+.modal-sidebar-content {
+  overflow-y: auto;
 }
 
 .modal-image-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
@@ -458,15 +520,16 @@
 
 .modal-gallery-image {
   width: 100%;
-  height: 150px;
+  height: 200px;
   object-fit: cover;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   cursor: pointer;
   transition: transform 0.2s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .modal-gallery-item.featured .modal-gallery-image {
-  height: 300px;
+  height: 400px;
 }
 
 .modal-gallery-image:hover {
@@ -544,5 +607,28 @@
   
   .modal-detail-item {
     grid-template-columns: 1fr;
+  }
+  
+  /* Map modal responsive */
+  .site-modal-map-overlay {
+    padding: 0.5rem;
+  }
+  
+  .modal-content-map {
+    max-width: 100%;
+    max-height: 95%;
+  }
+  
+  .modal-content-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .modal-image-gallery {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-gallery-item.featured .modal-gallery-image {
+    height: 250px;
   }
 }

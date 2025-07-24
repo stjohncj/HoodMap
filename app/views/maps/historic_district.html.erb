@@ -29,6 +29,21 @@
 <div class="map-container">
   <div id="sites" data-latitude=<%= @mhd_center_lat %> data-longitude=<%= @mhd_center_lng %>>
     <div id="map"></div>
+    
+    <!-- Modal overlay for site details - positioned within map area -->
+    <div id="site-modal" class="site-modal-map-overlay" style="display: none;">
+      <div class="modal-backdrop-map"></div>
+      <div class="modal-content-map">
+        <div class="modal-header">
+          <button class="modal-close">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="modal-site-content">
+          <!-- Site content will be loaded here -->
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="sites-sidebar">
@@ -55,20 +70,6 @@
   </div>
 </div>
 
-<!-- Modal overlay for site details -->
-<div id="site-modal" class="site-modal" style="display: none;">
-  <div class="modal-backdrop"></div>
-  <div class="modal-content">
-    <div class="modal-header">
-      <button class="modal-close">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div class="modal-body" id="modal-site-content">
-      <!-- Site content will be loaded here -->
-    </div>
-  </div>
-</div>
 
 <div class="container">
   <div class="content-section">

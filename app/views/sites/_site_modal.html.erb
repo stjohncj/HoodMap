@@ -8,60 +8,66 @@
   </div>
 
   <div class="modal-site-content">
-    <% if site.images.any? %>
-      <div class="modal-image-gallery">
-        <% site.images.each_with_index do |image, index| %>
-          <div class="modal-gallery-item <%= 'featured' if index == 0 %>">
-            <%= image_tag(image, alt: site.historic_name, class: "modal-gallery-image") %>
+    <div class="modal-content-grid">
+      <div class="modal-main-content">
+        <% if site.images.any? %>
+          <div class="modal-image-gallery">
+            <% site.images.each_with_index do |image, index| %>
+              <div class="modal-gallery-item <%= 'featured' if index == 0 %>">
+                <%= image_tag(image, alt: site.historic_name, class: "modal-gallery-image") %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% if site.description.present? %>
+          <div class="modal-site-description">
+            <h4>Description</h4>
+            <p><%= site.description %></p>
           </div>
         <% end %>
       </div>
-    <% end %>
 
-    <% if site.description.present? %>
-      <div class="modal-site-description">
-        <h4>Description</h4>
-        <p><%= site.description %></p>
-      </div>
-    <% end %>
+      <div class="modal-sidebar-content">
+        <div class="modal-site-details">
+          <h4>Property Details</h4>
+          <div class="modal-detail-grid">
+            <% if site.original_owner.present? %>
+              <div class="modal-detail-item">
+                <span class="modal-detail-label">Original Owner</span>
+                <span class="modal-detail-value"><%= site.original_owner %></span>
+              </div>
+            <% end %>
 
-    <div class="modal-site-details">
-      <h4>Property Details</h4>
-      <div class="modal-detail-grid">
-        <% if site.original_owner.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Original Owner</span>
-            <span class="modal-detail-value"><%= site.original_owner %></span>
+            <% if site.current_owner.present? %>
+              <div class="modal-detail-item">
+                <span class="modal-detail-label">Current Owner</span>
+                <span class="modal-detail-value"><%= site.current_owner %></span>
+              </div>
+            <% end %>
+
+            <% if site.architect.present? %>
+              <div class="modal-detail-item">
+                <span class="modal-detail-label">Architect</span>
+                <span class="modal-detail-value"><%= site.architect %></span>
+              </div>
+            <% end %>
+
+            <% if site.architectural_style.present? %>
+              <div class="modal-detail-item">
+                <span class="modal-detail-label">Architectural Style</span>
+                <span class="modal-detail-value"><%= site.architectural_style %></span>
+              </div>
+            <% end %>
+
+            <% if site.survey_year.present? %>
+              <div class="modal-detail-item">
+                <span class="modal-detail-label">Survey Year</span>
+                <span class="modal-detail-value"><%= site.survey_year %></span>
+              </div>
+            <% end %>
           </div>
-        <% end %>
-
-        <% if site.current_owner.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Current Owner</span>
-            <span class="modal-detail-value"><%= site.current_owner %></span>
-          </div>
-        <% end %>
-
-        <% if site.architect.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Architect</span>
-            <span class="modal-detail-value"><%= site.architect %></span>
-          </div>
-        <% end %>
-
-        <% if site.architectural_style.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Architectural Style</span>
-            <span class="modal-detail-value"><%= site.architectural_style %></span>
-          </div>
-        <% end %>
-
-        <% if site.survey_year.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Survey Year</span>
-            <span class="modal-detail-value"><%= site.survey_year %></span>
-          </div>
-        <% end %>
+        </div>
       </div>
     </div>
   </div>
