@@ -157,20 +157,119 @@
 
 /* Page header */
 .page-header {
-  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(55, 65, 81, 0.9) 100%),
+              url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
+  background-size: cover, 120px 60px;
+  background-position: center, 0 0;
+  background-attachment: fixed, scroll;
   color: white;
-  padding: 3rem 0;
+  padding: 4rem 0;
   margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.2) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.page-header .container {
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
 .page-header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 700;
+  margin: 0 0 1rem 0;
+  font-size: 3rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
+  background: linear-gradient(45deg, #ffffff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@media (max-width: 768px) {
+  .page-header h1 {
+    font-size: 2.25rem;
+  }
 }
 
 .page-header p {
-  margin: 0.5rem 0 0 0;
+  margin: 0;
+  font-size: 1.25rem;
+  opacity: 0.95;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  font-weight: 400;
+}
+
+.page-header .subtitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.page-header .subtitle i {
+  color: #60a5fa;
   font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.page-header .stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.page-header .stat-item {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  white-space: nowrap;
+}
+
+.page-header .stat-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.page-header .stat-label {
+  font-size: 0.8rem;
   opacity: 0.9;
+  margin-left: 0.4rem;
+}
+
+@media (max-width: 768px) {
+  .page-header .stats {
+    gap: 1rem;
+  }
+  
+  .page-header .stat-item {
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .page-header .stat-number {
+    font-size: 1rem;
+  }
+  
+  .page-header .stat-label {
+    font-size: 0.75rem;
+  }
 }
