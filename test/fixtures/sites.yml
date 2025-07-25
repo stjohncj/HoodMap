@@ -20,28 +20,48 @@
 
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  historic_name: MyString
-  address: MyString
-  original_owner: MyString
-  current_owner: MyString
-  description: MyText
-  architect: MyString
-  architectural_style: MyString
-  latitude: 9.99
-  longitude: 9.99
-  survey_year: 1
-  built_year: 1
+marquette_house:
+  historic_name: "Historic Marquette House"
+  address: "123 Historic Street, Kewaunee, WI"
+  original_owner: "John Marquette"
+  current_owner: "Jane Smith"
+  description: "A beautiful Victorian-era home built in the late 19th century, featuring ornate woodwork and period architectural details."
+  architect: "William Thompson"
+  architectural_style: "Victorian"
+  latitude: 44.4619
+  longitude: -87.5069
+  survey_year: 1993
+  built_year: 1885
 
-two:
-  historic_name: MyString
-  address: MyString
-  original_owner: MyString
-  current_owner: MyString
-  description: MyText
-  architect: MyString
-  architectural_style: MyString
-  latitude: 9.99
-  longitude: 9.99
-  survey_year: 1
-  built_year: 1
+prairie_home:
+  historic_name: "Prairie Style Residence"
+  address: "456 Prairie Avenue, Kewaunee, WI"
+  original_owner: "Frank Johnson"
+  current_owner: "Robert Davis"
+  description: "An excellent example of Prairie School architecture with horizontal lines and open floor plans."
+  architect: "George Maher"
+  architectural_style: "Prairie"
+  latitude: 44.4625
+  longitude: -87.5075
+  survey_year: 1993
+  built_year: 1910
+
+craftsman_bungalow:
+  historic_name: "Craftsman Bungalow"
+  address: "789 Craft Lane, Kewaunee, WI"
+  original_owner: "Mary Wilson"
+  current_owner: "Thomas Brown"
+  description: "A well-preserved Craftsman-style bungalow with characteristic exposed beams and built-in furniture."
+  architect: "Charles Greene"
+  architectural_style: "Craftsman"
+  latitude: 44.4630
+  longitude: -87.5080
+  survey_year: 1993
+  built_year: 1915
+
+minimal_site:
+  historic_name: "Simple Historic Home"
+  address: "321 Simple Street, Kewaunee, WI"
+  latitude: 44.4635
+  longitude: -87.5085
+  built_year: 1900
