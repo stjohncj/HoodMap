@@ -13,16 +13,16 @@
       <p>
         The MHD is comprised of over 40 historic homes named for the Marquette School which was built in 1914. Sadly, the school fell into disrepair and was eventually razed in 2019. The site was finally cleared and graded in 2020 and today the site is a large green space which allows for an excellent 360 degree view of a large number of historic homes that surround the block.
       </p>
+      
+      <p>
+        The neighborhood was initially developed as a prestigious neighborhood for some of Kewaunee's early leading citizens.  The homes range in date from 1881 to 1938 and represent a variety of architectural styles popular in the late nineteenth and early twentieth centuries.  You will find Italinate, Second empire, Queen anne, Craftsman, Prairie, American Foursquare and various Period Revival styles of architurecture, among others, all within a few blocks of each other.
+      </p>
     </div>
     <div class="school-image">
       <%= image_tag "MarquetteSchoolKewaunee.jpg", alt: "Historic Marquette School, built in 1914", class: "marquette-school-photo" %>
       <p class="image-caption">The historic Marquette School (1914-2019), for which the district was named</p>
     </div>
   </div>
-  
-  <p>
-    The neighborhood was initially developed as a prestigious neighborhood for some of Kewaunee's early leading citizens.  The homes range in date from 1881 to 1938 and represent a variety of architectural styles popular in the late nineteenth and early twentieth centuries.  You will find Italinate, Second empire, Queen anne, Craftsman, Prairie, American Foursquare and various Period Revival styles of architurecture, among others, all within a few blocks of each other.
-  </p>
 </div>
 
 <style>
@@ -75,7 +75,8 @@
 
 .school-text {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .school-text p {

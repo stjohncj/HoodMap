@@ -19,13 +19,6 @@
             <% end %>
           </div>
         <% end %>
-
-        <% if site.description.present? %>
-          <div class="modal-site-description">
-            <h4>Description</h4>
-            <p><%= site.description %></p>
-          </div>
-        <% end %>
       </div>
 
       <div class="modal-sidebar-content">
@@ -70,5 +63,12 @@
         </div>
       </div>
     </div>
+    
+    <% if site.description.present? %>
+      <div class="modal-site-description">
+        <h4>Description</h4>
+        <p><%= site.description %></p>
+      </div>
+    <% end %>
   </div>
 </div>
