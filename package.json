@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.16",
     "@stimulus-components/lightbox": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/google.maps": "^3.58.1",
+    "esbuild": "^0.25.8",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.ts=ts"
   }
 }

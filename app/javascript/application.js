@@ -1,4 +1,4 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
+// Entry point for the build script in package.json
 import "@hotwired/turbo-rails"
-import "controllers"
-import "map"
+import "./controllers"
+import "./map"
