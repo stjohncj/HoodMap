@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get "modal/houses/:id" => "maps#house_modal", as: :house_modal
   
   # Historic district information pages
-  get "kewaunee-history" => "pages#kewaunee_history", as: :kewaunee_history
-  get "mhd-history" => "pages#mhd_history", as: :mhd_history
-  get "mhd-architecture" => "pages#mhd_architecture", as: :mhd_architecture
+  get "kewaunee-history" => "info_pages#kewaunee_history", as: :kewaunee_history
+  get "mhd-history" => "info_pages#mhd_history", as: :mhd_history
+  get "mhd-architecture" => "info_pages#mhd_architecture", as: :mhd_architecture
 end

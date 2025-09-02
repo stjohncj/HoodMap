@@ -1,4 +1,4 @@
-class PagesController < ApplicationController
+class InfoPagesController < ApplicationController
   def kewaunee_history
     @content = File.read(Rails.root.join("db", "site_txt", "Kewaunee_History.txt"))
     @page_title = "Kewaunee History"

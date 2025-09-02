@@ -1,0 +1,7 @@
+<div class="image-gallery">
+  <% images.each do |image_info| %>
+    <a href="#" onclick="openImageViewer('<%= asset_path(image_info[:src]) %>', '<%= image_info[:alt] %>'); return false;" class="gallery-image-link">
+      <%= image_tag image_info[:src], alt: image_info[:alt], class: "gallery-image" %>
+    </a>
+  <% end %>
+</div>
