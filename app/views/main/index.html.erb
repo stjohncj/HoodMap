@@ -1,0 +1,23 @@
+<script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+<%= stylesheet_link_tag "main", "data-turbo-track": "reload" %>
+<%= stylesheet_link_tag "maps", "data-turbo-track": "reload" %>
+
+<%= render 'shared/page_header', sites_count: @sites.count %>
+
+<%= render 'maps/viewer', 
+    mhd_center_lat: @mhd_center_lat, 
+    mhd_center_lng: @mhd_center_lng,
+    sites: @sites %>
+
+<div class="container">
+  <div class="content-section">
+    <%= render 'shared/about' %>
+  </div>
+
+  <div class="content-section">
+    <%= render 'shared/members' %>
+  </div>
+</div>

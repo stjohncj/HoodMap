@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   # Defines the root path route ("/")
-  root "maps#historic_district", as: :historic_district_map
+  root "main#index", as: :historic_district_map
   get "houses/:id" => "maps#house", as: :house
   get "modal/houses/:id" => "maps#house_modal", as: :house_modal
   

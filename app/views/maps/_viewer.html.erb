@@ -1,13 +1,5 @@
-<script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
-<%= stylesheet_link_tag "map", "data-turbo-track": "reload" %>
-
-<%= render 'shared/page_header', sites_count: @sites.count %>
-
 <div class="map-container">
-  <div id="sites" data-latitude=<%= @mhd_center_lat %> data-longitude=<%= @mhd_center_lng %>>
+  <div id="sites" data-latitude=<%= mhd_center_lat %> data-longitude=<%= mhd_center_lng %>>
     <div id="map"></div>
     
     <!-- Modal overlay for site details - positioned within map area -->
@@ -29,7 +21,7 @@
   <div class="sites-sidebar">
     <h2>Historic Sites</h2>
     <ol>
-      <% @sites.each do |site| %>
+      <% sites.each do |site| %>
         <li class="site-list-item"
           data-latitude=<%=site.latitude %>
           data-longitude=<%= site.longitude %>
@@ -47,16 +39,5 @@
         </li>
       <% end %>
     </ol>
-  </div>
-</div>
-
-
-<div class="container">
-  <div class="content-section">
-    <%= render 'shared/about' %>
-  </div>
-
-  <div class="content-section">
-    <%= render 'shared/members' %>
   </div>
 </div>
