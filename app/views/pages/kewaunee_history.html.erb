@@ -1,24 +1,8 @@
-<%= render 'shared/page_header', page_title: @page_title %>
-
-<div class="info-page-content">
-  <%= render 'shared/street_gallery', images: [
-    { src: "milwaukee-street.avif", alt: "Milwaukee Street" },
-    { src: "ellis-street.avif", alt: "Ellis Street" },
-    { src: "harrison-street.avif", alt: "Harrison Street" }
-  ] %>
-  
-  <div class="container">
-    <h1 class="page-title"><%= @page_title %></h1>
-    <div class="text-content">
-      <%= simple_format(@content) %>
-    </div>
-    
-    <div class="navigation-footer">
-      <%= link_to historic_district_map_path, class: "btn btn-secondary" do %>
-        <i class="fas fa-arrow-left"></i> Back to Map
-      <% end %>
-    </div>
-  </div>
-</div>
-
-<%= render 'shared/info_page_styles' %>
+<%= render 'shared/info_page_layout',
+    page_title: @page_title,
+    content: @content,
+    images: [
+      { src: "milwaukee-street.avif", alt: "Milwaukee Street" },
+      { src: "ellis-street.avif", alt: "Ellis Street" },
+      { src: "harrison-street.avif", alt: "Harrison Street" }
+    ] %>
