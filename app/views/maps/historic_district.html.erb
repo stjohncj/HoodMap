@@ -4,30 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
 <%= stylesheet_link_tag "map", "data-turbo-track": "reload" %>
 
-<div class="page-header">
-  <div class="container">
-    <h1>Marquette Historic District</h1>
-    <div class="subtitle">
-      <i class="fas fa-map-marker-alt"></i>
-      <p>Explore over 40 historic homes dating from 1881 to 1938 in <a href="https://cityofkewauneewi.gov/" target="_blank" class="location-highlight">Kewaunee, WI</a></p>
-    </div>
-    
-    <div class="stats">
-      <div class="stat-item">
-        <span class="stat-number"><%= @sites.count %></span>
-        <span class="stat-label">Historic Properties</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">1881-1938</span>
-        <span class="stat-label">Era</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-number">1993</span>
-        <span class="stat-label">Historic Registry</span>
-      </div>
-    </div>
-  </div>
-</div>
+<%= render 'shared/page_header', sites_count: @sites.count %>
 
 <div class="map-container">
   <div id="sites" data-latitude=<%= @mhd_center_lat %> data-longitude=<%= @mhd_center_lng %>>
