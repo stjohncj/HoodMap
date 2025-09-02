@@ -14,4 +14,9 @@ Rails.application.routes.draw do
   root "maps#historic_district", as: :historic_district_map
   get "houses/:id" => "maps#house", as: :house
   get "modal/houses/:id" => "maps#house_modal", as: :house_modal
+  
+  # Historic district information pages
+  get "kewaunee-history" => "pages#kewaunee_history", as: :kewaunee_history
+  get "mhd-history" => "pages#mhd_history", as: :mhd_history
+  get "mhd-architecture" => "pages#mhd_architecture", as: :mhd_architecture
 end
