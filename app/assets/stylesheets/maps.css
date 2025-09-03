@@ -122,7 +122,7 @@
 }
 
 .site-list-item:hover {
-  background: #f3f4f6;
+  background: var(--site-highlight-background);
   border-color: var(--site-primary-b);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
@@ -137,6 +137,11 @@
   margin: 0 0 0.5rem 0;
   color: #1f2937;
   font-size: 1.3rem;
+  transition: color 0.2s ease;
+}
+
+.site-list-item:hover h4 {
+  color: var(--site-primary-b-dark);
 }
 
 .site-list-item p {

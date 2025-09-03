@@ -15,22 +15,30 @@
   --khs-gold: #FFB920;
   --khs-purple-dark: #3d2361;
   --khs-gold-light: #fcd34d;
-  
+
+  --mhd-blue: #1e40af;
+  --mhd-gold: #FFB920;
+  --mhd-blue-dark: #1c3f5a;
+  --mhd-gold-light: #fcd34d;
+
   /* Site Primary Color Aliases */
   --site-primary-a: var(--khs-gold);
   --site-primary-a-light: var(--khs-gold-light);
   --site-primary-b: var(--khs-purple);
   --site-primary-b-dark: var(--khs-purple-dark);
+
+  /* Highlight Colors */
+  --site-highlight-background: #fffbeb;
 }
 
 /* Custom Font Declarations */
 @font-face {
-    font-family: 'Controwell Script';
-    src: url('/fonts/ControwellScript-Regular.woff2') format('woff2'),
-         url('/fonts/ControwellScript-Regular.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'Controwell Script';
+  src: url('/fonts/ControwellScript-Regular.woff2') format('woff2'),
+    url('/fonts/ControwellScript-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* Reset and base styles */
@@ -48,7 +56,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-top: 0;
   margin-bottom: 0.75rem;
   font-family: 'Controwell Script', cursive;
@@ -64,12 +77,29 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--site-primary-b-dark);
 }
 
-h1 { font-size: 3rem; }
-h2 { font-size: 2.4rem; }
-h3 { font-size: 1.8rem; }
-h4 { font-size: 1.5rem; }
-h5 { font-size: 1.3rem; }
-h6 { font-size: 1.1rem; }
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.4rem;
+}
+
+h3 {
+  font-size: 1.8rem;
+}
+
+h4 {
+  font-size: 1.5rem;
+}
+
+h5 {
+  font-size: 1.3rem;
+}
+
+h6 {
+  font-size: 1.1rem;
+}
 
 p {
   margin-bottom: 1rem;
@@ -118,10 +148,18 @@ input[type="button"] .btn-text {
 }
 
 /* FontAwesome icons in buttons */
-.btn i.fas, .btn span.fas, .btn div.fas,
-.btn i.far, .btn span.far, .btn div.far,
-.btn i.fab, .btn span.fab, .btn div.fab,
-.btn i.fal, .btn span.fal, .btn div.fal {
+.btn i.fas,
+.btn span.fas,
+.btn div.fas,
+.btn i.far,
+.btn span.far,
+.btn div.far,
+.btn i.fab,
+.btn span.fab,
+.btn div.fab,
+.btn i.fal,
+.btn span.fal,
+.btn div.fal {
   margin-right: 0.5rem;
   font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Pro', 'FontAwesome';
   font-weight: 900;
