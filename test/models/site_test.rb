@@ -41,16 +41,16 @@ class SiteTest < ActiveSupport::TestCase
       filename: "test.jpg",
       content_type: "image/jpeg"
     )
-    
+
     @site.images.attach(image_blob)
-    
+
     assert @site.images.attached?
     assert_respond_to @site.images.first, :variant
   end
 
   test "should allow nil values for optional fields" do
     site = Site.new
-    
+
     # These fields should be allowed to be nil
     assert_nil site.historic_name
     assert_nil site.address
@@ -63,7 +63,7 @@ class SiteTest < ActiveSupport::TestCase
     assert_nil site.longitude
     assert_nil site.survey_year
     assert_nil site.built_year
-    
+
     # Site should still be valid even with nil values
     assert site.valid?
   end
@@ -71,7 +71,7 @@ class SiteTest < ActiveSupport::TestCase
   test "should accept valid latitude and longitude" do
     @site.latitude = 44.4619
     @site.longitude = -87.5069
-    
+
     assert @site.valid?
     assert_equal 44.4619, @site.latitude
     assert_equal -87.5069, @site.longitude
@@ -80,7 +80,7 @@ class SiteTest < ActiveSupport::TestCase
   test "should accept valid years" do
     @site.built_year = 1895
     @site.survey_year = 1993
-    
+
     assert @site.valid?
     assert_equal 1895, @site.built_year
     assert_equal 1993, @site.survey_year
@@ -94,7 +94,7 @@ class SiteTest < ActiveSupport::TestCase
     @site.architect = "Frank Lloyd Wright"
     @site.architectural_style = "Prairie"
     @site.description = "A beautiful historic home with significant architectural features."
-    
+
     assert @site.valid?
     assert_equal "Test Historic House", @site.historic_name
     assert_equal "123 Test Street", @site.address
@@ -114,13 +114,13 @@ class SiteTest < ActiveSupport::TestCase
 
   test "should update updated_at on save" do
     original_updated_at = @site.updated_at
-    
+
     # Wait a small amount to ensure timestamp difference
     sleep 0.01
-    
+
     @site.historic_name = "Updated Name"
     @site.save!
-    
+
     assert @site.updated_at > original_updated_at
   end
 end

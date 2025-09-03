@@ -169,16 +169,13 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 2px solid var(--site-primary-b);
+  background: transparent;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .custom-marker:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(79, 49, 125, 0.3);
-  background: rgba(255, 255, 255, 1);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
 }
 
 .custom-marker .house-icon {
@@ -204,6 +201,44 @@
   box-sizing: border-box;
 }
 
+/* Fullscreen Modal Styles */
+.site-modal-map-overlay.fullscreen-modal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* When the modal itself is fullscreen */
+.site-modal-map-overlay:fullscreen,
+.site-modal-map-overlay:-webkit-full-screen,
+.site-modal-map-overlay:-moz-full-screen,
+.site-modal-map-overlay:-ms-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  padding: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjust modal content when modal is fullscreen */
+.site-modal-map-overlay:fullscreen .modal-content-map,
+.site-modal-map-overlay:-webkit-full-screen .modal-content-map,
+.site-modal-map-overlay:-moz-full-screen .modal-content-map,
+.site-modal-map-overlay:-ms-fullscreen .modal-content-map {
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  max-height: 900px;
+}
+
 .modal-backdrop-map {
   position: absolute;
   top: 0;
@@ -226,6 +261,14 @@
   animation: modalSlideIn 0.3s ease-out;
   display: flex;
   flex-direction: column;
+}
+
+/* Fullscreen Modal Content */
+.site-modal-map-overlay.fullscreen-modal .modal-content-map {
+  width: 90vw;
+  height: 90vh;
+  max-width: 1200px;
+  max-height: 900px;
 }
 
 /* Original Modal Styles (for backward compatibility) */
@@ -430,7 +473,6 @@
 
 .modal-site-description {
   margin-bottom: 2rem;
-  padding-left: 40px;
 }
 
 .modal-site-description h4,
@@ -454,6 +496,7 @@
   color: #4b5563;
   line-height: 1.7;
   margin: 0 0 1rem 0;
+  text-indent: 2rem; /* Add paragraph indentation */
 }
 
 .description-paragraph:last-child {
@@ -529,6 +572,17 @@
   .modal-content-map {
     max-width: 100%;
     max-height: 95%;
+  }
+  
+  /* Fullscreen modal responsive */
+  .site-modal-map-overlay.fullscreen-modal {
+    padding: 1rem;
+  }
+  
+  .site-modal-map-overlay.fullscreen-modal .modal-content-map {
+    width: 95vw;
+    height: 95vh;
+    max-width: none;
   }
   
   .modal-content-grid {

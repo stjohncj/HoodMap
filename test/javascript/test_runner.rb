@@ -13,10 +13,10 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "map JavaScript constants are properly defined" do
     # Read the compiled JavaScript file
     map_js_path = Rails.root.join("app", "assets", "builds", "map.js")
-    
+
     if File.exist?(map_js_path)
       map_content = File.read(map_js_path)
-      
+
       # Check for key constants
       assert_includes map_content, "MAP_ZOOM_INITIAL", "Should contain zoom initial constant"
       assert_includes map_content, "MAP_ZOOM_MIN_AFTER_BOUNDS", "Should contain min zoom constant"
@@ -30,7 +30,7 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
     # Read the TypeScript source file
     map_ts_path = Rails.root.join("app", "javascript", "map.ts")
     map_content = File.read(map_ts_path)
-    
+
     # Check for TypeScript type annotations
     assert_includes map_content, ": number", "Should contain number type annotations"
     assert_includes map_content, ": Promise<void>", "Should contain Promise return types"
@@ -42,7 +42,7 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "map functionality has proper error handling" do
     map_ts_path = Rails.root.join("app", "javascript", "map.ts")
     map_content = File.read(map_ts_path)
-    
+
     # Check for error handling patterns
     assert_includes map_content, "try {", "Should contain try-catch blocks"
     assert_includes map_content, "catch", "Should contain catch blocks"
@@ -53,7 +53,7 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "modal functionality is properly implemented" do
     map_ts_path = Rails.root.join("app", "javascript", "map.ts")
     map_content = File.read(map_ts_path)
-    
+
     # Check for modal functions
     assert_includes map_content, "showSiteModal", "Should contain showSiteModal function"
     assert_includes map_content, "closeSiteModal", "Should contain closeSiteModal function"
@@ -63,7 +63,7 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "Google Maps integration is properly typed" do
     map_ts_path = Rails.root.join("app", "javascript", "map.ts")
     map_content = File.read(map_ts_path)
-    
+
     # Check for Google Maps API usage with types
     assert_includes map_content, "google.maps.importLibrary", "Should use importLibrary"
     assert_includes map_content, "AdvancedMarkerElement", "Should use AdvancedMarkerElement"
@@ -74,7 +74,7 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "event listeners are properly set up" do
     map_ts_path = Rails.root.join("app", "javascript", "map.ts")
     map_content = File.read(map_ts_path)
-    
+
     # Check for event listeners
     assert_includes map_content, "addEventListener", "Should set up event listeners"
     assert_includes map_content, "DOMContentLoaded", "Should listen for DOM ready"
@@ -85,10 +85,10 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
   test "TypeScript configuration is valid" do
     tsconfig_path = Rails.root.join("tsconfig.json")
     assert File.exist?(tsconfig_path), "tsconfig.json should exist"
-    
+
     tsconfig_content = File.read(tsconfig_path)
     config = JSON.parse(tsconfig_content)
-    
+
     assert config["compilerOptions"], "Should have compiler options"
     assert config["compilerOptions"]["strict"], "Should have strict mode enabled"
     assert config["include"], "Should specify include paths"
@@ -97,11 +97,11 @@ class JavaScriptFunctionalityTest < ActiveSupport::TestCase
 
   test "build script handles TypeScript files" do
     package_json_path = Rails.root.join("package.json")
-    
+
     if File.exist?(package_json_path)
       package_content = File.read(package_json_path)
       package_data = JSON.parse(package_content)
-      
+
       build_script = package_data.dig("scripts", "build")
       assert build_script, "Should have build script"
       assert_includes build_script, "--loader:.ts=ts", "Should handle TypeScript files"

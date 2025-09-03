@@ -22,6 +22,9 @@ declare global {
   }
 }
 
+// Make this a module
+export {};
+
 async function initMap(): Promise<void> {
   // Check if map container exists (only initialize on map page)
   const coords = document.getElementById("sites");
@@ -67,6 +70,20 @@ async function initMap(): Promise<void> {
   // Z-index counter starting at base map z-index + 100
   let baseZIndex = 100;
   
+  // Get the CSS custom property values for house icon colors
+  const rootStyles = getComputedStyle(document.documentElement);
+  const houseIconColor = rootStyles.getPropertyValue('--site-primary-b-dark').trim();
+  const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
+  
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+    console.log('House icon colors:', {
+      houseIconColor,
+      houseInteriorColor,
+      rawDark: rootStyles.getPropertyValue('--site-primary-b-dark'),
+      rawLight: rootStyles.getPropertyValue('--site-primary-a-light')
+    });
+  }
+
   sites.forEach((site: HTMLElement, index: number) => {
     // Create custom house marker
     const markerContent = document.createElement('div');
@@ -74,12 +91,17 @@ async function initMap(): Promise<void> {
     const currentIconZIndex = baseZIndex + index;
     markerContent.style.zIndex = currentIconZIndex.toString();
     markerContent.style.position = 'relative'; // Ensure position is set for z-index to work
-    if (process.env.NODE_ENV === 'development') {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
       console.log(`Setting house icon ${index} z-index to:`, currentIconZIndex);
     }
     markerContent.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
-        <path d="M19.07,4.93C17.22,3 14.66,1.96 12,2C9.34,1.96 6.79,3 4.94,4.93C3,6.78 1.96,9.34 2,12C1.96,14.66 3,17.21 4.93,19.06C6.78,21 9.34,22.04 12,22C14.66,22.04 17.21,21 19.06,19.07C21,17.22 22.04,14.66 22,12C22.04,9.34 21,6.78 19.07,4.93M17,12V18H13.5V13H10.5V18H7V12H5L12,5L19.5,12H17Z" fill="#2563eb"/>
+        <!-- House interior background -->
+        <path d="M7,12H17V18H7V12Z" fill="${houseInteriorColor}"/>
+        <!-- House outline and structure -->
+        <path d="M12,5L19.5,12H17V18H13.5V13H10.5V18H7V12H5L12,5Z" fill="none" stroke="${houseIconColor}" stroke-width="1.5"/>
+        <!-- Door -->
+        <rect x="10.5" y="13.5" width="3" height="4.5" fill="${houseIconColor}"/>
       </svg>
     `;
 
@@ -113,8 +135,12 @@ async function initMap(): Promise<void> {
 
     // Add event listeners to the marker's element/content
     if (marker.content) {
-      marker.content.addEventListener("click", () => {
-        showSiteModal(siteId);
+      marker.content.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        // Capture fullscreen state before any potential changes
+        const wasInFullscreen = isInFullscreenMode();
+        showSiteModal(siteId, wasInFullscreen);
       });
 
       marker.content.addEventListener("mouseover", () => {
@@ -123,21 +149,27 @@ async function initMap(): Promise<void> {
         newContent.addEventListener("mouseout", () => {
           marker.content = markerContent;
         });
+        newContent.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          // Capture fullscreen state before any potential changes
+          const wasInFullscreen = isInFullscreenMode();
+          showSiteModal(siteId, wasInFullscreen);
+        });
         marker.content = newContent;
       });
     }
 
     // Make sidebar list items clickable
     site.addEventListener("click", () => {
-      showSiteModal(siteId);
+      // Sidebar clicks should not preserve fullscreen (normal behavior)
+      showSiteModal(siteId, false);
     });
   });
 
   // Fit the map to show all markers with some padding
   if (!bounds.isEmpty()) {
-    map.fitBounds(bounds, {
-      padding: 10 // Even less padding for closer zoom
-    });
+    map.fitBounds(bounds, 10); // Even less padding for closer zoom
 
     // Set zoom bounds after fitBounds to ensure good detail level
     google.maps.event.addListenerOnce(map, 'bounds_changed', function () {
@@ -159,7 +191,7 @@ function buildContent(site: HTMLElement, zIndex?: number): HTMLElement {
   // Set z-index if provided, otherwise use CSS default
   if (zIndex !== undefined) {
     content.style.zIndex = zIndex.toString();
-    if (process.env.NODE_ENV === 'development') {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
       console.log(`Setting bubble z-index to:`, zIndex);
     }
   }
@@ -168,23 +200,12 @@ function buildContent(site: HTMLElement, zIndex?: number): HTMLElement {
   const builtYear = site.getAttribute("data-built-year") || "";
   
   content.innerHTML = historicName + "<br />" + builtYear;
-  content.addEventListener("click", () => displayClickedProperty(site));
+  // Note: Click handler is now added in the mouseover event to capture fullscreen state
   return content;
 }
 
-function displayClickedProperty(site: HTMLElement): void {
-  console.log('display clicked property');
-  const siteId = site.getAttribute("data-id");
-  if (siteId) {
-    showSiteModal(siteId);
-  }
-}
-
 // Modal functionality
-async function showSiteModal(siteId: string): Promise<void> {
-  // Exit fullscreen mode if currently active
-  await exitFullscreenIfActive();
-
+async function showSiteModal(siteId: string, preserveFullscreen: boolean = false): Promise<void> {
   const modal = document.getElementById('site-modal');
   const modalContent = document.getElementById('modal-site-content');
 
@@ -193,10 +214,38 @@ async function showSiteModal(siteId: string): Promise<void> {
     return;
   }
 
-  // Show loading state
+  // Show loading state first
   modalContent.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
-  modal.style.display = 'flex';
-  // Don't prevent body scrolling since modal only covers map area
+  
+  if (preserveFullscreen) {
+    // For fullscreen mode, make the modal itself the fullscreen element
+    modal.classList.add('fullscreen-modal');
+    modal.style.display = 'flex';
+    
+    // Request fullscreen on the modal instead of the map
+    try {
+      if (modal.requestFullscreen) {
+        await modal.requestFullscreen();
+      } else if ((modal as any).webkitRequestFullscreen) {
+        await (modal as any).webkitRequestFullscreen();
+      } else if ((modal as any).mozRequestFullScreen) {
+        await (modal as any).mozRequestFullScreen();
+      } else if ((modal as any).msRequestFullscreen) {
+        await (modal as any).msRequestFullscreen();
+      }
+    } catch (error) {
+      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+        console.log('Could not enter fullscreen on modal:', error);
+      }
+      // Fallback to regular modal display
+      modal.classList.remove('fullscreen-modal');
+    }
+  } else {
+    // Normal modal behavior - exit fullscreen first
+    await exitFullscreenIfActive();
+    modal.classList.remove('fullscreen-modal');
+    modal.style.display = 'flex';
+  }
 
   try {
     // Fetch site content
@@ -207,6 +256,14 @@ async function showSiteModal(siteId: string): Promise<void> {
     console.error('Error loading site details:', error);
     modalContent.innerHTML = '<div class="error-message">Error loading site details. Please try again.</div>';
   }
+}
+
+// Function to check if currently in fullscreen mode
+function isInFullscreenMode(): boolean {
+  return !!(document.fullscreenElement ||
+    (document as any).webkitFullscreenElement ||
+    (document as any).mozFullScreenElement ||
+    (document as any).msFullscreenElement);
 }
 
 // Function to exit fullscreen mode if currently active
@@ -235,10 +292,42 @@ async function exitFullscreenIfActive(): Promise<void> {
   }
 }
 
-function closeSiteModal(): void {
+async function closeSiteModal(): Promise<void> {
   const modal = document.getElementById('site-modal');
+  const mapElement = document.getElementById("map");
+  
   if (modal) {
+    // Check if the modal was fullscreen (meaning we should return to map fullscreen)
+    const modalWasFullscreen = document.fullscreenElement === modal || 
+        (document as any).webkitFullscreenElement === modal ||
+        (document as any).mozFullScreenElement === modal ||
+        (document as any).msFullscreenElement === modal;
+    
+    // Close the modal first
     modal.style.display = 'none';
+    modal.classList.remove('fullscreen-modal');
+    modal.style.zIndex = '';
+    
+    // If modal was fullscreen, return the map to fullscreen
+    if (modalWasFullscreen && mapElement) {
+      try {
+        if (mapElement.requestFullscreen) {
+          await mapElement.requestFullscreen();
+        } else if ((mapElement as any).webkitRequestFullscreen) {
+          await (mapElement as any).webkitRequestFullscreen();
+        } else if ((mapElement as any).mozRequestFullScreen) {
+          await (mapElement as any).mozRequestFullScreen();
+        } else if ((mapElement as any).msRequestFullscreen) {
+          await (mapElement as any).msRequestFullscreen();
+        }
+      } catch (error) {
+        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+          console.log('Could not return map to fullscreen:', error);
+        }
+        // If we can't return to fullscreen, exit entirely
+        await exitFullscreenIfActive();
+      }
+    }
   }
   // Don't prevent body scrolling since modal only covers map area
 }
@@ -267,6 +356,24 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.addEventListener('click', closeSiteModal);
   }
 });
+
+// Handle fullscreen change events to keep modal state in sync
+function handleFullscreenChange(): void {
+  const modal = document.getElementById('site-modal');
+  
+  // If we exit fullscreen while modal is visible (e.g., via minimize button or ESC)
+  if (!isInFullscreenMode() && modal && modal.style.display === 'flex' && modal.classList.contains('fullscreen-modal')) {
+    // Clean up modal fullscreen state but don't close the modal
+    modal.classList.remove('fullscreen-modal');
+    modal.style.zIndex = '';
+  }
+}
+
+// Add fullscreen change listeners
+document.addEventListener('fullscreenchange', handleFullscreenChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+document.addEventListener('msfullscreenchange', handleFullscreenChange);
 
 // Also add listeners on turbo:load for Turbo navigation
 document.addEventListener('turbo:load', () => {

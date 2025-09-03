@@ -6,6 +6,7 @@
   },
   "devDependencies": {
     "@types/google.maps": "^3.58.1",
+    "@types/node": "^24.3.0",
     "esbuild": "^0.25.8",
     "typescript": "^5.8.3"
   },
