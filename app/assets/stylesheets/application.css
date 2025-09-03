@@ -107,6 +107,11 @@ a:hover {
   font-weight: 500;
 }
 
+/* Address styling - Global */
+.address {
+  color: #FFB920;
+}
+
 /* Content sections */
 .content-section {
   background: white;
