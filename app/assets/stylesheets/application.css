@@ -16,21 +16,30 @@
   --khs-purple-dark: #3d2361;
   --khs-gold-light: #fcd34d;
 
-  --mhd-blue: #354783;
-  --mhd-gold: #FFB920;
-  --mhd-blue-dark: #142d41;
-  --mhd-gold-light: #fcd34d;
+  /* --mhd-dark: #354783;
+  --mhd-light: #FFB920;
+  --mhd-dark-darker: #142d41;
+  --mhd-light-lighter: #fcd34d; */
+
+  --mhd-dark: #1e3a8a;
+  /* Deep professional blue */
+  --mhd-light: #f59e0b;
+  /* Warm amber/gold */
+  --mhd-dark-darker: #1e293b;
+  /* Very dark slate blue */
+  --mhd-light-lighter: #fef3c7;
+  /* Light cream/vanilla */
 
   /* KHS Site Primary Color Aliases */
-  --site-primary-a: var(--khs-gold);
+  /* --site-primary-a: var(--khs-gold);
   --site-primary-a-light: var(--khs-gold-light);
   --site-primary-b: var(--khs-purple);
-  --site-primary-b-dark: var(--khs-purple-dark);
+  --site-primary-b-dark: var(--khs-purple-dark); */
   /* MHD Site Primary Color Aliases */
-  /* --site-primary-a: var(--mhd-gold);
-  --site-primary-a-light: var(--mhd-gold-light);
-  --site-primary-b: var(--mhd-blue);
-  --site-primary-b-dark: var(--mhd-blue-dark); */
+  --site-primary-a: var(--mhd-light);
+  --site-primary-a-light: var(--mhd-light-lighter);
+  --site-primary-b: var(--mhd-dark);
+  --site-primary-b-dark: var(--mhd-dark-darker);
 
   /* Highlight Colors */
   --site-highlight-background: #fffbeb;
