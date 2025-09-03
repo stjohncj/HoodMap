@@ -9,6 +9,30 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+/* KHS Color Constants */
+:root {
+  --khs-purple: #4f317d;
+  --khs-gold: #FFB920;
+  --khs-purple-dark: #3d2361;
+  --khs-gold-light: #fcd34d;
+  
+  /* Site Primary Color Aliases */
+  --site-primary-a: var(--khs-gold);
+  --site-primary-a-light: var(--khs-gold-light);
+  --site-primary-b: var(--khs-purple);
+  --site-primary-b-dark: var(--khs-purple-dark);
+}
+
+/* Custom Font Declarations */
+@font-face {
+    font-family: 'Controwell Script';
+    src: url('ControwellScript-Regular.woff2') format('woff2'),
+         url('ControwellScript-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* Reset and base styles */
 * {
   box-sizing: border-box;
@@ -42,13 +66,13 @@ p {
 
 /* Links */
 a {
-  color: #4f317d;
+  color: var(--site-primary-b);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: #FFB920;
+  color: var(--site-primary-a);
   text-decoration: underline;
 }
 
@@ -56,29 +80,31 @@ a:hover {
 .btn {
   display: inline-block;
   padding: 0.75rem 1.5rem;
-  background-color: #4f317d;
-  color: white;
+  background-color: var(--site-primary-b);
+  color: var(--site-primary-a);
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .btn:hover {
-  background-color: #FFB920;
-  color: white;
+  background-color: var(--site-primary-a);
+  color: var(--site-primary-b);
   text-decoration: none;
 }
 
 .btn-secondary {
-  background-color: #4f317d;
+  background-color: var(--site-primary-b);
+  color: var(--site-primary-a);
 }
 
 .btn-secondary:hover {
-  background-color: #FFB920;
+  background-color: var(--site-primary-a);
+  color: var(--site-primary-b);
 }
 
 /* Container */
@@ -109,7 +135,7 @@ a:hover {
 
 /* Address styling - Global */
 .address {
-  color: #FFB920;
+  color: var(--site-primary-a-light);
 }
 
 /* Content sections */

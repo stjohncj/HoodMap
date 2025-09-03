@@ -1,6 +1,6 @@
 /* Page header */
 .page-header {
-  background: linear-gradient(135deg, rgba(79, 49, 125, 1) 0%, rgba(61, 35, 97, 1) 100%),
+  background: linear-gradient(135deg, var(--site-primary-b) 0%, var(--site-primary-b-dark) 100%),
               url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
   background-size: cover, 120px 60px;
   background-position: center, 0 0;
@@ -54,7 +54,7 @@
   font-weight: 900;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 185, 32, 0.4);
   letter-spacing: -0.01em;
-  background: linear-gradient(45deg, #FFB920 0%, #ffffff 50%, #FFB920 100%);
+  background: linear-gradient(45deg, var(--site-primary-a) 0%, #ffffff 50%, var(--site-primary-a) 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -87,16 +87,16 @@
 }
 
 .page-header .subtitle i {
-  color: #FFB920;
+  color: var(--site-primary-a);
   font-size: 1.1rem;
   flex-shrink: 0;
 }
 
 .page-header .location-highlight {
-  color: #FFB920;
+  color: var(--site-primary-a);
   font-weight: 700;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(45deg, #FFB920 0%, #fcd34d 100%);
+  background: linear-gradient(45deg, var(--site-primary-a) 0%, var(--site-primary-a-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -106,7 +106,7 @@
 }
 
 .page-header .location-highlight:hover {
-  background: linear-gradient(45deg, #FFB920 0%, #FFB920 100%);
+  background: linear-gradient(45deg, var(--site-primary-a) 0%, var(--site-primary-a) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -160,7 +160,7 @@
 .page-header .stat-number {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #FFB920;
+  color: var(--site-primary-a);
 }
 
 .page-header .stat-label {

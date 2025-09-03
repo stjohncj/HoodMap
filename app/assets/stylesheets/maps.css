@@ -65,11 +65,10 @@
 
 .sites-sidebar ol {
   list-style: none;
-  padding: 0;
+  padding: 2px 0.5rem 0 0;
   margin: 0;
   overflow-y: auto;
   flex: 1;
-  padding-right: 0.5rem;
 }
 
 /* Custom scrollbar styling */
@@ -103,7 +102,7 @@
 
 .site-list-item:hover {
   background: #f3f4f6;
-  border-color: #4f317d;
+  border-color: var(--site-primary-b);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
 }
@@ -127,23 +126,25 @@
 
 /* HTML marker styles */
 .marker-tag {
-  background: linear-gradient(135deg, #4f317d 0%, #3d2361 100%);
+  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a) 70%, var(--site-primary-b) 100%);
   border-radius: 0.75rem;
-  color: #ffffff;
+  color: var(--site-primary-b);
   font-size: 13px;
-  font-weight: 500;
-  padding: 0.75rem 1rem;
+  font-weight: 600;
+  padding: 8px 12px;
   position: relative;
-  box-shadow: 0 4px 12px rgba(79, 49, 125, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 185, 32, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  max-width: 200px;
+  display: inline-block;
+  min-width: fit-content;
+  width: auto;
 }
 
 .marker-tag:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(79, 49, 125, 0.4);
+  box-shadow: 0 6px 16px rgba(255, 185, 32, 0.4);
 }
 
 .marker-tag::after {
@@ -156,7 +157,7 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-top: 8px solid #3d2361;
+  border-top: 8px solid var(--site-primary-b);
 }
 
 /* Custom map markers */
@@ -171,7 +172,7 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 2px solid #4f317d;
+  border: 2px solid var(--site-primary-b);
 }
 
 .custom-marker:hover {
@@ -342,8 +343,8 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, #FFB920 0%, #4f317d 100%);
-  color: #4f317d;
+  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-b) 100%);
+  color: var(--site-primary-b);
   padding: 1rem;
   text-align: center;
 }
@@ -352,19 +353,19 @@
   margin: 0 0 0.25rem 0;
   font-size: 2rem;
   font-weight: 700;
-  color: #4f317d;
+  color: var(--site-primary-b);
 }
 
 .modal-site-address {
   font-size: 1.1rem;
   opacity: 0.95;
   margin: 0;
-  color: #FFB920;
+  color: var(--site-primary-a-light);
 }
 
 .modal-site-year {
   font-size: 1rem;
-  color: #4f317d;
+  color: var(--site-primary-b);
   font-weight: 600;
   margin: 0.25rem 0 0 0;
 }

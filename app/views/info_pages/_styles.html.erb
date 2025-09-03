@@ -146,15 +146,16 @@
 
 .image-viewer-caption {
   position: absolute;
-  bottom: 20px;
+  bottom: -60px;
   left: 50%;
   transform: translateX(-50%);
   color: white;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(245, 245, 245, 0.3);
   padding: 10px 20px;
   border-radius: 5px;
-  font-size: 1rem;
+  font-size: 1.2rem;
   text-align: center;
+  white-space: nowrap;
 }
 </style>
 
@@ -172,12 +173,12 @@ function openImageViewer(imageSrc, imageAlt) {
   const modal = document.getElementById('imageViewerModal');
   const modalImg = document.getElementById('imageViewerImage');
   const caption = document.getElementById('imageViewerCaption');
-  
+
   modal.style.display = 'block';
   modalImg.src = imageSrc;
   modalImg.alt = imageAlt;
   caption.textContent = imageAlt;
-  
+
   // Prevent body scroll when modal is open
   document.body.style.overflow = 'hidden';
 }
@@ -185,7 +186,7 @@ function openImageViewer(imageSrc, imageAlt) {
 function closeImageViewer() {
   const modal = document.getElementById('imageViewerModal');
   modal.style.display = 'none';
-  
+
   // Restore body scroll
   document.body.style.overflow = 'auto';
 }

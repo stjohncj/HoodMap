@@ -19,7 +19,9 @@
       </p>
     </div>
     <div class="school-image">
-      <%= image_tag "MarquetteSchoolKewaunee.jpg", alt: "Historic Marquette School, built in 1914", class: "marquette-school-photo" %>
+      <%= render 'info_pages/street_gallery', images: [
+        { src: "MarquetteSchoolKewaunee.jpg", alt: "Historic Marquette School, built in 1914" }
+      ] %>
       <p class="image-caption">The historic Marquette School (1914-2019), for which the district was named</p>
     </div>
   </div>
@@ -54,6 +56,9 @@
   </div>
 </div>
 
+<!-- Include the image viewer modal and styles -->
+<%= render 'info_pages/styles' %>
+
 <style>
 .about-content h3 {
   color: #1f2937;
@@ -81,16 +86,22 @@
   text-align: center;
 }
 
-.marquette-school-photo {
+.school-image .image-gallery {
+  display: block;
+  height: auto;
+}
+
+.school-image .gallery-image-link {
+  display: block;
+  width: 100%;
+}
+
+.school-image .gallery-image {
   width: 100%;
   height: auto;
   border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease;
-}
-
-.marquette-school-photo:hover {
-  transform: scale(1.02);
+  object-fit: cover;
 }
 
 .image-caption {

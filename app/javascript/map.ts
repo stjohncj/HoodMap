@@ -64,10 +64,19 @@ async function initMap(): Promise<void> {
   const bounds = new google.maps.LatLngBounds();
   const sites = document.querySelectorAll<HTMLElement>("li.site-list-item");
   
-  sites.forEach((site: HTMLElement) => {
+  // Z-index counter starting at base map z-index + 100
+  let baseZIndex = 100;
+  
+  sites.forEach((site: HTMLElement, index: number) => {
     // Create custom house marker
     const markerContent = document.createElement('div');
     markerContent.className = 'custom-marker';
+    const currentIconZIndex = baseZIndex + index;
+    markerContent.style.zIndex = currentIconZIndex.toString();
+    markerContent.style.position = 'relative'; // Ensure position is set for z-index to work
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Setting house icon ${index} z-index to:`, currentIconZIndex);
+    }
     markerContent.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
         <path d="M19.07,4.93C17.22,3 14.66,1.96 12,2C9.34,1.96 6.79,3 4.94,4.93C3,6.78 1.96,9.34 2,12C1.96,14.66 3,17.21 4.93,19.06C6.78,21 9.34,22.04 12,22C14.66,22.04 17.21,21 19.06,19.07C21,17.22 22.04,14.66 22,12C22.04,9.34 21,6.78 19.07,4.93M17,12V18H13.5V13H10.5V18H7V12H5L12,5L19.5,12H17Z" fill="#2563eb"/>
@@ -98,7 +107,8 @@ async function initMap(): Promise<void> {
       map: map,
       gmpClickable: true,
       gmpDraggable: false,
-      content: markerContent
+      content: markerContent,
+      zIndex: currentIconZIndex
     });
 
     // Add event listeners to the marker's element/content
@@ -108,7 +118,8 @@ async function initMap(): Promise<void> {
       });
 
       marker.content.addEventListener("mouseover", () => {
-        const newContent = buildContent(site);
+        const bubbleZIndex = currentIconZIndex + 1000; // Overlay bubble gets much higher z-index
+        const newContent = buildContent(site, bubbleZIndex);
         newContent.addEventListener("mouseout", () => {
           marker.content = markerContent;
         });
@@ -140,9 +151,18 @@ async function initMap(): Promise<void> {
   }
 }
 
-function buildContent(site: HTMLElement): HTMLElement {
+function buildContent(site: HTMLElement, zIndex?: number): HTMLElement {
   const content = document.createElement("div");
   content.classList.add("marker-tag");
+  content.style.position = 'relative'; // Ensure position is set for z-index to work
+  
+  // Set z-index if provided, otherwise use CSS default
+  if (zIndex !== undefined) {
+    content.style.zIndex = zIndex.toString();
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Setting bubble z-index to:`, zIndex);
+    }
+  }
   
   const historicName = site.getAttribute("data-historic-name") || "Unknown";
   const builtYear = site.getAttribute("data-built-year") || "";
