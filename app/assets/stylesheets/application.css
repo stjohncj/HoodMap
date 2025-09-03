@@ -26,8 +26,8 @@
 /* Custom Font Declarations */
 @font-face {
     font-family: 'Controwell Script';
-    src: url('ControwellScript-Regular.woff2') format('woff2'),
-         url('ControwellScript-Regular.woff') format('woff');
+    src: url('/fonts/ControwellScript-Regular.woff2') format('woff2'),
+         url('/fonts/ControwellScript-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -51,14 +51,17 @@ body {
 h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   margin-bottom: 0.75rem;
-  font-weight: 600;
+  font-family: 'Controwell Script', cursive;
+  font-weight: normal;
   line-height: 1.2;
 }
 
-h1 { font-size: 2.5rem; }
-h2 { font-size: 2rem; }
-h3 { font-size: 1.5rem; }
-h4 { font-size: 1.25rem; }
+h1 { font-size: 3rem; }
+h2 { font-size: 2.4rem; }
+h3 { font-size: 1.8rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.3rem; }
+h6 { font-size: 1.1rem; }
 
 p {
   margin-bottom: 1rem;

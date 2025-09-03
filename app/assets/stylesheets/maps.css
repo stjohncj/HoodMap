@@ -57,7 +57,9 @@
 .sites-sidebar h2 {
   margin-bottom: 1.5rem;
   color: #1f2937;
-  font-size: 1.5rem;
+  font-family: 'Controwell Script', cursive;
+  font-size: 1.8rem;
+  font-weight: normal;
   border-bottom: 2px solid #e5e7eb;
   padding-bottom: 0.5rem;
   flex-shrink: 0;
@@ -115,7 +117,7 @@
 .site-list-item h4 {
   margin: 0 0 0.5rem 0;
   color: #1f2937;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .site-list-item p {
@@ -428,8 +430,9 @@
 
 .modal-site-header h2 {
   margin: 0 0 0.25rem 0;
-  font-size: 2rem;
-  font-weight: 700;
+  font-family: 'Controwell Script', cursive;
+  font-size: 2.2rem;
+  font-weight: normal;
   color: var(--site-primary-b);
 }
 
@@ -564,8 +567,9 @@
 .modal-site-details h4 {
   color: #1f2937;
   margin-bottom: 1rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-family: 'Controwell Script', cursive;
+  font-size: 1.5rem;
+  font-weight: normal;
 }
 
 .modal-site-description p {
