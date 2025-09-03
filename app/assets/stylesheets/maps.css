@@ -342,8 +342,8 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, #4f317d 0%, #3d2361 100%);
-  color: white;
+  background: linear-gradient(135deg, #FFB920 0%, #4f317d 100%);
+  color: #4f317d;
   padding: 1rem;
   text-align: center;
 }
@@ -352,18 +352,20 @@
   margin: 0 0 0.25rem 0;
   font-size: 2rem;
   font-weight: 700;
+  color: #4f317d;
 }
 
 .modal-site-address {
   font-size: 1.1rem;
-  opacity: 0.9;
+  opacity: 0.95;
   margin: 0;
+  color: #4f317d;
 }
 
 .modal-site-year {
   font-size: 1rem;
-  color: #FFB920;
-  font-weight: 500;
+  color: #4f317d;
+  font-weight: 600;
   margin: 0.25rem 0 0 0;
 }
 
