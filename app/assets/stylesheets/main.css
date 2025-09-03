@@ -1,6 +1,6 @@
 /* Page header */
 .page-header {
-  background: linear-gradient(135deg, rgba(79, 49, 125, 0.98) 0%, rgba(79, 49, 125, 0.92) 100%),
+  background: linear-gradient(135deg, rgba(79, 49, 125, 1) 0%, rgba(61, 35, 97, 1) 100%),
               url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
   background-size: cover, 120px 60px;
   background-position: center, 0 0;

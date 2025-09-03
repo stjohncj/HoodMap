@@ -344,12 +344,12 @@
 .modal-site-header {
   background: linear-gradient(135deg, #4f317d 0%, #3d2361 100%);
   color: white;
-  padding: 2rem;
+  padding: 1rem;
   text-align: center;
 }
 
 .modal-site-header h2 {
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 0.25rem 0;
   font-size: 2rem;
   font-weight: 700;
 }
@@ -364,7 +364,7 @@
   font-size: 1rem;
   color: #FFB920;
   font-weight: 500;
-  margin: 0.5rem 0 0 0;
+  margin: 0.25rem 0 0 0;
 }
 
 .modal-site-content {
@@ -389,14 +389,21 @@
 }
 
 .modal-image-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
   margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.modal-gallery-item {
+  flex: 0 0 auto;
+  width: 250px;
 }
 
 .modal-gallery-item.featured {
-  grid-column: 1 / -1;
+  width: 100%;
+  max-width: 500px;
 }
 
 .modal-gallery-image {
@@ -407,6 +414,7 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: block;
 }
 
 .modal-gallery-item.featured .modal-gallery-image {
@@ -432,6 +440,20 @@
 .modal-site-description p {
   color: #4b5563;
   line-height: 1.7;
+}
+
+.description-content {
+  margin: 0;
+}
+
+.description-paragraph {
+  color: #4b5563;
+  line-height: 1.7;
+  margin: 0 0 1rem 0;
+}
+
+.description-paragraph:last-child {
+  margin-bottom: 0;
 }
 
 .modal-detail-grid {
@@ -483,7 +505,12 @@
   }
   
   .modal-image-gallery {
-    grid-template-columns: 1fr;
+    justify-content: center;
+  }
+  
+  .modal-gallery-item {
+    width: 100%;
+    max-width: 300px;
   }
   
   .modal-detail-item {
@@ -506,7 +533,7 @@
   }
   
   .modal-image-gallery {
-    grid-template-columns: 1fr;
+    justify-content: center;
   }
   
   .modal-gallery-item.featured .modal-gallery-image {
