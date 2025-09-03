@@ -108,15 +108,22 @@ namespace :sites do
         # Purge existing images to avoid duplicates
         site.images.purge if site.images.attached?
 
-        # Attach each image
-        image_files.each do |image_path|
+        # Sort images by file size (largest first) to make largest image the featured image
+        image_files_sorted = image_files.sort_by { |file| -File.size(file) }
+        
+        # Attach each image (largest first)
+        image_files_sorted.each_with_index do |image_path, index|
           filename = File.basename(image_path)
+          file_size_kb = (File.size(image_path) / 1024.0).round(1)
+          
           site.images.attach(
             io: File.open(image_path),
             filename: filename,
             content_type: "image/#{File.extname(image_path).delete('.').downcase}"
           )
-          puts "  → Attached image: #{filename}"
+          
+          status_indicator = index == 0 ? "→ Featured" : "→ Attached"
+          puts "  #{status_indicator} image: #{filename} (#{file_size_kb} KB)"
         end
 
         puts "  ✓ Attached #{image_files.count} image(s) for #{address}"
