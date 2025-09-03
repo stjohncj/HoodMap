@@ -16,16 +16,21 @@
   --khs-purple-dark: #3d2361;
   --khs-gold-light: #fcd34d;
 
-  --mhd-blue: #1e40af;
+  --mhd-blue: #354783;
   --mhd-gold: #FFB920;
-  --mhd-blue-dark: #1c3f5a;
+  --mhd-blue-dark: #142d41;
   --mhd-gold-light: #fcd34d;
 
-  /* Site Primary Color Aliases */
+  /* KHS Site Primary Color Aliases */
   --site-primary-a: var(--khs-gold);
   --site-primary-a-light: var(--khs-gold-light);
   --site-primary-b: var(--khs-purple);
   --site-primary-b-dark: var(--khs-purple-dark);
+  /* MHD Site Primary Color Aliases */
+  /* --site-primary-a: var(--mhd-gold);
+  --site-primary-a-light: var(--mhd-gold-light);
+  --site-primary-b: var(--mhd-blue);
+  --site-primary-b-dark: var(--mhd-blue-dark); */
 
   /* Highlight Colors */
   --site-highlight-background: #fffbeb;
