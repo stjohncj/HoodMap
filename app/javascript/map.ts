@@ -34,9 +34,10 @@ async function initMap(): Promise<void> {
   if (window.mapInitialized) return;
   window.mapInitialized = true;
 
-  // Request needed libraries.
-  const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
-  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
+  try {
+    // Request needed libraries.
+    const { Map } = await google.maps.importLibrary("maps") as google.maps.MapsLibrary;
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker") as google.maps.MarkerLibrary;
   
   const latStr = coords.getAttribute("data-latitude");
   const lngStr = coords.getAttribute("data-longitude");
@@ -144,8 +145,12 @@ async function initMap(): Promise<void> {
       });
 
       marker.content.addEventListener("mouseover", () => {
+        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+          console.log('Mouse over marker for site:', siteId, 'Position:', position, 'Map bounds:', map?.getBounds());
+        }
+        
         const bubbleZIndex = currentIconZIndex + 1000; // Overlay bubble gets much higher z-index
-        const newContent = buildContent(site, bubbleZIndex);
+        const newContent = buildContent(site, bubbleZIndex, position, map);
         newContent.addEventListener("mouseout", () => {
           marker.content = markerContent;
         });
@@ -157,6 +162,9 @@ async function initMap(): Promise<void> {
           showSiteModal(siteId, wasInFullscreen);
         });
         marker.content = newContent;
+        
+        // Scroll to corresponding site in sidebar
+        scrollToSiteInSidebar(siteId);
       });
     }
 
@@ -181,12 +189,54 @@ async function initMap(): Promise<void> {
       }
     });
   }
+  } catch (error: any) {
+    console.error("Google Maps initialization error:", error);
+    
+    // Show error message to user
+    const mapElement = document.getElementById("map");
+    if (mapElement) {
+      mapElement.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; background: #f3f4f6; border-radius: 1rem;">
+          <div style="text-align: center; padding: 2rem;">
+            <h3 style="color: #dc2626; margin-bottom: 1rem;">Map Loading Error</h3>
+            <p style="color: #6b7280; margin-bottom: 1rem;">
+              ${error.message || 'Unable to load Google Maps'}
+            </p>
+            <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 0.5rem; padding: 1rem; margin-top: 1rem;">
+              <p style="color: #991b1b; font-size: 0.9rem; margin: 0;">
+                <strong>Common causes:</strong><br>
+                • Google Maps API key not configured<br>
+                • Billing not enabled on Google Cloud project<br>
+                • Maps JavaScript API not enabled<br>
+                • API key restrictions blocking access
+              </p>
+            </div>
+            <p style="color: #6b7280; font-size: 0.85rem; margin-top: 1rem;">
+              Check your <code style="background: #e5e7eb; padding: 2px 4px; border-radius: 3px;">GOOGLE_MAPS_API_KEY</code> environment variable
+            </p>
+          </div>
+        </div>
+      `;
+    }
+    
+    // Still make sidebar items clickable even without map
+    const sites = document.querySelectorAll<HTMLElement>("li.site-list-item");
+    sites.forEach((site: HTMLElement) => {
+      const siteId = site.getAttribute("data-id");
+      if (siteId) {
+        site.addEventListener("click", () => {
+          showSiteModal(siteId, false);
+        });
+        site.style.cursor = "pointer";
+      }
+    });
+  }
 }
 
-function buildContent(site: HTMLElement, zIndex?: number): HTMLElement {
+function buildContent(site: HTMLElement, zIndex?: number, position?: google.maps.LatLngLiteral, map?: google.maps.Map): HTMLElement {
   const content = document.createElement("div");
   content.classList.add("marker-tag");
-  content.style.position = 'relative'; // Ensure position is set for z-index to work
+  content.style.position = 'absolute'; // Changed to absolute for better positioning
   
   // Set z-index if provided, otherwise use CSS default
   if (zIndex !== undefined) {
@@ -196,12 +246,102 @@ function buildContent(site: HTMLElement, zIndex?: number): HTMLElement {
     }
   }
   
+  // Position bubble to avoid overlapping the house icon
+  if (position && map) {
+    const mapBounds = map.getBounds();
+    if (mapBounds) {
+      const mapCenter = mapBounds.getCenter();
+      const isOnLeftSide = position.lng < mapCenter.lng();
+      
+      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+        console.log('Positioning bubble:', {
+          position: position,
+          mapCenter: { lat: mapCenter.lat(), lng: mapCenter.lng() },
+          isOnLeftSide: isOnLeftSide
+        });
+      }
+      
+      if (isOnLeftSide) {
+        // Position bubble to the right of the icon
+        content.style.left = '45px';
+        content.style.top = '-10px';
+        content.classList.add('bubble-right');
+        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+          console.log('Applied bubble-right positioning');
+        }
+      } else {
+        // Position bubble to the left of the icon
+        content.style.right = '45px';
+        content.style.top = '-10px';
+        content.classList.add('bubble-left');
+        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+          console.log('Applied bubble-left positioning');
+        }
+      }
+    } else {
+      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+        console.log('No map bounds available for positioning');
+      }
+    }
+  } else {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      console.log('Position or map not provided for bubble positioning');
+    }
+  }
+  
   const historicName = site.getAttribute("data-historic-name") || "Unknown";
   const builtYear = site.getAttribute("data-built-year") || "";
   
   content.innerHTML = historicName + "<br />" + builtYear;
   // Note: Click handler is now added in the mouseover event to capture fullscreen state
   return content;
+}
+
+// Function to scroll to corresponding site in sidebar
+function scrollToSiteInSidebar(siteId: string): void {
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+    console.log('Trying to scroll to site ID:', siteId);
+  }
+  
+  const sidebarSite = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
+  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+    console.log('Found sidebar site element:', sidebarSite);
+  }
+  
+  if (sidebarSite && sidebarSite.parentElement) {
+    const scrollContainer = sidebarSite.parentElement; // The <ol> element
+    const containerRect = scrollContainer.getBoundingClientRect();
+    const siteRect = sidebarSite.getBoundingClientRect();
+    
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      console.log('Scroll container:', scrollContainer);
+      console.log('Container rect:', containerRect);
+      console.log('Site rect:', siteRect);
+    }
+    
+    // Calculate the scroll position to center the site in the container
+    const scrollTop = scrollContainer.scrollTop + (siteRect.top - containerRect.top) - (containerRect.height / 2) + (siteRect.height / 2);
+    
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      console.log('Calculated scroll top:', scrollTop);
+    }
+    
+    scrollContainer.scrollTo({
+      top: scrollTop,
+      behavior: 'smooth'
+    });
+    
+    // Add temporary highlight effect
+    sidebarSite.classList.add('highlighted');
+    setTimeout(() => {
+      sidebarSite.classList.remove('highlighted');
+    }, 2000);
+  } else {
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      console.log('Could not find sidebar site or parent element');
+      console.log('Available sidebar sites:', document.querySelectorAll('li.site-list-item'));
+    }
+  }
 }
 
 // Modal functionality

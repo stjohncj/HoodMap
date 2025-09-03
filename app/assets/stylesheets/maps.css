@@ -124,6 +124,15 @@
   font-size: 0.9rem;
 }
 
+/* Highlight effect for sidebar scrolling */
+.site-list-item.highlighted {
+  background: var(--site-primary-a) !important;
+  border-color: var(--site-primary-b) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(79, 49, 125, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
 /* HTML marker styles */
 .marker-tag {
   background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a) 70%, var(--site-primary-b) 100%);
@@ -132,7 +141,7 @@
   font-size: 13px;
   font-weight: 600;
   padding: 8px 12px;
-  position: relative;
+  position: absolute;
   box-shadow: 0 4px 12px rgba(255, 185, 32, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -140,6 +149,7 @@
   display: inline-block;
   min-width: fit-content;
   width: auto;
+  z-index: 1000;
 }
 
 .marker-tag:hover {
@@ -147,6 +157,7 @@
   box-shadow: 0 6px 16px rgba(255, 185, 32, 0.4);
 }
 
+/* Default bubble pointer (bottom center) */
 .marker-tag::after {
   content: "";
   position: absolute;
@@ -158,6 +169,29 @@
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-top: 8px solid var(--site-primary-b);
+}
+
+/* Bubble positioned to the right of icon */
+.marker-tag.bubble-right::after {
+  left: 0;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  border-left: 8px solid var(--site-primary-b);
+  border-right: none;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+/* Bubble positioned to the left of icon */
+.marker-tag.bubble-left::after {
+  right: 0;
+  left: auto;
+  top: 50%;
+  transform: translate(100%, -50%);
+  border-right: 8px solid var(--site-primary-b);
+  border-left: none;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
 }
 
 /* Custom map markers */
