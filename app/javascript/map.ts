@@ -71,20 +71,6 @@ async function initMap(): Promise<void> {
   // Z-index counter starting at base map z-index + 100
   let baseZIndex = 100;
   
-  // Get the CSS custom property values for house icon colors
-  const rootStyles = getComputedStyle(document.documentElement);
-  const houseIconColor = rootStyles.getPropertyValue('--site-primary-b-dark').trim();
-  const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
-  
-  if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-    console.log('House icon colors:', {
-      houseIconColor,
-      houseInteriorColor,
-      rawDark: rootStyles.getPropertyValue('--site-primary-b-dark'),
-      rawLight: rootStyles.getPropertyValue('--site-primary-a-light')
-    });
-  }
-
   sites.forEach((site: HTMLElement, index: number) => {
     // Create custom house marker
     const markerContent = document.createElement('div');
@@ -95,6 +81,21 @@ async function initMap(): Promise<void> {
     if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
       console.log(`Setting house icon ${index} z-index to:`, currentIconZIndex);
     }
+
+    // Get the house colors based on the site index for two-tone effect
+    const rootStyles = getComputedStyle(document.documentElement);
+    const houseIconColor = index % 2 === 0 
+      ? rootStyles.getPropertyValue('--site-primary-b-dark').trim()
+      : rootStyles.getPropertyValue('--site-primary-a-light').trim();
+    const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
+
+    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
+      console.log('House icon colors for index', index, ':', {
+        houseIconColor,
+        houseInteriorColor
+      });
+    }
+
     markerContent.innerHTML = `
       <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
         <!-- House interior background -->
@@ -250,9 +251,7 @@ function buildContent(site: HTMLElement, zIndex?: number, position?: google.maps
   const houseIconColor = index % 2 === 0 
     ? rootStyles.getPropertyValue('--site-primary-b-dark').trim()
     : rootStyles.getPropertyValue('--site-primary-a-light').trim();
-  const houseInteriorColor = index % 2 === 0 
-    ? rootStyles.getPropertyValue('--site-primary-a').trim()
-    : rootStyles.getPropertyValue('--site-primary-b-light').trim();
+  const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
   
   // Re-create the house icon
   const houseIcon = `

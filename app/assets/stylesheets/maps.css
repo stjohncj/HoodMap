@@ -75,7 +75,7 @@
 
 .sites-sidebar h2 {
   margin-bottom: 1.5rem;
-  color: #1f2937;
+  color: var(--site-primary-b-dark);
   font-family: 'Controwell Script', cursive;
   font-size: 1.8rem;
   font-weight: normal;
