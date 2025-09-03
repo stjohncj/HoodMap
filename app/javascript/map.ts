@@ -404,28 +404,12 @@ async function showSiteModal(siteId: string, preserveFullscreen: boolean = false
   modalContent.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
   
   if (preserveFullscreen) {
-    // For fullscreen mode, make the modal itself the fullscreen element
+    // If we're already in fullscreen, just show the modal in fullscreen style
+    // without changing which element is fullscreen
     modal.classList.add('fullscreen-modal');
     modal.style.display = 'flex';
-    
-    // Request fullscreen on the modal instead of the map
-    try {
-      if (modal.requestFullscreen) {
-        await modal.requestFullscreen();
-      } else if ((modal as any).webkitRequestFullscreen) {
-        await (modal as any).webkitRequestFullscreen();
-      } else if ((modal as any).mozRequestFullScreen) {
-        await (modal as any).mozRequestFullScreen();
-      } else if ((modal as any).msRequestFullscreen) {
-        await (modal as any).msRequestFullscreen();
-      }
-    } catch (error) {
-      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-        console.log('Could not enter fullscreen on modal:', error);
-      }
-      // Fallback to regular modal display
-      modal.classList.remove('fullscreen-modal');
-    }
+    // Set a high z-index to ensure modal appears above the map
+    modal.style.zIndex = '10000';
   } else {
     // Normal modal behavior - exit fullscreen first
     await exitFullscreenIfActive();
@@ -480,40 +464,15 @@ async function exitFullscreenIfActive(): Promise<void> {
 
 async function closeSiteModal(): Promise<void> {
   const modal = document.getElementById('site-modal');
-  const mapElement = document.getElementById("map");
   
   if (modal) {
-    // Check if the modal was fullscreen (meaning we should return to map fullscreen)
-    const modalWasFullscreen = document.fullscreenElement === modal || 
-        (document as any).webkitFullscreenElement === modal ||
-        (document as any).mozFullScreenElement === modal ||
-        (document as any).msFullscreenElement === modal;
-    
-    // Close the modal first
+    // Simply close the modal
     modal.style.display = 'none';
     modal.classList.remove('fullscreen-modal');
     modal.style.zIndex = '';
     
-    // If modal was fullscreen, return the map to fullscreen
-    if (modalWasFullscreen && mapElement) {
-      try {
-        if (mapElement.requestFullscreen) {
-          await mapElement.requestFullscreen();
-        } else if ((mapElement as any).webkitRequestFullscreen) {
-          await (mapElement as any).webkitRequestFullscreen();
-        } else if ((mapElement as any).mozRequestFullScreen) {
-          await (mapElement as any).mozRequestFullScreen();
-        } else if ((mapElement as any).msRequestFullscreen) {
-          await (mapElement as any).msRequestFullscreen();
-        }
-      } catch (error) {
-        if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-          console.log('Could not return map to fullscreen:', error);
-        }
-        // If we can't return to fullscreen, exit entirely
-        await exitFullscreenIfActive();
-      }
-    }
+    // The fullscreen state remains unchanged - if the sites container
+    // was in fullscreen, it stays in fullscreen showing the map
   }
   // Don't prevent body scrolling since modal only covers map area
 }
