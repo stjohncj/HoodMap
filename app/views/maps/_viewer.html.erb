@@ -21,11 +21,12 @@
   <div class="sites-sidebar">
     <h2>Historic Sites</h2>
     <ol>
-      <% sites.each do |site| %>
+      <% sites.each_with_index do |site, index| %>
         <li class="site-list-item"
           data-latitude=<%=site.latitude %>
           data-longitude=<%= site.longitude %>
           data-id=<%= site.id %>
+          data-index=<%= index %>
           data-historic-name="<%= site.historic_name %>"
           data-address="<%= site.address %>"
           data-description="<%= site.description %>"

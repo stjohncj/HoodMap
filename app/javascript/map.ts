@@ -144,16 +144,19 @@ async function initMap(): Promise<void> {
         showSiteModal(siteId, wasInFullscreen);
       });
 
-      marker.content.addEventListener("mouseover", () => {
+      marker.content.addEventListener("mouseenter", () => {
         if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
           console.log('Mouse over marker for site:', siteId, 'Position:', position, 'Map bounds:', map?.getBounds());
         }
         
         const bubbleZIndex = currentIconZIndex + 1000; // Overlay bubble gets much higher z-index
         const newContent = buildContent(site, bubbleZIndex, position, map);
-        newContent.addEventListener("mouseout", () => {
+        
+        // Use mouseleave on the new content container
+        newContent.addEventListener("mouseleave", () => {
           marker.content = markerContent;
         });
+        
         newContent.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
@@ -161,6 +164,7 @@ async function initMap(): Promise<void> {
           const wasInFullscreen = isInFullscreenMode();
           showSiteModal(siteId, wasInFullscreen);
         });
+        
         marker.content = newContent;
         
         // Scroll to corresponding site in sidebar
@@ -234,13 +238,48 @@ async function initMap(): Promise<void> {
 }
 
 function buildContent(site: HTMLElement, zIndex?: number, position?: google.maps.LatLngLiteral, map?: google.maps.Map): HTMLElement {
-  const content = document.createElement("div");
-  content.classList.add("marker-tag");
-  content.style.position = 'absolute'; // Changed to absolute for better positioning
+  // Create container that will hold both the icon and the bubble
+  const container = document.createElement("div");
+  container.style.position = 'relative';
+  container.style.width = '40px';
+  container.style.height = '40px';
   
-  // Set z-index if provided, otherwise use CSS default
+  // Get the house colors based on the site index
+  const index = parseInt(site.getAttribute("data-index") || "0");
+  const rootStyles = getComputedStyle(document.documentElement);
+  const houseIconColor = index % 2 === 0 
+    ? rootStyles.getPropertyValue('--site-primary-b-dark').trim()
+    : rootStyles.getPropertyValue('--site-primary-a-light').trim();
+  const houseInteriorColor = index % 2 === 0 
+    ? rootStyles.getPropertyValue('--site-primary-a').trim()
+    : rootStyles.getPropertyValue('--site-primary-b-light').trim();
+  
+  // Re-create the house icon
+  const houseIcon = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+      <!-- House interior background -->
+      <path d="M7,12H17V18H7V12Z" fill="${houseInteriorColor}"/>
+      <!-- House outline and structure -->
+      <path d="M12,5L19.5,12H17V18H13.5V13H10.5V18H7V12H5L12,5Z" fill="none" stroke="${houseIconColor}" stroke-width="1.5"/>
+      <!-- Door -->
+      <rect x="10.5" y="13.5" width="3" height="4.5" fill="${houseIconColor}"/>
+    </svg>
+  `;
+  
+  container.innerHTML = `
+    <div class="custom-marker" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+      <div class="house-icon">${houseIcon}</div>
+    </div>
+  `;
+  
+  // Create the text bubble
+  const bubble = document.createElement("div");
+  bubble.classList.add("marker-tag");
+  bubble.style.position = 'absolute';
+  
+  // Set z-index if provided
   if (zIndex !== undefined) {
-    content.style.zIndex = zIndex.toString();
+    bubble.style.zIndex = zIndex.toString();
     if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
       console.log(`Setting bubble z-index to:`, zIndex);
     }
@@ -263,17 +302,21 @@ function buildContent(site: HTMLElement, zIndex?: number, position?: google.maps
       
       if (isOnLeftSide) {
         // Position bubble to the right of the icon
-        content.style.left = '45px';
-        content.style.top = '-10px';
-        content.classList.add('bubble-right');
+        bubble.style.left = '100%';
+        bubble.style.marginLeft = '10px';
+        bubble.style.top = '50%';
+        bubble.style.transform = 'translateY(-50%)';
+        bubble.classList.add('bubble-right');
         if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
           console.log('Applied bubble-right positioning');
         }
       } else {
         // Position bubble to the left of the icon
-        content.style.right = '45px';
-        content.style.top = '-10px';
-        content.classList.add('bubble-left');
+        bubble.style.right = '100%';
+        bubble.style.marginRight = '10px';
+        bubble.style.top = '50%';
+        bubble.style.transform = 'translateY(-50%)';
+        bubble.classList.add('bubble-left');
         if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
           console.log('Applied bubble-left positioning');
         }
@@ -292,9 +335,12 @@ function buildContent(site: HTMLElement, zIndex?: number, position?: google.maps
   const historicName = site.getAttribute("data-historic-name") || "Unknown";
   const builtYear = site.getAttribute("data-built-year") || "";
   
-  content.innerHTML = historicName + "<br />" + builtYear;
-  // Note: Click handler is now added in the mouseover event to capture fullscreen state
-  return content;
+  bubble.innerHTML = historicName + "<br />" + builtYear;
+  
+  // Add the bubble to the container
+  container.appendChild(bubble);
+  
+  return container;
 }
 
 // Function to scroll to corresponding site in sidebar

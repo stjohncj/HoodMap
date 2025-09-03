@@ -26,14 +26,16 @@
     <% end %>
     
     <!-- Description section -->
-    <% if site.description.present? %>
-      <div class="modal-site-description">
-        <h4>Description</h4>
-        <div class="description-content">
+    <div class="modal-site-description">
+      <h4>Description</h4>
+      <div class="description-content">
+        <% if site.description.present? %>
           <%= simple_format(site.description, class: "description-paragraph") %>
-        </div>
+        <% else %>
+          <p class="description-paragraph"><em>No description available.</em></p>
+        <% end %>
       </div>
-    <% end %>
+    </div>
     
     <!-- Property details section -->
     <div class="modal-site-details">
