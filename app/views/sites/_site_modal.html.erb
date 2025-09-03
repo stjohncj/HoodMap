@@ -9,19 +9,21 @@
 
   <div class="modal-site-content">
     <!-- Full-width image gallery -->
-    <div class="modal-image-gallery">
-      <% if site.images.any? %>
+    <% if site.images.any? %>
+      <div class="image-gallery">
         <% site.images.each_with_index do |image, index| %>
-          <div class="modal-gallery-item <%= 'featured' if index == 0 %>">
-            <%= image_tag(image, alt: site.historic_name, class: "modal-gallery-image") %>
-          </div>
+          <a href="#" onclick="openImageViewer('<%= url_for(image) %>', '<%= "#{site.historic_name} - Photo #{index + 1}" %>'); return false;" class="gallery-image-link">
+            <%= image_tag(image, alt: "#{site.historic_name} - Photo #{index + 1}", class: "gallery-image") %>
+          </a>
         <% end %>
-      <% else %>
+      </div>
+    <% else %>
+      <div class="modal-image-gallery">
         <div class="modal-gallery-item featured">
           <%= image_tag("site-photos-not-available.png", alt: "Site photos not available", class: "modal-gallery-image") %>
         </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
     
     <!-- Description section -->
     <% if site.description.present? %>
