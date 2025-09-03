@@ -1,6 +1,6 @@
 /* Page header */
 .page-header {
-  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(55, 65, 81, 0.95) 50%, rgba(37, 99, 235, 0.1) 100%),
+  background: linear-gradient(135deg, rgba(79, 49, 125, 0.98) 0%, rgba(79, 49, 125, 0.92) 100%),
               url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
   background-size: cover, 120px 60px;
   background-position: center, 0 0;
@@ -20,9 +20,9 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.3) 0%, transparent 70%),
-              radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.2) 0%, transparent 70%),
-              radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+  background: radial-gradient(circle at 30% 70%, rgba(255, 185, 32, 0.3) 0%, transparent 70%),
+              radial-gradient(circle at 70% 30%, rgba(255, 185, 32, 0.2) 0%, transparent 70%),
+              radial-gradient(circle at 90% 80%, rgba(79, 49, 125, 0.15) 0%, transparent 60%);
   pointer-events: none;
   animation: gradientFloat 15s ease-in-out infinite alternate;
 }
@@ -52,9 +52,9 @@
   font-family: 'Playfair Display', serif;
   font-size: 3.5rem;
   font-weight: 900;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(37, 99, 235, 0.3);
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 185, 32, 0.4);
   letter-spacing: -0.01em;
-  background: linear-gradient(45deg, #ffffff 0%, #60a5fa 50%, #e2e8f0 100%);
+  background: linear-gradient(45deg, #FFB920 0%, #ffffff 50%, #FFB920 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -87,16 +87,16 @@
 }
 
 .page-header .subtitle i {
-  color: #60a5fa;
+  color: #FFB920;
   font-size: 1.1rem;
   flex-shrink: 0;
 }
 
 .page-header .location-highlight {
-  color: #fcd34d;
+  color: #FFB920;
   font-weight: 700;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(45deg, #fcd34d 0%, #fbbf24 100%);
+  background: linear-gradient(45deg, #FFB920 0%, #fcd34d 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -106,7 +106,7 @@
 }
 
 .page-header .location-highlight:hover {
-  background: linear-gradient(45deg, #fde047 0%, #fcd34d 100%);
+  background: linear-gradient(45deg, #FFB920 0%, #FFB920 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -123,11 +123,11 @@
 }
 
 .page-header .stat-item {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(79, 49, 125, 0.15);
   padding: 0.75rem 1.25rem;
   border-radius: 2rem;
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 185, 32, 0.4);
   white-space: nowrap;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: default;
@@ -148,9 +148,9 @@
 
 .page-header .stat-item:hover {
   background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(96, 165, 250, 0.5);
+  border-color: rgba(255, 185, 32, 0.7);
   transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+  box-shadow: 0 10px 25px rgba(255, 185, 32, 0.3);
 }
 
 .page-header .stat-item:hover::before {
@@ -160,7 +160,7 @@
 .page-header .stat-number {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #60a5fa;
+  color: #FFB920;
 }
 
 .page-header .stat-label {

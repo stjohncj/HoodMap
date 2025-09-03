@@ -103,9 +103,9 @@
 
 .site-list-item:hover {
   background: #f3f4f6;
-  border-color: #2563eb;
+  border-color: #4f317d;
   transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
 }
 
 .site-list-item:active {
@@ -127,14 +127,14 @@
 
 /* HTML marker styles */
 .marker-tag {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #4f317d 0%, #3d2361 100%);
   border-radius: 0.75rem;
   color: #ffffff;
   font-size: 13px;
   font-weight: 500;
   padding: 0.75rem 1rem;
   position: relative;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 49, 125, 0.3);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -143,7 +143,7 @@
 
 .marker-tag:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 6px 16px rgba(79, 49, 125, 0.4);
 }
 
 .marker-tag::after {
@@ -156,7 +156,7 @@
   height: 0;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
-  border-top: 8px solid #1d4ed8;
+  border-top: 8px solid #3d2361;
 }
 
 /* Custom map markers */
@@ -171,12 +171,12 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  border: 2px solid #2563eb;
+  border: 2px solid #4f317d;
 }
 
 .custom-marker:hover {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 4px 12px rgba(79, 49, 125, 0.3);
   background: rgba(255, 255, 255, 1);
 }
 
@@ -342,7 +342,7 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  background: linear-gradient(135deg, #4f317d 0%, #3d2361 100%);
   color: white;
   padding: 2rem;
   text-align: center;
@@ -362,7 +362,7 @@
 
 .modal-site-year {
   font-size: 1rem;
-  color: #60a5fa;
+  color: #FFB920;
   font-weight: 500;
   margin: 0.5rem 0 0 0;
 }
