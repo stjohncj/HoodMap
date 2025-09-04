@@ -1,6 +1,11 @@
 <div class="site-modal-detail" data-controller="gallery">
   <div class="modal-site-header">
-    <h2><%= site.historic_name %></h2>
+    <div class="modal-site-header-left">
+      <h2><%= site.historic_name %></h2>
+      <% if site.architectural_style.present? %>
+        <p class="modal-site-style"><%= site.architectural_style %></p>
+      <% end %>
+    </div>
     <div class="modal-site-header-details">
       <p class="modal-site-address"><%= site.address %></p>
       <% if site.built_year %>
