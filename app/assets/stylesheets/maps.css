@@ -458,32 +458,45 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-b) 100%);
+  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a-light) 50%, var(--site-primary-a) 100%);
   color: var(--site-primary-b);
   padding: 1rem;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .modal-site-header h2 {
-  margin: 0 0 0.25rem 0;
+  margin: 0;
   font-family: 'Controwell Script', cursive;
   font-size: 2.2rem;
   font-weight: normal;
   color: var(--site-primary-b);
+  flex: 1;
+  text-align: left;
+  margin-left: 3rem;
+}
+
+.modal-site-header-details {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 0.25rem;
+  margin-right: 5rem;
 }
 
 .modal-site-address {
   font-size: 1.1rem;
   opacity: 0.95;
   margin: 0;
-  color: var(--site-primary-a-light);
+  color: var(--site-primary-b-dark);
 }
 
 .modal-site-year {
   font-size: 1rem;
-  color: var(--site-primary-b);
+  color: var(--site-primary-b-dark);
   font-weight: 600;
-  margin: 0.25rem 0 0 0;
+  margin: 0;
 }
 
 .modal-site-content {

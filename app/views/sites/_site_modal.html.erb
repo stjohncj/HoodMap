@@ -1,10 +1,12 @@
 <div class="site-modal-detail" data-controller="gallery">
   <div class="modal-site-header">
     <h2><%= site.historic_name %></h2>
-    <p class="modal-site-address"><%= site.address %></p>
-    <% if site.built_year %>
-      <p class="modal-site-year">Built: <%= site.built_year %></p>
-    <% end %>
+    <div class="modal-site-header-details">
+      <p class="modal-site-address"><%= site.address %></p>
+      <% if site.built_year %>
+        <p class="modal-site-year">Built: <%= site.built_year %></p>
+      <% end %>
+    </div>
   </div>
 
   <div class="modal-site-content">
