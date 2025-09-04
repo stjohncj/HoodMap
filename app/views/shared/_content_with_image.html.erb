@@ -2,17 +2,18 @@
   # Split content into paragraphs
   paragraphs = content.split(/\n\n+/)
   
-  # Image to insert
-  image_html = if defined?(insert_image) && insert_image
-    image_tag(insert_image[:src], 
-              alt: insert_image[:alt], 
-              class: "embedded-image",
-              onclick: "openImageViewer('#{image_path(insert_image[:src])}', '#{insert_image[:alt]}')",
-              style: "cursor: pointer;")
+  # Handle both single image (legacy) and multiple images (new)
+  images_to_insert = []
+  if defined?(insert_image) && insert_image
+    images_to_insert << {
+      image: insert_image,
+      position: defined?(after_paragraph) ? after_paragraph : 12
+    }
   end
   
-  # Position to insert (default to 12th paragraph)
-  insert_position = defined?(after_paragraph) ? after_paragraph : 12
+  if defined?(insert_images) && insert_images
+    images_to_insert.concat(insert_images)
+  end
   
   # Build the output
   output_html = []
@@ -20,15 +21,74 @@
     # Add paragraph wrapped in <p> tags
     output_html << content_tag(:p, paragraph.strip) unless paragraph.strip.empty?
     
-    # Insert image after the specified paragraph (0-indexed, so 11 = 12th paragraph)
-    if image_html && index == (insert_position - 1)
-      output_html << content_tag(:div, image_html, class: "embedded-image-container")
+    # Group images that should appear after this paragraph
+    images_for_position = images_to_insert.select { |img| img[:position] - 1 == index }
+    
+    if images_for_position.any?
+      if images_for_position.length > 1
+        # Multiple images - display side by side
+        images_html = images_for_position.map do |img_config|
+          image_classes = "embedded-image"
+          image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
+          
+          image_html = image_tag(img_config[:image][:src], 
+                                alt: img_config[:image][:alt], 
+                                class: image_classes,
+                                onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                                style: "cursor: pointer;")
+          content_tag(:div, image_html, class: "side-by-side-image")
+        end
+        output_html << content_tag(:div, safe_join(images_html), class: "embedded-image-container side-by-side")
+      else
+        # Single image
+        img_config = images_for_position.first
+        image_classes = "embedded-image"
+        image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
+        
+        image_html = image_tag(img_config[:image][:src], 
+                              alt: img_config[:image][:alt], 
+                              class: image_classes,
+                              onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                              style: "cursor: pointer;")
+        output_html << content_tag(:div, image_html, class: "embedded-image-container")
+      end
     end
   end
   
-  # If we haven't inserted the image yet (fewer paragraphs than specified), add it at the end
-  if image_html && paragraphs.length < insert_position
-    output_html << content_tag(:div, image_html, class: "embedded-image-container")
+  # If we haven't inserted any images yet (fewer paragraphs than specified), add them at the end
+  remaining_images = images_to_insert.select { |img| paragraphs.length < img[:position] }
+  
+  # Group remaining images by position
+  remaining_by_position = remaining_images.group_by { |img| img[:position] }
+  
+  remaining_by_position.each do |position, images|
+    if images.length > 1
+      # Multiple images - display side by side
+      images_html = images.map do |img_config|
+        image_classes = "embedded-image"
+        image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
+        
+        image_html = image_tag(img_config[:image][:src], 
+                              alt: img_config[:image][:alt], 
+                              class: image_classes,
+                              onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                              style: "cursor: pointer;")
+        content_tag(:div, image_html, class: "side-by-side-image")
+      end
+      output_html << content_tag(:div, safe_join(images_html), class: "embedded-image-container side-by-side")
+    else
+      # Single image
+      img_config = images.first
+      image_classes = "embedded-image"
+      image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
+      
+      image_html = image_tag(img_config[:image][:src], 
+                            alt: img_config[:image][:alt], 
+                            class: image_classes,
+                            onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                            style: "cursor: pointer;")
+      output_html << content_tag(:div, image_html, class: "embedded-image-container")
+    end
   end
 %>
 
@@ -50,5 +110,34 @@
 
 .embedded-image:hover {
   transform: scale(1.02);
+}
+
+.embedded-image.half-size {
+  max-width: 50%;
+}
+
+.embedded-image-container.side-by-side {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.side-by-side-image {
+  flex: 1;
+  max-width: 48%;
+  min-width: 300px;
+}
+
+.side-by-side-image .embedded-image {
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 768px) {
+  .side-by-side-image {
+    max-width: 100%;
+  }
 }
 </style>

@@ -42,8 +42,12 @@
     
     <!-- Global Image Viewer Modal -->
     <div id="imageViewerModal" class="image-viewer-modal" onclick="closeImageViewer()">
-      <span class="image-viewer-close" onclick="closeImageViewer()">&times;</span>
-      <div class="image-viewer-content">
+      <div class="image-viewer-controls">
+        <button class="image-viewer-zoom" onclick="event.stopPropagation(); zoomImage('out')" title="Zoom Out">−</button>
+        <button class="image-viewer-zoom" onclick="event.stopPropagation(); zoomImage('in')" title="Zoom In">+</button>
+        <span class="image-viewer-close" onclick="event.stopPropagation(); closeImageViewer()" title="Close">&times;</span>
+      </div>
+      <div class="image-viewer-content" onclick="event.stopPropagation()">
         <img id="imageViewerImage" class="image-viewer-image" alt="">
         <div id="imageViewerCaption" class="image-viewer-caption"></div>
       </div>
@@ -69,27 +73,66 @@
         left: 50%;
         transform: translate(-50%, -50%);
         max-width: 95%;
-        max-height: 95%;
-        cursor: zoom-in;
+        max-height: 85vh;
+        overflow: visible;
+        transition: width 0.3s ease, height 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
       
       .image-viewer-image {
-        width: 100%;
+        width: auto;
         height: auto;
         max-width: 100%;
-        max-height: 95vh;
+        max-height: 60vh;
         object-fit: contain;
+        display: block;
+        transition: transform 0.3s ease;
+        cursor: zoom-in;
+        transform-origin: center center;
+      }
+      
+      
+      .image-viewer-controls {
+        position: fixed;
+        top: 15px;
+        right: 35px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 10001;
+      }
+      
+      .image-viewer-zoom {
+        background: rgba(0, 0, 0, 0.7);
+        border: 2px solid white;
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+      
+      .image-viewer-zoom:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
       }
       
       .image-viewer-close {
-        position: absolute;
-        top: 15px;
-        right: 35px;
         color: white;
         font-size: 40px;
         font-weight: bold;
         cursor: pointer;
-        z-index: 10000;
+        background: none;
+        border: none;
       }
       
       .image-viewer-close:hover {
@@ -98,33 +141,99 @@
       
       .image-viewer-caption {
         position: absolute;
-        bottom: -60px;
+        top: calc(100% + 20px);
         left: 50%;
         transform: translateX(-50%);
         color: var(--site-primary-a-light);
         font-family: 'Controwell Script', cursive;
         font-size: 1.6rem;
         text-align: center;
-        white-space: nowrap;
-        padding: 10px;
-        background: rgba(0, 0, 0, 0.7);
-        border-radius: 4px;
+        white-space: normal;
+        padding: 15px;
+        background: transparent;
+        border-radius: 8px;
+        max-width: 80%;
+        line-height: 1.1;
+      }
+      
+      .caption-first-line {
+        font-size: 1.8rem;
+        background: transparent !important;
       }
     </style>
     
     <script>
+      let currentZoom = 1;
+      const minZoom = 0.5;
+      const maxZoom = 3;
+      const zoomStep = 0.25;
+
       function openImageViewer(imageSrc, imageAlt) {
         const modal = document.getElementById('imageViewerModal');
         const modalImg = document.getElementById('imageViewerImage');
         const caption = document.getElementById('imageViewerCaption');
+        const contentContainer = document.querySelector('.image-viewer-content');
 
         modal.style.display = 'block';
         modalImg.src = imageSrc;
         modalImg.alt = imageAlt;
-        caption.textContent = imageAlt;
+        
+        // Reset zoom and container
+        currentZoom = 1;
+        modalImg.style.transform = 'scale(1)';
+        modalImg.style.cursor = 'zoom-in';
+        contentContainer.style.width = '';
+        contentContainer.style.height = '';
+        contentContainer.style.overflow = 'visible';
+        
+        // Split text into lines and make first line larger
+        const lines = imageAlt.split('\n');
+        if (lines.length > 1) {
+          const firstLine = `<span class="caption-first-line">${lines[0]}</span>`;
+          const remainingLines = lines.slice(1).join('<br>');
+          caption.innerHTML = firstLine + '<br>' + remainingLines;
+        } else {
+          caption.innerHTML = `<span class="caption-first-line">${imageAlt}</span>`;
+        }
 
         // Prevent body scroll when modal is open
         document.body.style.overflow = 'hidden';
+      }
+
+      function zoomImage(direction) {
+        const modalImg = document.getElementById('imageViewerImage');
+        const contentContainer = document.querySelector('.image-viewer-content');
+        
+        if (direction === 'in' && currentZoom < maxZoom) {
+          currentZoom += zoomStep;
+        } else if (direction === 'out' && currentZoom > minZoom) {
+          currentZoom -= zoomStep;
+        }
+        
+        modalImg.style.transform = `scale(${currentZoom})`;
+        modalImg.style.cursor = currentZoom > 1 ? 'zoom-out' : 'zoom-in';
+        
+        // Adjust container size based on zoom level
+        const baseWidth = modalImg.naturalWidth || modalImg.offsetWidth;
+        const baseHeight = modalImg.naturalHeight || modalImg.offsetHeight;
+        
+        if (currentZoom > 1) {
+          // Expand container when zoomed in
+          const scaledWidth = Math.min(baseWidth * currentZoom, window.innerWidth * 0.95);
+          const scaledHeight = Math.min(baseHeight * currentZoom, window.innerHeight * 0.85);
+          
+          contentContainer.style.width = `${scaledWidth}px`;
+          contentContainer.style.height = `${scaledHeight}px`;
+          contentContainer.style.overflow = 'auto';
+        } else {
+          // Reset container when zoomed out
+          contentContainer.style.width = '';
+          contentContainer.style.height = '';
+          contentContainer.style.overflow = 'visible';
+        }
+        
+        // Prevent event bubbling to avoid closing modal
+        event.stopPropagation();
       }
 
       function closeImageViewer() {

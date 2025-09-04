@@ -95,6 +95,7 @@ namespace :sites do
       address = row["Address"]&.strip
       lat_lng = row["Latitude/Longitude"]&.strip
       description = row["Description"]&.strip
+      survey_year = parse_year(row["Survey Year"]) # Add survey year parsing
 
       # Skip if no address (required for upsert logic)
       next if address.blank?
@@ -107,6 +108,11 @@ namespace :sites do
       
       # Extract architect from description
       architect = extract_architect(description)
+      
+      # Extract additional fields from description (only if not already present in CSV)
+      extracted_survey_year = survey_year.blank? ? extract_survey_year(description) : nil
+      extracted_built_year = built_year.blank? ? extract_built_year(description) : nil
+      extracted_original_owner = extract_original_owner(description, historic_name)
 
       begin
         # Find existing site by address or create new one
@@ -116,12 +122,14 @@ namespace :sites do
           # Update existing record
           site.update!(
             historic_name: historic_name,
-            built_year: built_year,
+            built_year: built_year || extracted_built_year,
             latitude: latitude,
             longitude: longitude,
             description: description,
             architectural_style: architectural_style,
-            architect: architect
+            architect: architect,
+            survey_year: survey_year || extracted_survey_year,
+            original_owner: extracted_original_owner
           )
           updated_records += 1
           puts "✓ Updated: #{historic_name || address}"
@@ -129,13 +137,15 @@ namespace :sites do
           # Create new record
           site = Site.create!(
             historic_name: historic_name,
-            built_year: built_year,
+            built_year: built_year || extracted_built_year,
             address: address,
             latitude: latitude,
             longitude: longitude,
             description: description,
             architectural_style: architectural_style,
-            architect: architect
+            architect: architect,
+            survey_year: survey_year || extracted_survey_year,
+            original_owner: extracted_original_owner
           )
           new_records += 1
           puts "✓ Created: #{historic_name || address}"
@@ -221,6 +231,155 @@ namespace :sites do
     return false if name.match?(/services|work|plans\s+were|foundation/i) # Construction terms
     
     # Should contain at least one letter and reasonable name characters
+    name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
+  end
+
+  def extract_survey_year(description)
+    return nil if description.blank?
+    
+    # Look for survey-related year patterns
+    survey_patterns = [
+      /survey(?:ed)?\s+(?:in\s+)?(\d{4})/i,
+      /historic\s+survey\s+(\d{4})/i,
+      /(\d{4})\s+survey/i,
+      /survey\s+conducted\s+(?:in\s+)?(\d{4})/i
+    ]
+    
+    survey_patterns.each do |pattern|
+      match = description.match(pattern)
+      if match && match[1]
+        year = match[1].to_i
+        # Validate survey year range (surveys typically done 1970-2025)
+        return year if year >= 1970 && year <= 2025
+      end
+    end
+    
+    nil
+  end
+
+  def extract_built_year(description)
+    return nil if description.blank?
+    
+    # Look for construction-related year patterns
+    built_patterns = [
+      /built\s+(?:in\s+)?(\d{4})/i,
+      /constructed\s+(?:in\s+)?(\d{4})/i,
+      /erected\s+(?:in\s+)?(\d{4})/i,
+      /completed\s+(?:in\s+)?(\d{4})/i,
+      /(\d{4})\s+construction/i,
+      /building\s+completed\s+(?:in\s+)?(\d{4})/i
+    ]
+    
+    built_patterns.each do |pattern|
+      match = description.match(pattern)
+      if match && match[1]
+        year = match[1].to_i
+        # Validate built year range (historic buildings 1700-1980)
+        return year if year >= 1700 && year <= 1980
+      end
+    end
+    
+    nil
+  end
+
+  def extract_original_owner(description, historic_name = nil)
+    # First try to extract from description if available
+    if description.present?
+      # Look for owner-related name patterns with more specific context
+      owner_patterns = [
+        # More specific patterns first
+        /built\s+(?:by|for)\s+([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)/i,
+        /owned\s+by\s+([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)/i,
+        /original\s+owner\s+([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)/i,
+        /the\s+([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)\s+(?:house|residence|home)/i,
+        # Pattern for descriptions that start with names like "The John Smith House"
+        /^(?:the\s+)?([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)\s+(?:house|residence|home)/i,
+        # Family ownership
+        /([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)*)\s+family/i
+      ]
+      
+      owner_patterns.each do |pattern|
+        match = description.match(pattern)
+        if match && match[1]
+          candidate = clean_owner_name(match[1])
+          return candidate if valid_owner_name?(candidate)
+        end
+      end
+    end
+    
+    # Fallback: Extract from historic name if it follows pattern "[Name] House"
+    if historic_name.present?
+      # Look for patterns like "John and Mary Smith House" or "William Johnson House"
+      name_match = historic_name.match(/^(?:the\s+)?([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)+)\s+(?:house|residence|home)/i)
+      if name_match && name_match[1]
+        candidate = clean_owner_name(name_match[1])
+        # Use the name from the house title if it passes basic validation
+        # but with less strict validation since house names are typically accurate
+        return candidate if valid_owner_name_from_title?(candidate)
+      end
+    end
+    
+    nil
+  end
+
+  def valid_owner_name_from_title?(name)
+    return false if name.blank? || name.length < 3 || name.length > 60
+    
+    # Less strict validation for names from house titles
+    # since these are typically correct
+    return false if name.match?(/^\d+/)                    # Starts with number
+    return false if name.match?(/street|avenue|road|drive|blvd/i) # Address terms
+    return false if name.match?(/style|period|century|historic/i) # Descriptive terms
+    return false if name.match?(/story|frame|brick|stone|wood/i) # Architectural terms
+    return false if name.match?(/queen|anne|colonial|revival|victorian/i) # Style terms
+    return false if name.match?(/foursquare|bungalow|craftsman|american/i) # More style terms
+    return false if name.match?(/\b(is|are|was|were|has|have|the|with|his|her|their|to)\b/i) # Verb/pronoun words
+    return false if name.match?(/school|church|library|hospital|building/i) # Institution terms
+    return false if name.match?(/old|new|former|current|present/i) # Time descriptors
+    return false if name.match?(/child|son|daughter|wife|husband/i) # Family relationship terms
+    return false if name.match?(/house|home|residence/i) # Property terms
+    
+    # Allow single word names from titles (like "Kieweg")
+    # since houses are often named after families
+    return false unless name.split(/\s+/).length >= 1
+    
+    # Should contain at least one letter and reasonable name characters
+    name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
+  end
+
+  def clean_owner_name(name)
+    name.strip
+        .gsub(/\s+/, ' ')                           # Normalize whitespace
+        .gsub(/^(the\s+)/i, '')                    # Remove leading "the"
+        .gsub(/\s+(family|house|residence|home)$/i, '') # Remove trailing descriptors
+  end
+
+  def valid_owner_name?(name)
+    return false if name.blank? || name.length < 3 || name.length > 60
+    
+    # Reject if it's likely not a person's name
+    return false if name.match?(/^\d+/)                    # Starts with number
+    return false if name.match?(/street|avenue|road|drive|blvd/i) # Address terms
+    return false if name.match?(/built|constructed|designed|survey|year/i) # Generic terms
+    return false if name.match?(/^\d{4}$/)                 # Just a year
+    return false if name.match?(/architect|contractor|builder|company/i) # Professional terms
+    return false if name.match?(/style|period|century|historic/i) # Descriptive terms
+    return false if name.match?(/story|frame|brick|stone|wood/i) # Architectural terms
+    return false if name.match?(/queen|anne|colonial|revival|victorian/i) # Style terms
+    return false if name.match?(/foursquare|bungalow|craftsman|american/i) # More style terms
+    return false if name.match?(/north|south|east|west|side|of|the$/i) # Directional/generic terms
+    return false if name.match?(/^(of|the|side|north|south|east|west)\s/i) # Starts with generic terms
+    return false if name.match?(/\b(is|are|was|were|has|have|the|with|his|her|their|to)\b/i) # Verb/pronoun words
+    return false if name.match?(/school|church|library|hospital|building/i) # Institution terms
+    return false if name.match?(/old|new|former|current|present/i) # Time descriptors
+    return false if name.match?(/child|son|daughter|wife|husband/i) # Family relationship terms
+    return false if name.match?(/house|home|residence/i) # Property terms
+    
+    # Must contain at least 2 words (first and last name minimum)
+    return false unless name.split(/\s+/).length >= 2
+    
+    # Should contain at least one letter and reasonable name characters
+    # Allow common name patterns including "and" for couples
     name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
   end
 

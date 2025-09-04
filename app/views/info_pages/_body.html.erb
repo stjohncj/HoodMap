@@ -4,11 +4,71 @@
     <% if page_title == "Kewaunee History" %>
       <%= render 'shared/content_with_image', 
                  content: content,
-                 insert_image: { 
-                   src: "kewaunee-birds-eye-view-W.F.Glandt-c1909.png", 
-                   alt: "Bird's Eye View of Kewaunee by W.F. Glandt, c. 1909" 
-                 },
-                 after_paragraph: 12 %>
+                 insert_images: [
+                   {
+                     image: { 
+                       src: "Gravestone_Jacques_Vieau.jpg", 
+                       alt: "Gravestone of Jacques Vieau
+
+Born 29 Apr 1770
+Died 7 Jul 1852 (aged 82)
+
+Allouez Catholic Cemetery
+Green Bay, Brown County, Wisconsin, USA" 
+                     },
+                     position: 2
+                   },
+                   {
+                     image: { 
+                       src: "Chief Simon.png", 
+                       alt: "Chief Simon",
+                       class: "half-size"
+                     },
+                     position: 5
+                   },
+                   {
+                     image: { 
+                       src: "old-lighthouse.avif", 
+                       alt: "Old Kewaunee Lighthouse" 
+                     },
+                     position: 7
+                   },
+                   {
+                     image: { 
+                       src: "Joseph_Duvall.png", 
+                       alt: "Joseph Duvall" 
+                     },
+                     position: 8
+                   },
+                   {
+                     image: { 
+                       src: "George_Grimmer.png", 
+                       alt: "George Grimmer" 
+                     },
+                     position: 8
+                   },
+                   {
+                     image: { 
+                       src: "Bach_Kieweg_and_Poser_Company.png", 
+                       alt: "Bach, Kieweg and Poser Company" 
+                     },
+                     position: 9
+                   },
+                   {
+                     image: { 
+                       src: "Bach_Kieweg_Poser_Store.png", 
+                       alt: "Bach, Kieweg, Poser Store" 
+                     },
+                     position: 11
+                   },
+                   {
+                     image: { 
+                       src: "kewaunee-birds-eye-view-W.F.Glandt-c1909.png", 
+                       alt: "Bird's Eye View of Kewaunee by W.F. Glandt, c. 1909" 
+                     },
+                     position: 12
+                   }
+                 ] %>
     <% elsif page_title == "Marquette Historic District Background" %>
       <%= render 'shared/content_with_image', 
                  content: content,
