@@ -1,6 +1,33 @@
 require "csv"
 
 namespace :sites do
+  # Architectural styles to search for in descriptions
+  ARCHITECTURAL_STYLES = [
+    "Colonial Revival",
+    "Prairie School",
+    "Prairie Style", 
+    "Queen Anne",
+    "Victorian",
+    "Craftsman",
+    "American Foursquare",
+    "Second Empire",
+    "Italianate",
+    "Gothic Revival",
+    "Tudor Revival",
+    "Mission Revival",
+    "Spanish Revival",
+    "Art Deco",
+    "Moderne",
+    "International Style",
+    "Ranch",
+    "Cape Cod",
+    "Federal",
+    "Georgian",
+    "Neoclassical",
+    "Richardsonian Romanesque",
+    "Shingle Style",
+    "Stick Style"
+  ].freeze
   desc "Import sites from CSV file at db/mhd.csv"
   task import: :environment do
     csv_file = Rails.root.join("db", "mhd.csv")
@@ -34,6 +61,9 @@ namespace :sites do
 
       # Parse latitude and longitude
       latitude, longitude = parse_lat_lng(lat_lng)
+      
+      # Extract architectural style from description
+      architectural_style = extract_architectural_style(description)
 
       begin
         # Find existing site by address or create new one
@@ -46,7 +76,8 @@ namespace :sites do
             built_year: built_year,
             latitude: latitude,
             longitude: longitude,
-            description: description
+            description: description,
+            architectural_style: architectural_style
           )
           updated_records += 1
           puts "✓ Updated: #{historic_name || address}"
@@ -58,7 +89,8 @@ namespace :sites do
             address: address,
             latitude: latitude,
             longitude: longitude,
-            description: description
+            description: description,
+            architectural_style: architectural_style
           )
           new_records += 1
           puts "✓ Created: #{historic_name || address}"
@@ -88,6 +120,20 @@ namespace :sites do
   end
 
   private
+
+  def extract_architectural_style(description)
+    return nil if description.blank?
+
+    # Search for architectural styles in the description
+    # Return the first match found (prioritized by order in ARCHITECTURAL_STYLES array)
+    ARCHITECTURAL_STYLES.each do |style|
+      if description.match(/#{Regexp.escape(style)}/i)
+        return style
+      end
+    end
+
+    nil
+  end
 
   def attach_site_images(site, address)
     # Convert address to underscored format

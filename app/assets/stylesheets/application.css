@@ -43,6 +43,9 @@
 
   /* Highlight Colors */
   --site-highlight-background: #fffbeb;
+  
+  /* Secondary Text Color */
+  --site-secondary-text: #6b7280;
 }
 
 /* Custom Font Declarations */

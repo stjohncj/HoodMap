@@ -34,6 +34,9 @@
         >
             <h4><%= site.historic_name %></h4>
             <p class="address"><%= site.address %></p>
+            <% if site.architectural_style.present? %>
+              <p class="architectural-style"><small><%= site.architectural_style %></small></p>
+            <% end %>
             <% if site.built_year %>
               <p><small>Built: <%= site.built_year %></small></p>
             <% end %>
