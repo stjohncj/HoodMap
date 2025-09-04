@@ -3,7 +3,9 @@
     <div class="modal-site-header-left">
       <h2><%= site.historic_name %></h2>
       <% if site.architectural_style.present? %>
-        <p class="modal-site-style"><%= site.architectural_style %></p>
+        <p class="modal-site-style">
+          <%= site.architectural_style %><% if site.architect.present? %> by architect <%= site.architect %><% end %>
+        </p>
       <% end %>
     </div>
     <div class="modal-site-header-details">
@@ -68,12 +70,6 @@
           </div>
         <% end %>
 
-        <% if site.architectural_style.present? %>
-          <div class="modal-detail-item">
-            <span class="modal-detail-label">Architectural Style</span>
-            <span class="modal-detail-value"><%= site.architectural_style %></span>
-          </div>
-        <% end %>
 
         <% if site.survey_year.present? %>
           <div class="modal-detail-item">

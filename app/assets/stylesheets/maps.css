@@ -166,7 +166,7 @@
 
 /* HTML marker styles */
 .marker-tag {
-  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a) 70%, var(--site-primary-b) 100%);
+  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a-light) 50%, var(--site-primary-a) 100%);
   border-radius: 0.75rem;
   color: var(--site-primary-b);
   font-size: 13px;
@@ -494,7 +494,7 @@
   text-align: right;
   gap: 0.25rem;
   margin-right: 5rem;
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 .modal-site-address {

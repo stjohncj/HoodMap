@@ -28,6 +28,46 @@ namespace :sites do
     "Shingle Style",
     "Stick Style"
   ].freeze
+
+  # Architect extraction patterns
+  ARCHITECT_PATTERNS = [
+    # Direct mentions with specific context - updated to not stop at periods within names
+    /(?:milwaukee\s+)?architect[,\s]+([A-Z][a-zA-Z\s.&-]+?)(?:\s+[A-Z][a-zA-Z]+)?(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
+    /designed\s+by\s+(?:architect\s+)?([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
+    /built\s+by\s+architect\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
+    /plans\s+by\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
+    
+    # Firm patterns
+    /([A-Z][a-zA-Z\s.&-]+?)\s+(?:architects?|architectural\s+firm)(?:\.|,|$)/i,
+    /architectural\s+firm\s+of\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.|,|$)/i,
+    
+    # Plans/drawings attribution (improved)
+    /(?:plans\s+(?:drawn\s+)?by|drawings\s+by)\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
+    
+    # From plans context
+    /from\s+([A-Z][a-zA-Z\s.&-]+?)'s\s+plans/i
+  ].freeze
+
+  # Known Milwaukee/Wisconsin area architects for improved matching
+  KNOWN_ARCHITECTS = [
+    "Ferry & Clas",
+    "George Bowman Ferry", 
+    "Alfred C. Clas",
+    "Alexander C. Eschweiler",
+    "Russell Barr Williamson",
+    "Frank Lloyd Wright",
+    "Van Ryn & DeGelleke",
+    "Burnham & Root",
+    "H.C. Koch",
+    "Henry C. Koch",
+    "H. C. Koch",  # With spaces
+    "Louis Sullivan",
+    "Rapp and Rapp",
+    "Lamb, Fish & Lamb",
+    "E. Townsend Mix",
+    "Arthur Peabody",
+    "William Waters"
+  ].freeze
   desc "Import sites from CSV file at db/mhd.csv"
   task import: :environment do
     csv_file = Rails.root.join("db", "mhd.csv")
@@ -64,6 +104,9 @@ namespace :sites do
       
       # Extract architectural style from description
       architectural_style = extract_architectural_style(description)
+      
+      # Extract architect from description
+      architect = extract_architect(description)
 
       begin
         # Find existing site by address or create new one
@@ -77,7 +120,8 @@ namespace :sites do
             latitude: latitude,
             longitude: longitude,
             description: description,
-            architectural_style: architectural_style
+            architectural_style: architectural_style,
+            architect: architect
           )
           updated_records += 1
           puts "✓ Updated: #{historic_name || address}"
@@ -90,7 +134,8 @@ namespace :sites do
             latitude: latitude,
             longitude: longitude,
             description: description,
-            architectural_style: architectural_style
+            architectural_style: architectural_style,
+            architect: architect
           )
           new_records += 1
           puts "✓ Created: #{historic_name || address}"
@@ -133,6 +178,50 @@ namespace :sites do
     end
 
     nil
+  end
+
+  def extract_architect(description)
+    return nil if description.blank?
+    
+    # First priority: check for known architects in text
+    KNOWN_ARCHITECTS.each do |architect|
+      if description.match(/#{Regexp.escape(architect)}/i)
+        return architect
+      end
+    end
+    
+    # Second priority: try pattern matching
+    ARCHITECT_PATTERNS.each do |pattern|
+      match = description.match(pattern)
+      if match && match[1]
+        candidate = clean_architect_name(match[1])
+        return candidate if valid_architect_name?(candidate)
+      end
+    end
+    
+    nil
+  end
+
+  def clean_architect_name(name)
+    name.strip
+        .gsub(/\s+/, ' ')                    # Normalize whitespace
+        .gsub(/^(the|a)\s+/i, '')           # Remove leading articles
+        .gsub(/\s+(inc\.?|llc\.?|corp\.?)$/i, '') # Remove corporate suffixes
+  end
+
+  def valid_architect_name?(name)
+    return false if name.blank? || name.length < 3 || name.length > 50
+    
+    # Reject if it's likely a date, address, or generic term
+    return false if name.match?(/^\d+/)                    # Starts with number
+    return false if name.match?(/street|avenue|road|drive|blvd/i) # Address terms
+    return false if name.match?(/built|constructed|designed|style|period/i) # Generic terms
+    return false if name.match?(/^\d{4}$/)                 # Just a year
+    return false if name.match?(/^(for\s+)?this|that|the\s+new|house|building/i) # Generic building terms
+    return false if name.match?(/services|work|plans\s+were|foundation/i) # Construction terms
+    
+    # Should contain at least one letter and reasonable name characters
+    name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
   end
 
   def attach_site_images(site, address)
