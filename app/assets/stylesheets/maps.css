@@ -481,7 +481,7 @@
 }
 
 .modal-site-style {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--site-primary-b-dark);
   font-weight: 600;
   margin: 0.25rem 0 0 0;
@@ -494,18 +494,19 @@
   text-align: right;
   gap: 0.25rem;
   margin-right: 5rem;
-  margin-top: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .modal-site-address {
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   opacity: 0.95;
   margin: 0;
   color: var(--site-primary-b-dark);
+  font-family: 'Controwell Script', cursive;
 }
 
 .modal-site-year {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--site-primary-b-dark);
   font-weight: 600;
   margin: 0;
