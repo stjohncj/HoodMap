@@ -1,7 +1,25 @@
 <div class="container">
   <h1 class="page-title"><%= page_title %></h1>
   <div class="text-content">
-    <%= simple_format(content) %>
+    <% if page_title == "Kewaunee History" %>
+      <%= render 'shared/content_with_image', 
+                 content: content,
+                 insert_image: { 
+                   src: "kewaunee-birds-eye-view-W.F.Glandt-c1909.png", 
+                   alt: "Bird's Eye View of Kewaunee by W.F. Glandt, c. 1909" 
+                 },
+                 after_paragraph: 12 %>
+    <% elsif page_title == "Marquette Historic District Background" %>
+      <%= render 'shared/content_with_image', 
+                 content: content,
+                 insert_image: { 
+                   src: "MHD-map.png", 
+                   alt: "Map of the Marquette Historic District" 
+                 },
+                 after_paragraph: 2 %>
+    <% else %>
+      <%= simple_format(content) %>
+    <% end %>
   </div>
   
   <%= render 'info_pages/footer' %>

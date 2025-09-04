@@ -1,7 +1,7 @@
 /* Page header */
 .page-header {
   background: linear-gradient(135deg, var(--site-primary-b) 0%, var(--site-primary-b-dark) 100%),
-              url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
+    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><defs><pattern id="houses" patternUnits="userSpaceOnUse" width="120" height="60"><rect width="120" height="60" fill="none"/><path d="M10 40h20v20h-20z M40 35h25v25h-25z M75 30h30v30h-30z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="1200" height="300" fill="url(%23houses)"/></svg>');
   background-size: cover, 120px 60px;
   background-position: center, 0 0;
   background-attachment: fixed, scroll;
@@ -21,8 +21,8 @@
   right: 0;
   bottom: 0;
   background: radial-gradient(circle at 30% 70%, rgba(255, 185, 32, 0.3) 0%, transparent 70%),
-              radial-gradient(circle at 70% 30%, rgba(255, 185, 32, 0.2) 0%, transparent 70%),
-              radial-gradient(circle at 90% 80%, rgba(79, 49, 125, 0.15) 0%, transparent 60%);
+    radial-gradient(circle at 70% 30%, rgba(255, 185, 32, 0.2) 0%, transparent 70%),
+    radial-gradient(circle at 90% 80%, rgba(79, 49, 125, 0.15) 0%, transparent 60%);
   pointer-events: none;
   animation: gradientFloat 15s ease-in-out infinite alternate;
 }
@@ -48,9 +48,9 @@
 }
 
 .page-header h1 {
-  margin: 0 0 0.2rem 0;
+  margin: 0 0 0 0;
   font-family: 'Controwell Script', cursive;
-  font-size: 3.5rem;
+  font-size: 4.5rem;
   font-weight: normal;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 185, 32, 0.4);
   letter-spacing: -0.01em;
@@ -66,7 +66,7 @@
 
 @media (max-width: 768px) {
   .page-header h1 {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -83,7 +83,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin-top: 0.1rem;
+  margin-top: -0.5rem;
 }
 
 .page-header .subtitle i {
@@ -158,7 +158,7 @@
 }
 
 .page-header .stat-number {
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   font-weight: 700;
   color: var(--site-primary-a);
 }
@@ -173,17 +173,16 @@
   .page-header .stats {
     gap: 0.75rem;
   }
-  
+
   .page-header .stat-item {
     padding: 0.25rem 0.6rem;
   }
-  
+
   .page-header .stat-number {
     font-size: 1rem;
   }
-  
+
   .page-header .stat-label {
     font-size: 0.75rem;
   }
 }
-

@@ -1,0 +1,54 @@
+<%
+  # Split content into paragraphs
+  paragraphs = content.split(/\n\n+/)
+  
+  # Image to insert
+  image_html = if defined?(insert_image) && insert_image
+    image_tag(insert_image[:src], 
+              alt: insert_image[:alt], 
+              class: "embedded-image",
+              onclick: "openImageViewer('#{image_path(insert_image[:src])}', '#{insert_image[:alt]}')",
+              style: "cursor: pointer;")
+  end
+  
+  # Position to insert (default to 12th paragraph)
+  insert_position = defined?(after_paragraph) ? after_paragraph : 12
+  
+  # Build the output
+  output_html = []
+  paragraphs.each_with_index do |paragraph, index|
+    # Add paragraph wrapped in <p> tags
+    output_html << content_tag(:p, paragraph.strip) unless paragraph.strip.empty?
+    
+    # Insert image after the specified paragraph (0-indexed, so 11 = 12th paragraph)
+    if image_html && index == (insert_position - 1)
+      output_html << content_tag(:div, image_html, class: "embedded-image-container")
+    end
+  end
+  
+  # If we haven't inserted the image yet (fewer paragraphs than specified), add it at the end
+  if image_html && paragraphs.length < insert_position
+    output_html << content_tag(:div, image_html, class: "embedded-image-container")
+  end
+%>
+
+<%= safe_join(output_html) %>
+
+<style>
+.embedded-image-container {
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.embedded-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.embedded-image:hover {
+  transform: scale(1.02);
+}
+</style>
