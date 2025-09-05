@@ -15,6 +15,15 @@
     images_to_insert.concat(insert_images)
   end
   
+  # Create gallery data for all images on the page
+  all_page_images = images_to_insert.map do |img_config|
+    {
+      src: image_path(img_config[:image][:src]),
+      alt: img_config[:image][:alt]
+    }
+  end
+  gallery_data_json = { images: all_page_images }.to_json
+  
   # Build the output
   output_html = []
   paragraphs.each_with_index do |paragraph, index|
@@ -31,10 +40,15 @@
           image_classes = "embedded-image"
           image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
           
+          # Find the index of this image in the complete gallery
+          current_index = all_page_images.find_index { |img| img[:src] == image_path(img_config[:image][:src]) }
+          gallery_with_index = { images: all_page_images, currentIndex: current_index }.to_json
+          
           image_html = image_tag(img_config[:image][:src], 
                                 alt: img_config[:image][:alt], 
                                 class: image_classes,
-                                onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                                data: { gallery_data: html_escape(gallery_with_index) },
+                                onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                                 style: "cursor: pointer;")
           content_tag(:div, image_html, class: "side-by-side-image")
         end
@@ -45,10 +59,15 @@
         image_classes = "embedded-image"
         image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
         
+        # Find the index of this image in the complete gallery
+        current_index = all_page_images.find_index { |img| img[:src] == image_path(img_config[:image][:src]) }
+        gallery_with_index = { images: all_page_images, currentIndex: current_index }.to_json
+        
         image_html = image_tag(img_config[:image][:src], 
                               alt: img_config[:image][:alt], 
                               class: image_classes,
-                              onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                              data: { gallery_data: html_escape(gallery_with_index) },
+                              onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                               style: "cursor: pointer;")
         output_html << content_tag(:div, image_html, class: "embedded-image-container")
       end
@@ -68,10 +87,15 @@
         image_classes = "embedded-image"
         image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
         
+        # Find the index of this image in the complete gallery
+        current_index = all_page_images.find_index { |img| img[:src] == image_path(img_config[:image][:src]) }
+        gallery_with_index = { images: all_page_images, currentIndex: current_index }.to_json
+        
         image_html = image_tag(img_config[:image][:src], 
                               alt: img_config[:image][:alt], 
                               class: image_classes,
-                              onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                              data: { gallery_data: html_escape(gallery_with_index) },
+                              onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                               style: "cursor: pointer;")
         content_tag(:div, image_html, class: "side-by-side-image")
       end
@@ -82,10 +106,15 @@
       image_classes = "embedded-image"
       image_classes += " #{img_config[:image][:class]}" if img_config[:image][:class]
       
+      # Find the index of this image in the complete gallery
+      current_index = all_page_images.find_index { |img| img[:src] == image_path(img_config[:image][:src]) }
+      gallery_with_index = { images: all_page_images, currentIndex: current_index }.to_json
+      
       image_html = image_tag(img_config[:image][:src], 
                             alt: img_config[:image][:alt], 
                             class: image_classes,
-                            onclick: "openImageViewer('#{image_path(img_config[:image][:src])}', '#{j img_config[:image][:alt]}')",
+                            data: { gallery_data: html_escape(gallery_with_index) },
+                            onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                             style: "cursor: pointer;")
       output_html << content_tag(:div, image_html, class: "embedded-image-container")
     end
