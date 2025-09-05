@@ -1,4 +1,6 @@
 class InfoPagesController < ApplicationController
+  # Configuration constants
+  ARCHITECTURE_PAGE_NUM_SITE_PICS = 16
   def kewaunee_history
     @content = File.read(Rails.root.join("db", "site_txt", "Kewaunee_History.txt"))
     @page_title = "Kewaunee History"
@@ -14,7 +16,8 @@ class InfoPagesController < ApplicationController
     @page_title = "Marquette Historic District Architecture"
     
     # Get cached images - no database queries needed!
-    all_images = SiteImageCache.random_images(50)  # Get plenty of cached images
+    # Use constant to control total number of site pictures shown
+    all_images = SiteImageCache.random_images(ARCHITECTURE_PAGE_NUM_SITE_PICS)
     @random_site_images = all_images.first(3)      # First 3 for the top gallery
     @content_images = all_images.drop(3)           # Rest for embedding in content
   end

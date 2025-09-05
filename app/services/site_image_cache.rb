@@ -72,7 +72,7 @@ class SiteImageCache
       
       {
         url: url,
-        alt: "Historic site: #{cached_image[:site_name]}",
+        alt: "Historic home, the \"#{cached_image[:site_name]}\"",
         caption: cached_image[:site_name]
       }
     end.compact.select { |img| img[:url].present? }

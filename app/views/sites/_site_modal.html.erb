@@ -21,8 +21,8 @@
     <% if site.images.any? %>
       <div class="image-gallery">
         <% site.images.each_with_index do |image, index| %>
-          <a href="#" onclick="openImageViewer('<%= url_for(image) %>', '<%= "#{site.historic_name} - Photo #{index + 1}" %>'); return false;" class="gallery-image-link">
-            <%= image_tag(image, alt: "#{site.historic_name} - Photo #{index + 1}", class: "gallery-image") %>
+          <a href="#" onclick="openImageViewer('<%= url_for(image) %>', '<%= "Historic home, the \"#{site.historic_name}\" - Photo #{index + 1}" %>'); return false;" class="gallery-image-link">
+            <%= image_tag(image, alt: "Historic home, the \"#{site.historic_name}\" - Photo #{index + 1}", class: "gallery-image") %>
           </a>
         <% end %>
       </div>

@@ -14,7 +14,7 @@
           <div class="image-gallery">
             <% site.images.each_with_index do |image, index| %>
               <div class="gallery-item <%= 'featured' if index == 0 %>">
-                <%= image_tag(image, alt: site.historic_name, class: "gallery-image") %>
+                <%= image_tag(image, alt: "Historic home, the \"#{site.historic_name}\"", class: "gallery-image") %>
               </div>
             <% end %>
           </div>
