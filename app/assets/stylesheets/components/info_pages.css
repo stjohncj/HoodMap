@@ -1,6 +1,13 @@
-.link-card .fa-file-pdf {
-  color: #dc3545;
-  font-size: 1.25rem;
+.link-card .fa-file-pdf,
+.link-card .fa-building-columns {
+  color: var(--site-primary-a) !important;
+  font-size: 1.25rem !important;
+  transition: color 0.3s ease;
+}
+
+.link-card:hover .fa-file-pdf,
+.link-card:hover .fa-building-columns {
+  color: var(--site-primary-b) !important;
 }
 
 .link-card .external-link-icon {
