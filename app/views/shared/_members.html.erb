@@ -150,6 +150,12 @@
   font-style: italic;
 }
 
+@media (min-width: 1024px) {
+  .board-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .board-grid {
     grid-template-columns: 1fr;
