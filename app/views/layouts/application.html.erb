@@ -152,7 +152,9 @@
         padding: 15px;
         background: transparent;
         border-radius: 8px;
-        max-width: 80%;
+        width: calc(100% - 30px); /* Match image width minus padding (15px * 2) */
+        max-width: none; /* Remove max-width constraint */
+        box-sizing: border-box; /* Include padding in width calculation */
         line-height: 1.1;
       }
       

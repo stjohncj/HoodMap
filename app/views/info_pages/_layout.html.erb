@@ -1,7 +1,9 @@
 <%= render 'info_pages/page_header', page_title: page_title %>
 
 <div class="info-page-content">
-  <%= render 'shared/street_gallery', images: images %>
+  <% if defined?(images) && images %>
+    <%= render 'shared/street_gallery', images: images %>
+  <% end %>
   <%= render 'info_pages/body', page_title: page_title, content: content %>
 </div>
 

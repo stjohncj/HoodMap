@@ -56,6 +56,20 @@ Green Bay, Brown County, Wisconsin, USA"
                    },
                    {
                      image: { 
+                       src: "J_F_C_Kuehl.png", 
+                       alt: "J F C Kuehl" 
+                     },
+                     position: 10
+                   },
+                   {
+                     image: { 
+                       src: "J_F_C_Kuehl_Furniture_Coffins.png", 
+                       alt: "J F C Kuehl Furniture & Coffins" 
+                     },
+                     position: 10
+                   },
+                   {
+                     image: { 
                        src: "Bach_Kieweg_Poser_Store.png", 
                        alt: "Bach, Kieweg, Poser Store" 
                      },
@@ -77,6 +91,24 @@ Green Bay, Brown County, Wisconsin, USA"
                    alt: "Map of the Marquette Historic District" 
                  },
                  after_paragraph: 2 %>
+    <% elsif page_title == "Marquette Historic District Architecture" %>
+      <% if @content_images.present? %>
+        <% insert_images_array = @content_images.map.with_index do |image_data, index|
+             {
+               image: { 
+                 src: image_data[:url], 
+                 alt: image_data[:alt],
+                 caption: image_data[:caption]
+               },
+               position: (index + 1) * 2  # After every 2nd paragraph
+             }
+           end %>
+        <%= render 'shared/content_with_image', 
+                   content: content,
+                   insert_images: insert_images_array %>
+      <% else %>
+        <%= simple_format(content) %>
+      <% end %>
     <% else %>
       <%= simple_format(content) %>
     <% end %>
