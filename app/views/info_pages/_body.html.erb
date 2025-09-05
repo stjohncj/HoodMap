@@ -114,7 +114,47 @@ Green Bay, Brown County, Wisconsin, USA"
     <% end %>
   </div>
   
+  <% if page_title == "Marquette Historic District Background" %>
+    <div class="info-links">
+      <h2>Additional Resources</h2>
+      <div class="link-cards">
+        <%= link_to "https://semspub.epa.gov/work/05/926939.pdf", 
+                    target: "_blank", 
+                    rel: "noopener noreferrer",
+                    class: "link-card" do %>
+          <i class="fas fa-file-pdf"></i>
+          <div>
+            <h5>National Registry of Historic Places Registration Form</h5>
+            <p>View the official documentation for the Marquette Historic District's designation</p>
+          </div>
+          <i class="fas fa-external-link-alt external-link-icon"></i>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+  
   <%= render 'info_pages/footer' %>
   
   <%= render 'info_pages/navigation_footer' %>
 </div>
+
+<style>
+.link-card .fa-file-pdf {
+  color: #dc3545;
+  font-size: 1.25rem;
+}
+
+.link-card .external-link-icon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: var(--site-primary-b);
+  font-size: 0.75rem;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.link-card:hover .external-link-icon {
+  opacity: 1;
+}
+</style>
