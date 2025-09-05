@@ -104,6 +104,14 @@
   margin: 3rem 0 2rem 0;
 }
 
+/* Info links divider */
+.info-links-divider {
+  border: none;
+  height: 1px;
+  margin: 0 20% 2rem 20%;
+  background: var(--site-primary-b-dark);
+}
+
 /* Center the heading only on info pages */
 .info-page-content .info-links h2 {
   text-align: center;
@@ -283,10 +291,31 @@
 
 /* Site menu divider */
 .site-menu-divider {
+  position: relative;
   border: none;
+  height: 4px;
+  margin: 1rem 10%;
+  overflow: visible;
+}
+
+.site-menu-divider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 2px;
-  background: linear-gradient(to right, transparent 10%, var(--site-primary-a) 10%, var(--site-primary-a) 90%, transparent 90%);
-  margin: 1rem 0;
+  background: var(--site-primary-b);
+}
+
+.site-menu-divider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--site-primary-a);
 }
 </style>
 
