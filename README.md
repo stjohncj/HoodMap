@@ -1,24 +1,6 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is my repository for the Marquette Historic District website.
 
-Things you may want to cover:
+This is a Rails 8 application that integrates with Google Maps to provide a virtual neighborhood tour through the historic home in the Marquette Historic District of Kewaunee, WI.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
