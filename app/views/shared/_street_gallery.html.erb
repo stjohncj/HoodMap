@@ -1,6 +1,17 @@
+<% 
+# Pre-calculate the complete gallery data once to avoid recalculating for each image
+complete_gallery_images = images.map { |img| { src: asset_path(img[:src]), alt: img[:alt] } }
+%>
 <div class="image-gallery">
-  <% images.each do |image_info| %>
-    <a href="#" onclick="openImageViewer('<%= asset_path(image_info[:src]) %>', '<%= image_info[:alt] %>'); return false;" class="gallery-image-link">
+  <% images.each_with_index do |image_info, index| %>
+    <% gallery_data = {
+      images: complete_gallery_images,
+      currentIndex: index
+    }.to_json %>
+    <a href="#" 
+       data-gallery-data="<%= html_escape(gallery_data) %>"
+       onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;" 
+       class="gallery-image-link">
       <%= image_tag image_info[:src], alt: image_info[:alt], class: "gallery-image" %>
     </a>
   <% end %>

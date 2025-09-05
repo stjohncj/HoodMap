@@ -105,3 +105,61 @@
   font-size: 1.8rem;
   background: transparent !important;
 }
+
+/* Gallery navigation arrows */
+.gallery-nav {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid white;
+  color: white;
+  font-size: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10001;
+}
+
+.gallery-nav:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-nav-prev {
+  left: 30px;
+}
+
+.gallery-nav-next {
+  right: 30px;
+}
+
+.gallery-nav i {
+  font-size: 20px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .gallery-nav {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+  
+  .gallery-nav-prev {
+    left: 15px;
+  }
+  
+  .gallery-nav-next {
+    right: 15px;
+  }
+  
+  .gallery-nav i {
+    font-size: 16px;
+  }
+}

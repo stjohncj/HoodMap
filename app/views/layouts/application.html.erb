@@ -48,12 +48,18 @@
     </footer>
     
     <!-- Global Image Viewer Modal -->
-    <div id="imageViewerModal" class="image-viewer-modal" onclick="closeImageViewer()">
+    <div id="imageViewerModal" class="image-viewer-modal" onclick="window.closeImageViewer()">
       <div class="image-viewer-controls">
-        <button class="image-viewer-zoom" onclick="event.stopPropagation(); zoomImage('out')" title="Zoom Out">−</button>
-        <button class="image-viewer-zoom" onclick="event.stopPropagation(); zoomImage('in')" title="Zoom In">+</button>
-        <span class="image-viewer-close" onclick="event.stopPropagation(); closeImageViewer()" title="Close">&times;</span>
+        <button class="image-viewer-zoom" onclick="event.stopPropagation(); window.zoomImage('out')" title="Zoom Out">−</button>
+        <button class="image-viewer-zoom" onclick="event.stopPropagation(); window.zoomImage('in')" title="Zoom In">+</button>
+        <span class="image-viewer-close" onclick="event.stopPropagation(); window.closeImageViewer()" title="Close">&times;</span>
       </div>
+      <button id="galleryNavPrev" class="gallery-nav gallery-nav-prev" onclick="event.stopPropagation(); window.navigateGallery(-1)" title="Previous Image" style="display: none;">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button id="galleryNavNext" class="gallery-nav gallery-nav-next" onclick="event.stopPropagation(); window.navigateGallery(1)" title="Next Image" style="display: none;">
+        <i class="fas fa-chevron-right"></i>
+      </button>
       <div class="image-viewer-content" onclick="event.stopPropagation()">
         <img id="imageViewerImage" class="image-viewer-image" alt="">
         <div id="imageViewerCaption" class="image-viewer-caption"></div>
@@ -62,12 +68,19 @@
     
     
     <script>
-      let currentZoom = 1;
-      const minZoom = 0.5;
-      const maxZoom = 3;
-      const zoomStep = 0.25;
+      // Initialize global variables only once
+      if (typeof window.imageViewerGlobals === 'undefined') {
+        window.imageViewerGlobals = {
+          currentZoom: 1,
+          minZoom: 0.5,
+          maxZoom: 3,
+          zoomStep: 0.25,
+          galleryImages: [],
+          currentImageIndex: 0
+        };
+      }
 
-      function openImageViewer(imageSrc, imageAlt) {
+      window.openImageViewer = function(imageSrc, imageAlt, isGalleryMode = false) {
         const modal = document.getElementById('imageViewerModal');
         const modalImg = document.getElementById('imageViewerImage');
         const caption = document.getElementById('imageViewerCaption');
@@ -78,7 +91,7 @@
         modalImg.alt = imageAlt;
         
         // Reset zoom and container
-        currentZoom = 1;
+        window.imageViewerGlobals.currentZoom = 1;
         modalImg.style.transform = 'scale(1)';
         modalImg.style.cursor = 'zoom-in';
         contentContainer.style.width = '';
@@ -95,31 +108,108 @@
           caption.innerHTML = `<span class="caption-first-line">${imageAlt}</span>`;
         }
 
+        // Only hide gallery navigation and reset state if not in gallery mode
+        if (!isGalleryMode) {
+          document.getElementById('galleryNavPrev').style.display = 'none';
+          document.getElementById('galleryNavNext').style.display = 'none';
+          window.imageViewerGlobals.galleryImages = [];
+          window.imageViewerGlobals.currentImageIndex = 0;
+        }
+
         // Prevent body scroll when modal is open
         document.body.style.overflow = 'hidden';
       }
 
-      function zoomImage(direction) {
+      window.openImageGallery = function(galleryData) {
+        window.imageViewerGlobals.galleryImages = galleryData.images;
+        window.imageViewerGlobals.currentImageIndex = galleryData.currentIndex;
+        
+        // Open with the selected image (in gallery mode)
+        const currentImage = window.imageViewerGlobals.galleryImages[window.imageViewerGlobals.currentImageIndex];
+        window.openImageViewer(currentImage.src, currentImage.alt, true);
+        
+        // Show navigation arrows if there are multiple images
+        if (window.imageViewerGlobals.galleryImages.length > 1) {
+          window.updateGalleryNavigation();
+        }
+      }
+
+      window.navigateGallery = function(direction) {
+        if (window.imageViewerGlobals.galleryImages.length <= 1) return;
+        
+        window.imageViewerGlobals.currentImageIndex += direction;
+        
+        // Wrap around at boundaries
+        if (window.imageViewerGlobals.currentImageIndex >= window.imageViewerGlobals.galleryImages.length) {
+          window.imageViewerGlobals.currentImageIndex = 0;
+        } else if (window.imageViewerGlobals.currentImageIndex < 0) {
+          window.imageViewerGlobals.currentImageIndex = window.imageViewerGlobals.galleryImages.length - 1;
+        }
+        
+        // Update the displayed image
+        const currentImage = window.imageViewerGlobals.galleryImages[window.imageViewerGlobals.currentImageIndex];
+        const modalImg = document.getElementById('imageViewerImage');
+        const caption = document.getElementById('imageViewerCaption');
+        
+        modalImg.src = currentImage.src;
+        modalImg.alt = currentImage.alt;
+        
+        // Reset zoom when navigating
+        window.imageViewerGlobals.currentZoom = 1;
+        modalImg.style.transform = 'scale(1)';
+        modalImg.style.cursor = 'zoom-in';
+        
+        // Update caption
+        const lines = currentImage.alt.split('\n');
+        if (lines.length > 1) {
+          const firstLine = `<span class="caption-first-line">${lines[0]}</span>`;
+          const remainingLines = lines.slice(1).join('<br>');
+          caption.innerHTML = firstLine + '<br>' + remainingLines;
+        } else {
+          caption.innerHTML = `<span class="caption-first-line">${currentImage.alt}</span>`;
+        }
+        
+        window.updateGalleryNavigation();
+      }
+
+      window.updateGalleryNavigation = function() {
+        const prevBtn = document.getElementById('galleryNavPrev');
+        const nextBtn = document.getElementById('galleryNavNext');
+        
+        if (window.imageViewerGlobals.galleryImages.length > 1) {
+          prevBtn.style.display = 'block';
+          nextBtn.style.display = 'block';
+          
+          // Update button states (you could add disabled states if desired)
+          prevBtn.style.opacity = window.imageViewerGlobals.currentImageIndex === 0 ? '0.5' : '1';
+          nextBtn.style.opacity = window.imageViewerGlobals.currentImageIndex === window.imageViewerGlobals.galleryImages.length - 1 ? '0.5' : '1';
+        } else {
+          prevBtn.style.display = 'none';
+          nextBtn.style.display = 'none';
+        }
+      }
+
+      window.zoomImage = function(direction) {
         const modalImg = document.getElementById('imageViewerImage');
         const contentContainer = document.querySelector('.image-viewer-content');
         
-        if (direction === 'in' && currentZoom < maxZoom) {
-          currentZoom += zoomStep;
-        } else if (direction === 'out' && currentZoom > minZoom) {
-          currentZoom -= zoomStep;
+        if (direction === 'in' && window.imageViewerGlobals.currentZoom < window.imageViewerGlobals.maxZoom) {
+          window.imageViewerGlobals.currentZoom += window.imageViewerGlobals.zoomStep;
+        } else if (direction === 'out' && window.imageViewerGlobals.currentZoom > window.imageViewerGlobals.minZoom) {
+          window.imageViewerGlobals.currentZoom -= window.imageViewerGlobals.zoomStep;
         }
         
-        modalImg.style.transform = `scale(${currentZoom})`;
-        modalImg.style.cursor = currentZoom > 1 ? 'zoom-out' : 'zoom-in';
+        modalImg.style.transform = `scale(${window.imageViewerGlobals.currentZoom})`;
+        modalImg.style.cursor = window.imageViewerGlobals.currentZoom > 1 ? 'zoom-out' : 'zoom-in';
         
         // Adjust container size based on zoom level
         const baseWidth = modalImg.naturalWidth || modalImg.offsetWidth;
         const baseHeight = modalImg.naturalHeight || modalImg.offsetHeight;
         
-        if (currentZoom > 1) {
+        if (window.imageViewerGlobals.currentZoom > 1) {
           // Expand container when zoomed in
-          const scaledWidth = Math.min(baseWidth * currentZoom, window.innerWidth * 0.95);
-          const scaledHeight = Math.min(baseHeight * currentZoom, window.innerHeight * 0.85);
+          const scaledWidth = Math.min(baseWidth * window.imageViewerGlobals.currentZoom, window.innerWidth * 0.95);
+          const scaledHeight = Math.min(baseHeight * window.imageViewerGlobals.currentZoom, window.innerHeight * 0.85);
           
           contentContainer.style.width = `${scaledWidth}px`;
           contentContainer.style.height = `${scaledHeight}px`;
@@ -135,7 +225,7 @@
         event.stopPropagation();
       }
 
-      function closeImageViewer() {
+      window.closeImageViewer = function() {
         const modal = document.getElementById('imageViewerModal');
         modal.style.display = 'none';
 
@@ -143,10 +233,16 @@
         document.body.style.overflow = 'auto';
       }
 
-      // Close modal on Escape key
+      // Keyboard navigation
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && document.getElementById('imageViewerModal').style.display === 'block') {
-          closeImageViewer();
+        if (document.getElementById('imageViewerModal').style.display === 'block') {
+          if (e.key === 'Escape') {
+            window.closeImageViewer();
+          } else if (e.key === 'ArrowLeft') {
+            window.navigateGallery(-1);
+          } else if (e.key === 'ArrowRight') {
+            window.navigateGallery(1);
+          }
         }
       });
     </script>
