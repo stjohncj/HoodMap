@@ -40,6 +40,13 @@
   <body>
     <%= yield %>
     
+    <!-- MHD Committee Footer -->
+    <footer class="site-footer">
+      <div class="container">
+        <%= render 'shared/members' %>
+      </div>
+    </footer>
+    
     <!-- Global Image Viewer Modal -->
     <div id="imageViewerModal" class="image-viewer-modal" onclick="closeImageViewer()">
       <div class="image-viewer-controls">
@@ -54,6 +61,35 @@
     </div>
     
     <style>
+      /* Site footer styling */
+      .site-footer {
+        background: #f9fafb;
+        margin-top: 1rem;
+        padding: 2rem 0;
+        position: relative;
+      }
+      
+      .site-footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 10%;
+        right: 10%;
+        border-top: 2px solid var(--site-primary-a);
+      }
+      
+      @media (max-width: 768px) {
+        .site-footer::before {
+          left: 5%;
+          right: 5%;
+        }
+      }
+      
+      .site-footer .board-members {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      
       /* Image viewer modal */
       .image-viewer-modal {
         display: none;
