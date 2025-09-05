@@ -1,12 +1,10 @@
 <div class="site-menu">
-  <h2>Learn More About the District</h2>
   <div class="site-menu-cards">
     <% unless current_page?(historic_district_map_path) %>
       <%= link_to historic_district_map_path, class: "site-menu-card" do %>
         <i class="fas fa-map"></i>
         <div>
           <h5>Neighborhood Map</h5>
-          <p>Take a virtual tour of the Marquette neighborhood's historic homes</p>
         </div>
       <% end %>
     <% end %>
@@ -16,7 +14,6 @@
         <i class="fas fa-landmark"></i>
         <div>
           <h5>Kewaunee History</h5>
-          <p>Discover the rich history of Kewaunee and its development as a lakeside community</p>
         </div>
       <% end %>
     <% end %>
@@ -26,7 +23,6 @@
         <i class="fas fa-home"></i>
         <div>
           <h5>District Background</h5>
-          <p>Learn about the establishment and significance of the Marquette Historic District</p>
         </div>
       <% end %>
     <% end %>
@@ -36,9 +32,9 @@
         <i class="fas fa-building"></i>
         <div>
           <h5>Historic Architecture</h5>
-          <p>Explore the diverse architectural styles found throughout the historic neighborhood</p>
         </div>
       <% end %>
     <% end %>
   </div>
 </div>
+<hr class="site-menu-divider">

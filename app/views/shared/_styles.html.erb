@@ -164,5 +164,85 @@
   color: #6b7280;
   line-height: 1.4;
 }
+
+/* Site Menu section styles - copied from Learn More styles */
+.site-menu {
+  margin: -0.5rem 0 0.5rem 0;
+  padding: 0 3rem;
+}
+
+/* Center the heading for site menu */
+.site-menu h2 {
+  text-align: center;
+  font-size: 1.2rem;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+}
+
+.site-menu-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.site-menu-card {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem 1.5rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  border: 1px solid #e5e7eb;
+  justify-content: center;
+  align-items: center;
+}
+
+.site-menu-card:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #d1d5db;
+  text-decoration: none;
+}
+
+.site-menu-card:hover h5 {
+  text-decoration: underline;
+}
+
+.site-menu-card i {
+  font-size: 2rem;
+  color: #6b7280;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+}
+
+.site-menu-card:hover i {
+  color: #4b5563;
+}
+
+.site-menu-card h5 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--site-primary-b);
+}
+
+.site-menu-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Site menu divider */
+.site-menu-divider {
+  border: none;
+  height: 1px;
+  background-color: var(--site-primary-b-dark);
+  margin: 1rem 0;
+}
 </style>
 
