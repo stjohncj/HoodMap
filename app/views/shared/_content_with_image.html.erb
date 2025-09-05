@@ -47,6 +47,7 @@
           image_html = image_tag(img_config[:image][:src], 
                                 alt: img_config[:image][:alt], 
                                 class: image_classes,
+                                loading: "lazy",
                                 data: { gallery_data: html_escape(gallery_with_index) },
                                 onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                                 style: "cursor: pointer;")
@@ -66,6 +67,7 @@
         image_html = image_tag(img_config[:image][:src], 
                               alt: img_config[:image][:alt], 
                               class: image_classes,
+                              loading: "lazy",
                               data: { gallery_data: html_escape(gallery_with_index) },
                               onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                               style: "cursor: pointer;")
@@ -94,6 +96,7 @@
         image_html = image_tag(img_config[:image][:src], 
                               alt: img_config[:image][:alt], 
                               class: image_classes,
+                              loading: "lazy",
                               data: { gallery_data: html_escape(gallery_with_index) },
                               onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                               style: "cursor: pointer;")
