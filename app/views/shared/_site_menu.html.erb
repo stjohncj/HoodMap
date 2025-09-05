@@ -1,6 +1,13 @@
 <div class="site-menu">
   <div class="site-menu-cards">
-    <% unless current_page?(historic_district_map_path) %>
+    <% if current_page?(historic_district_map_path) %>
+      <div class="site-menu-card site-menu-card-current">
+        <i class="fas fa-map"></i>
+        <div>
+          <h5>Neighborhood Map</h5>
+        </div>
+      </div>
+    <% else %>
       <%= link_to historic_district_map_path, class: "site-menu-card" do %>
         <i class="fas fa-map"></i>
         <div>
@@ -9,7 +16,14 @@
       <% end %>
     <% end %>
 
-    <% unless current_page?(kewaunee_history_path) %>
+    <% if current_page?(kewaunee_history_path) %>
+      <div class="site-menu-card site-menu-card-current">
+        <i class="fas fa-landmark"></i>
+        <div>
+          <h5>Kewaunee History</h5>
+        </div>
+      </div>
+    <% else %>
       <%= link_to kewaunee_history_path, class: "site-menu-card" do %>
         <i class="fas fa-landmark"></i>
         <div>
@@ -18,7 +32,14 @@
       <% end %>
     <% end %>
 
-    <% unless current_page?(mhd_history_path) %>
+    <% if current_page?(mhd_history_path) %>
+      <div class="site-menu-card site-menu-card-current">
+        <i class="fas fa-home"></i>
+        <div>
+          <h5>District Background</h5>
+        </div>
+      </div>
+    <% else %>
       <%= link_to mhd_history_path, class: "site-menu-card" do %>
         <i class="fas fa-home"></i>
         <div>
@@ -27,7 +48,14 @@
       <% end %>
     <% end %>
 
-    <% unless current_page?(mhd_architecture_path) %>
+    <% if current_page?(mhd_architecture_path) %>
+      <div class="site-menu-card site-menu-card-current">
+        <i class="fas fa-building"></i>
+        <div>
+          <h5>Historic Architecture</h5>
+        </div>
+      </div>
+    <% else %>
       <%= link_to mhd_architecture_path, class: "site-menu-card" do %>
         <i class="fas fa-building"></i>
         <div>

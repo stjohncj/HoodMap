@@ -181,8 +181,8 @@
 
 .site-menu-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
   margin-top: 2rem;
 }
 
@@ -235,6 +235,50 @@
   font-size: 0.95rem;
   color: #6b7280;
   line-height: 1.4;
+}
+
+/* Site menu current page styling */
+.site-menu-card-current {
+  background: var(--site-highlight-background) !important;
+  border-color: var(--site-primary-b) !important;
+  cursor: default;
+}
+
+.site-menu-card-current h5 {
+  color: var(--site-primary-b-dark) !important;
+  font-weight: 700;
+}
+
+.site-menu-card-current i {
+  color: var(--site-primary-b) !important;
+}
+
+.site-menu-card-current:hover {
+  transform: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.site-menu-card-current:hover h5 {
+  text-decoration: none !important;
+}
+
+.site-menu-card-current:hover::after {
+  content: "You are here";
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--site-primary-b-dark);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.site-menu-card-current {
+  position: relative;
 }
 
 /* Site menu divider */
