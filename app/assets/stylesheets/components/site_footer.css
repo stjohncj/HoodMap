@@ -1,0 +1,29 @@
+/* Site footer styling */
+.site-footer {
+  background: #f9fafb;
+  margin-top: 1rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 4px;
+  background: linear-gradient(to bottom, var(--site-primary-b) 0, var(--site-primary-b) 2px, var(--site-primary-a) 2px, var(--site-primary-a) 4px);
+}
+
+@media (max-width: 768px) {
+  .site-footer::before {
+    left: 5%;
+    right: 5%;
+  }
+}
+
+.site-footer .board-members {
+  max-width: 1200px;
+  margin: 0 auto;
+}

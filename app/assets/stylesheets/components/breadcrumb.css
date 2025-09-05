@@ -1,0 +1,13 @@
+.breadcrumb {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.breadcrumb .nav-link {
+  color: #FFB920;
+  text-decoration: underline;
+}
+
+.breadcrumb span {
+  margin: 0 0.5rem;
+}
