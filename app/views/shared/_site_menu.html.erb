@@ -1,8 +1,8 @@
-<div class="info-links">
+<div class="site-menu">
   <h2>Learn More About the District</h2>
-  <div class="link-cards">
+  <div class="site-menu-cards">
     <% unless current_page?(historic_district_map_path) %>
-      <%= link_to historic_district_map_path, class: "link-card" do %>
+      <%= link_to historic_district_map_path, class: "site-menu-card" do %>
         <i class="fas fa-map"></i>
         <div>
           <h5>Neighborhood Map</h5>
@@ -12,7 +12,7 @@
     <% end %>
 
     <% unless current_page?(kewaunee_history_path) %>
-      <%= link_to kewaunee_history_path, class: "link-card" do %>
+      <%= link_to kewaunee_history_path, class: "site-menu-card" do %>
         <i class="fas fa-landmark"></i>
         <div>
           <h5>Kewaunee History</h5>
@@ -22,7 +22,7 @@
     <% end %>
 
     <% unless current_page?(mhd_history_path) %>
-      <%= link_to mhd_history_path, class: "link-card" do %>
+      <%= link_to mhd_history_path, class: "site-menu-card" do %>
         <i class="fas fa-home"></i>
         <div>
           <h5>District Background</h5>
@@ -32,7 +32,7 @@
     <% end %>
 
     <% unless current_page?(mhd_architecture_path) %>
-      <%= link_to mhd_architecture_path, class: "link-card" do %>
+      <%= link_to mhd_architecture_path, class: "site-menu-card" do %>
         <i class="fas fa-building"></i>
         <div>
           <h5>Historic Architecture</h5>
