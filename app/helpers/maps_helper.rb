@@ -1,5 +1,5 @@
 module MapsHelper
-  def google_static_map_url(center_lat:, center_lng:, sites: [], zoom: 15, size: "800x600")
+  def google_static_map_url(center_lat:, center_lng:, sites: [], zoom: 15, size: "800x600", request: nil)
     base_url = "https://maps.googleapis.com/maps/api/staticmap"
 
     # Use the calculated center directly since we now add padding in the controller
@@ -12,17 +12,27 @@ module MapsHelper
       key: ENV['GOOGLE_MAPS_API_KEY']
     }
 
-    # Add markers for all sites with consistent colors
-    markers = sites.map.with_index do |site, index|
-      label = index < 9 ? (index + 1).to_s : ((index + 1) % 10).to_s
-      "color:red%7Clabel:#{label}%7C#{site.latitude},#{site.longitude}"
+    # Build the base URL
+    query_string = params.map { |k, v| "#{k}=#{v}" }.join("&")
+    url = "#{base_url}?#{query_string}"
+
+    # Use custom house markers hosted on GitHub
+    sites.each_with_index do |site, index|
+      # Alternate colors for visual variety
+      color = index.even? ? "blue" : "gold"
+      number = (index + 1).to_s
+
+      # Use GitHub raw URLs for the marker icons (PNG format required by Google)
+      # These are publicly accessible from the repository
+      icon_url = "https://raw.githubusercontent.com/stjohncj/HoodMap/google-maps-static/public/markers/house_#{color}_#{number}.png"
+      encoded_icon = CGI.escape(icon_url)
+
+      # Add marker with custom icon
+      # Using scale:2 to ensure icon is visible
+      url += "&markers=scale:2%7Canchor:center%7Cicon:#{encoded_icon}%7C#{site.latitude},#{site.longitude}"
     end
 
-    # Build the URL with markers
-    query_string = params.map { |k, v| "#{k}=#{v}" }.join("&")
-    marker_string = markers.map { |m| "markers=#{m}" }.join("&")
-
-    "#{base_url}?#{query_string}&#{marker_string}"
+    url
   end
 
   def google_static_map_for_site(site, zoom: 17, size: "600x400")
