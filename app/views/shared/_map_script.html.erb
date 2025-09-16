@@ -5,17 +5,26 @@ const MAP_ZOOM_MIN_AFTER_BOUNDS = 17;
 const MAP_BOUNDING_ZOOM_MAX = 20;
 
 async function initMap() {
+  console.log("initMap called, DOM ready state:", document.readyState);
+
   // Check if map container exists (only initialize on map page)
   const coords = document.getElementById("sites");
-  if (!coords) return;
+  console.log("Found #sites element:", coords);
+  if (!coords) {
+    console.log("No #sites element found, skipping map initialization");
+    return;
+  }
 
   // Prevent multiple initializations
-  if (window.mapInitialized) return;
+  if (window.mapInitialized) {
+    console.log("Map already initialized, skipping");
+    return;
+  }
   window.mapInitialized = true;
 
   try {
     // Request needed libraries.
-    const { Map } = await google.maps.importLibrary("maps");
+    const { Map: GoogleMap } = await google.maps.importLibrary("maps");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
     const latStr = coords.getAttribute("data-latitude");
@@ -32,12 +41,17 @@ async function initMap() {
     };
 
     const mapElement = document.getElementById("map");
+    console.log("Looking for #map element:", mapElement);
+    console.log("All elements with id 'map':", document.querySelectorAll("#map"));
+    console.log("All elements with class containing 'map':", document.querySelectorAll("[class*='map']"));
+
     if (!mapElement) {
-      console.error("Map element not found");
+      console.error("Map element not found - check if #map exists in DOM");
+      console.log("Available elements:", document.querySelectorAll("*"));
       return;
     }
 
-    const map = new Map(mapElement, {
+    const map = new GoogleMap(mapElement, {
       zoom: MAP_ZOOM_INITIAL,
       center: center,
       mapId: "MARQUETTE_HISTORIC_DISTRICT",
@@ -46,6 +60,9 @@ async function initMap() {
     // Create bounds to fit all markers
     const bounds = new google.maps.LatLngBounds();
     const sites = document.querySelectorAll("li.site-list-item");
+
+    // Store marker references for hover effects
+    const markerMap = new Map();
 
     // Z-index counter starting at base map z-index + 100
     let baseZIndex = 100;
@@ -121,9 +138,15 @@ async function initMap() {
           const rect = svg.querySelector('rect');
           const hoverColor = rootStyles.getPropertyValue('--site-primary-a').trim();
 
-          paths.forEach(path => {
+          paths.forEach((path, index) => {
+            // Change stroke if it exists
             if (path.getAttribute('stroke')) {
               path.setAttribute('stroke', hoverColor);
+            }
+            // Change fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', hoverColor);
             }
           });
           if (rect) {
@@ -140,8 +163,14 @@ async function initMap() {
           const rect = svg.querySelector('rect');
 
           paths.forEach(path => {
+            // Reset stroke if it exists
             if (path.getAttribute('stroke')) {
               path.setAttribute('stroke', houseIconColor);
+            }
+            // Reset fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', houseInteriorColor);
             }
           });
           if (rect) {
@@ -149,6 +178,85 @@ async function initMap() {
           }
         });
       }
+
+      // Store marker reference for sidebar hover effects
+      markerMap.set(siteId, { marker, markerContent, houseIconColor });
+    });
+
+    // Add hover effects from sidebar to map markers
+    // Reuse the same hover color as the marker hover effects
+
+    sites.forEach((site) => {
+      const siteId = site.getAttribute("data-id");
+      if (!siteId || !markerMap.has(siteId)) return;
+
+      const { markerContent, houseIconColor } = markerMap.get(siteId);
+
+      // Add hover effects to sidebar items
+      site.addEventListener("mouseenter", () => {
+        try {
+          console.log('Sidebar hover for site:', siteId);
+          console.log('Marker content:', markerContent);
+
+          // Highlight the corresponding marker
+          markerContent.style.transform = 'scale(1.2)';
+          markerContent.style.transition = 'transform 0.2s ease-in-out';
+
+          // Change marker colors
+          const svg = markerContent.querySelector('svg');
+          if (svg) {
+            const paths = svg.querySelectorAll('path');
+            const rect = svg.querySelector('rect');
+            const hoverColor = '#f59e0b'; // Direct amber color value
+
+            paths.forEach((path) => {
+              // Change stroke if it exists
+              if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+                path.setAttribute('stroke', hoverColor);
+              }
+              // Change fill if it exists and is not "none"
+              const fillValue = path.getAttribute('fill');
+              if (fillValue && fillValue !== 'none') {
+                path.setAttribute('fill', hoverColor);
+              }
+            });
+            if (rect) {
+              rect.setAttribute('fill', hoverColor);
+            }
+          }
+        } catch (error) {
+          console.error('Error in sidebar hover:', error);
+        }
+      });
+
+      site.addEventListener("mouseleave", () => {
+        // Reset marker appearance
+        markerContent.style.transform = 'scale(1)';
+
+        // Reset marker colors
+        const svg = markerContent.querySelector('svg');
+        if (svg) {
+          const paths = svg.querySelectorAll('path');
+          const rect = svg.querySelector('rect');
+          const originalStrokeColor = '#1e293b'; // Direct dark color value
+          const originalFillColor = '#fef3c7'; // Direct light color value
+
+          paths.forEach(path => {
+            // Reset stroke if it exists
+            if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+              path.setAttribute('stroke', originalStrokeColor);
+            }
+            // Reset fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', originalFillColor);
+            }
+          });
+          if (rect) {
+            rect.setAttribute('fill', originalStrokeColor);
+          }
+        }
+      });
     });
 
     // Fit the map to all markers with a minimum zoom
@@ -228,8 +336,17 @@ function closeSiteModal() {
 // Make closeSiteModal globally available
 window.closeSiteModal = closeSiteModal;
 
-// Event listeners for modal
-document.addEventListener('DOMContentLoaded', () => {
+// Event listeners for modal and map initialization
+function initializeMap() {
+  console.log("initializeMap called");
+  initMap().catch(console.error);
+}
+
+// Handle Turbo events for proper initialization
+document.addEventListener('turbo:load', () => {
+  console.log("turbo:load fired");
+
+  // Setup modal event handlers
   const modal = document.getElementById('site-modal');
   if (modal) {
     // Close modal when clicking the close button
@@ -263,8 +380,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Initialize the map
+  initializeMap();
 });
 
-// Initialize the map
-initMap().catch(console.error);
+// Fallback for non-Turbo environments
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOMContentLoaded fired");
+  // Only initialize if Turbo hasn't already done it
+  setTimeout(() => {
+    if (!window.mapInitialized) {
+      console.log("DOMContentLoaded fallback - initializing map");
+      initializeMap();
+    }
+  }, 100);
+});
 </script>
