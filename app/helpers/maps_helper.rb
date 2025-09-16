@@ -2,11 +2,9 @@ module MapsHelper
   def google_static_map_url(center_lat:, center_lng:, sites: [], zoom: 15, size: "800x600")
     base_url = "https://maps.googleapis.com/maps/api/staticmap"
 
-    # Adjust center slightly south to compensate for UI elements
-    adjusted_lat = center_lat - 0.0008
-
+    # Use the calculated center directly since we now add padding in the controller
     params = {
-      center: "#{adjusted_lat},#{center_lng}",
+      center: "#{center_lat},#{center_lng}",
       zoom: zoom,
       size: size,
       maptype: "roadmap",

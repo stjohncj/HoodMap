@@ -6,7 +6,7 @@
 /* Map container layout */
 .map-container {
   display: grid;
-  grid-template-columns: 1fr 350px;
+  grid-template-columns: 1fr 480px;
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -45,7 +45,7 @@
 
 #map {
   width: 100%;
-  height: 600px;
+  height: 1200px;
   border-radius: 1rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -111,7 +111,7 @@
   background: white;
   border-radius: 1rem;
   padding: 1.5rem;
-  height: 600px;
+  height: 1200px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
