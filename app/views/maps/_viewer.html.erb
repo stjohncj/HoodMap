@@ -1,7 +1,28 @@
 <div class="map-container">
   <div id="sites" data-latitude=<%= mhd_center_lat %> data-longitude=<%= mhd_center_lng %>>
-    <div id="map"></div>
-    
+    <div id="map" class="static-map-container">
+      <%= image_tag google_static_map_url(
+        center_lat: mhd_center_lat,
+        center_lng: mhd_center_lng,
+        sites: sites,
+        zoom: 16,
+        size: "640x480"
+      ), alt: "Marquette Historic District Map", class: "static-map-image" %>
+
+      <!-- Clickable overlay for numbered markers -->
+      <div class="map-marker-overlays">
+        <% sites.each_with_index do |site, index| %>
+          <a href="#site-<%= site.id %>"
+             class="marker-overlay marker-<%= index + 1 %>"
+             data-site-id="<%= site.id %>"
+             data-site-name="<%= site.historic_name %>"
+             title="<%= site.historic_name %>">
+            <%= index + 1 %>
+          </a>
+        <% end %>
+      </div>
+    </div>
+
     <!-- Modal overlay for site details - positioned within map area -->
     <div id="site-modal" class="site-modal-map-overlay" style="display: none;">
       <div class="modal-backdrop-map"></div>
@@ -22,7 +43,7 @@
     <h2>Historic Sites</h2>
     <ol>
       <% sites.each_with_index do |site, index| %>
-        <li class="site-list-item"
+        <li class="site-list-item" id="site-<%= site.id %>"
           data-latitude=<%=site.latitude %>
           data-longitude=<%= site.longitude %>
           data-id=<%= site.id %>
@@ -32,14 +53,19 @@
           data-description="<%= site.description %>"
           data-built-year="<%= site.built_year %>"
         >
-            <h4><%= site.historic_name %></h4>
-            <p class="address"><%= site.address %></p>
-            <% if site.architectural_style.present? %>
-              <p class="architectural-style"><small><%= site.architectural_style %></small></p>
-            <% end %>
-            <% if site.built_year %>
-              <p><small>Built: <%= site.built_year %></small></p>
-            <% end %>
+          <a href="javascript:void(0)" onclick="showSiteModal('<%= site.id %>')" class="site-list-link">
+            <span class="site-number"><%= index + 1 %></span>
+            <div class="site-info">
+              <h4><%= site.historic_name %></h4>
+              <p class="address"><%= site.address %></p>
+              <% if site.architectural_style.present? %>
+                <p class="architectural-style"><small><%= site.architectural_style %></small></p>
+              <% end %>
+              <% if site.built_year %>
+                <p><small>Built: <%= site.built_year %></small></p>
+              <% end %>
+            </div>
+          </a>
         </li>
       <% end %>
     </ol>
