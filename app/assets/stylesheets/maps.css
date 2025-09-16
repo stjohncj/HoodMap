@@ -257,12 +257,13 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 600px; /* Match map height exactly */
   z-index: 1000;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
+  border-radius: 1rem; /* Match map border-radius */
   box-sizing: border-box;
 }
 
@@ -717,6 +718,7 @@
   
   /* Map modal responsive */
   .site-modal-map-overlay {
+    height: 500px; /* Match mobile map height exactly */
     padding: 0.5rem;
   }
   
