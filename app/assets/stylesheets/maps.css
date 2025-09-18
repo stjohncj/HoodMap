@@ -418,7 +418,7 @@
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 1);
+  background: rgba(128, 128, 128, 0.3);
   color: #374151;
   transform: scale(1.1);
 }
@@ -499,7 +499,7 @@
 }
 
 .modal-close-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(128, 128, 128, 0.3);
   transform: scale(1.1);
 }
 
@@ -707,7 +707,18 @@
 
 .modal-detail-grid {
   display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.coordinates {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: var(--site-primary-b-dark);
 }
 
 .modal-detail-item {
