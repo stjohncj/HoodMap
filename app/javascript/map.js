@@ -178,7 +178,7 @@ function showSiteModal(siteId, wasInFullscreen = false) {
   modal.style.display = 'block';
 
   // Fetch site content
-  fetch(`/houses/${siteId}`)
+  fetch(`/modal/houses/${siteId}`)
     .then(response => {
       if (!response.ok) {
         throw new Error('Network response was not ok');

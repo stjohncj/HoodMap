@@ -30,7 +30,7 @@
               alt: "Historic home, the #{site.historic_name} - Photo #{i + 1} of #{site.images.count}"
             } },
             currentIndex: index
-          }.to_json %>); return false;" class="gallery-image-link">
+          }.to_json.html_safe %>); return false;" class="gallery-image-link">
             <%= image_tag(image, alt: "Historic home, the #{site.historic_name} - Photo #{index + 1} of #{site.images.count}", class: "gallery-image") %>
           </a>
         <% end %>

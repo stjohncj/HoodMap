@@ -80,8 +80,13 @@ async function initMap() {
 
       // Get the house colors - consistent for all markers
       const rootStyles = getComputedStyle(document.documentElement);
-      const houseIconColor = rootStyles.getPropertyValue('--site-primary-b-dark').trim();
-      const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
+      let houseIconColor = rootStyles.getPropertyValue('--site-primary-b-dark').trim();
+      let houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
+
+      // Validate colors to prevent XSS - ensure they're valid CSS colors
+      const colorRegex = /^(#[0-9a-fA-F]{3,6}|rgb\([^)]*\)|rgba\([^)]*\)|[a-zA-Z]+)$/;
+      if (!colorRegex.test(houseIconColor)) houseIconColor = '#4f317d';
+      if (!colorRegex.test(houseInteriorColor)) houseInteriorColor = '#f9a825';
 
       markerContent.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
