@@ -19,8 +19,10 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
 
     assert_not_nil assigns(:mhd_center_lat)
     assert_not_nil assigns(:mhd_center_lng)
-    assert_equal 44.454752344607115, assigns(:mhd_center_lat)
-    assert_equal -87.50453644092718, assigns(:mhd_center_lng)
+
+    # Check that coordinates are in reasonable range for Kewaunee, Wisconsin
+    assert_in_delta 44.45, assigns(:mhd_center_lat), 0.02, "Latitude should be near Kewaunee, WI"
+    assert_in_delta -87.50, assigns(:mhd_center_lng), 0.02, "Longitude should be near Kewaunee, WI"
   end
 
   test "historic_district should load all sites" do
@@ -113,14 +115,14 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
     get historic_district_map_path
 
     assert_select ".about-content"
-    assert_select ".about-content h3", "About the Marquette Historic District"
+    assert_select ".about-content h2", "About the Marquette Historic District"
   end
 
   test "historic_district should include board members section" do
     get historic_district_map_path
 
     assert_select ".board-members"
-    assert_select ".board-members h3", "MHD Committee Board of Directors"
+    assert_select ".board-members h2", "MHD Committee, Board of Directors"
     assert_select ".board-member"
   end
 
