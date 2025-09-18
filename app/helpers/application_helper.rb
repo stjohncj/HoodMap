@@ -34,4 +34,9 @@ module ApplicationHelper
   def refresh_site_image_cache!
     SiteImageCache.refresh_cache!
   end
+
+  # Generate alt text for site images
+  def site_image_alt_text(site, photo_number, total_photos)
+    "Historic home, the #{site.historic_name} - Photo #{photo_number} of #{total_photos}"
+  end
 end

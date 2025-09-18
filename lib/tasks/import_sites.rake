@@ -216,7 +216,7 @@ namespace :sites do
     name.strip
         .gsub(/\s+/, " ")                    # Normalize whitespace
         .gsub(/^(the|a)\s+/i, "")           # Remove leading articles
-        .gsub(/\s+(inc\.?|llc\.?|corp\.?)$/i, "") # Remove corporate suffixes
+        .gsub(/\s+(inc\.?|llc\.?|corp\.?)$/i, '') # Remove corporate suffixes
   end
 
   def valid_architect_name?(name)
@@ -351,7 +351,7 @@ namespace :sites do
     name.strip
         .gsub(/\s+/, " ")                           # Normalize whitespace
         .gsub(/^(the\s+)/i, "")                    # Remove leading "the"
-        .gsub(/\s+(family|house|residence|home)$/i, "") # Remove trailing descriptors
+        .gsub(/\s+(family|house|residence|home)$/i, '') # Remove trailing descriptors
   end
 
   def valid_owner_name?(name)

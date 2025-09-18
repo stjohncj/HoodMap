@@ -105,8 +105,10 @@ class MapsTest < ApplicationSystemTestCase
     # Wait for modal to appear
     assert_selector "#site-modal", visible: true, wait: 5
 
-    # Close modal using close button - use execute_script to avoid click interception
-    page.execute_script("document.querySelector('.modal-close').click()")
+    # Close modal using close button
+    within "#site-modal" do
+      find(".modal-close-button").click
+    end
 
     # Modal should be hidden
     assert_selector "#site-modal", visible: false

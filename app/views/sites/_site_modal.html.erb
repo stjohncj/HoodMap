@@ -27,11 +27,11 @@
           <a href="#" onclick="openImageGallery(<%= {
             images: site.images.map.with_index { |img, i| {
               src: url_for(img),
-              alt: "Historic home, the #{site.historic_name} - Photo #{i + 1} of #{site.images.count}"
+              alt: site_image_alt_text(site, i + 1, site.images.count)
             } },
             currentIndex: index
           }.to_json.html_safe %>); return false;" class="gallery-image-link">
-            <%= image_tag(image, alt: "Historic home, the #{site.historic_name} - Photo #{index + 1} of #{site.images.count}", class: "gallery-image") %>
+            <%= image_tag(image, alt: site_image_alt_text(site, index + 1, site.images.count), class: "gallery-image") %>
           </a>
         <% end %>
       </div>

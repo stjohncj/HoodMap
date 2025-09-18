@@ -1,6 +1,6 @@
 <%
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
-# Note: img[:src] already contains complete Active Storage URLs, no need for asset_path()
+# Map the images to extract only src and alt properties needed for the JavaScript gallery
 complete_gallery_images = images.map { |img| { src: img[:src], alt: img[:alt] } }
 %>
 <div class="image-gallery">
