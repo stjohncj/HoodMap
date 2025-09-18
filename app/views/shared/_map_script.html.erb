@@ -4,6 +4,9 @@ const MAP_ZOOM_INITIAL = 16;
 const MAP_ZOOM_MIN_AFTER_BOUNDS = 14; // Allow zooming out more to show all markers
 const MAP_ZOOM_MAX_AFTER_BOUNDS = 18; // Don't zoom in too close initially
 
+// Flag to track when a modal is being opened
+let isOpeningModal = false;
+
 async function initMap() {
   console.log("initMap called, DOM ready state:", document.readyState);
 
@@ -124,8 +127,17 @@ async function initMap() {
         marker.content.addEventListener("click", (event) => {
           event.preventDefault();
           event.stopPropagation();
+
+          // Set flag to prevent mouseleave from clearing sidebar highlighting
+          isOpeningModal = true;
+
           const wasInFullscreen = isInFullscreenMode();
           showSiteModal(siteId, wasInFullscreen);
+
+          // Reset flag after a short delay to allow modal to open
+          setTimeout(() => {
+            isOpeningModal = false;
+          }, 100);
         });
 
         marker.content.addEventListener("mouseenter", () => {
@@ -152,6 +164,20 @@ async function initMap() {
           if (rect) {
             rect.setAttribute('fill', hoverColor);
           }
+
+          // Highlight corresponding sidebar item and scroll to it
+          const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+          if (sidebarItem) {
+            sidebarItem.style.backgroundColor = 'rgba(249, 168, 37, 0.1)';
+            sidebarItem.style.transform = 'scale(1.02)';
+            sidebarItem.style.transition = 'all 0.2s ease-in-out';
+
+            // Scroll the sidebar item into view
+            sidebarItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          }
         });
 
         marker.content.addEventListener("mouseleave", () => {
@@ -175,6 +201,16 @@ async function initMap() {
           });
           if (rect) {
             rect.setAttribute('fill', houseIconColor);
+          }
+
+          // Reset sidebar item highlighting (unless we're opening a modal)
+          if (!isOpeningModal) {
+            const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+            if (sidebarItem) {
+              sidebarItem.style.backgroundColor = '';
+              sidebarItem.style.transform = '';
+              sidebarItem.style.transition = '';
+            }
           }
         });
       }
@@ -308,6 +344,29 @@ function showSiteModal(siteId, wasInFullscreen = false) {
   modalContent.innerHTML = '<div class="loading">Loading site details...</div>';
   modal.style.display = 'block';
 
+  // Highlight and scroll to the corresponding sidebar item
+  const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+  if (sidebarItem) {
+    // Clear any existing highlights first
+    document.querySelectorAll('.site-list-item').forEach(item => {
+      item.style.backgroundColor = '';
+      item.style.transform = '';
+      item.style.fontWeight = '';
+    });
+
+    // Highlight the selected item
+    sidebarItem.style.backgroundColor = 'rgba(249, 168, 37, 0.2)';
+    sidebarItem.style.transform = 'scale(1.02)';
+    sidebarItem.style.fontWeight = '600';
+    sidebarItem.style.transition = 'all 0.2s ease-in-out';
+
+    // Scroll the sidebar item into view
+    sidebarItem.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
+
   // Fetch site content
   fetch(`/modal/houses/${siteId}`)
     .then(response => {
@@ -340,6 +399,14 @@ function closeSiteModal() {
   if (modal) {
     modal.style.display = 'none';
   }
+
+  // Clear sidebar highlighting when modal closes
+  document.querySelectorAll('.site-list-item').forEach(item => {
+    item.style.backgroundColor = '';
+    item.style.transform = '';
+    item.style.fontWeight = '';
+    item.style.transition = '';
+  });
 }
 
 // Make closeSiteModal globally available
