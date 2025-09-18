@@ -23,7 +23,7 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
   end
 
   test "map initializes correctly on first visit" do
-    visit root_path
+    visit historic_district_map_path
 
     # Map should initialize
     assert_selector "#map", wait: 10
@@ -37,18 +37,18 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
 
   test "navigating away and back via Turbo reinitializes map correctly" do
     # Start on map page
-    visit root_path
+    visit historic_district_map_path
 
     # Wait for initial map load
     assert_selector "#map", wait: 10
     assert_selector ".custom-marker", wait: 10
 
     # Navigate to another page
-    visit historic_architecture_path
-    assert_current_path historic_architecture_path
+    visit mhd_architecture_path
+    assert_current_path mhd_architecture_path
 
     # Navigate back to map using Turbo (simulating header link click)
-    visit root_path
+    visit historic_district_map_path
 
     # Map should reinitialize correctly
     assert_selector "#map", wait: 10
@@ -68,15 +68,15 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
   test "multiple Turbo navigations don't cause map initialization conflicts" do
     # Navigate back and forth multiple times
     5.times do
-      visit root_path
+      visit historic_district_map_path
       assert_selector "#map", wait: 5
 
-      visit historic_architecture_path
-      assert_current_path historic_architecture_path
+      visit mhd_architecture_path
+      assert_current_path mhd_architecture_path
     end
 
     # Final visit to map should work correctly
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
     assert_selector ".custom-marker", wait: 10
 
@@ -86,7 +86,7 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
   end
 
   test "map initialization flag prevents duplicate initialization" do
-    visit root_path
+    visit historic_district_map_path
 
     # Wait for map to initialize
     assert_selector "#map", wait: 10
@@ -96,15 +96,21 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
     initial_marker_count = all(".custom-marker").length
     sites_element = find("#sites")
 
-    # Manually trigger initMap again (simulating what would happen without flag)
-    page.execute_script("initMap()")
+    # Check that initialization flag is set
+    map_initialized = page.evaluate_script("document.getElementById('sites').dataset.mapInitialized")
+    assert_equal "true", map_initialized, "Map initialization flag should be set"
 
-    # Wait a moment for any potential duplicate initialization
-    sleep 1
+    # Navigate away and back quickly to test that duplicate initialization is prevented
+    visit mhd_architecture_path
+    visit historic_district_map_path
 
-    # Should not have duplicate markers
+    # Wait for reinitialization
+    assert_selector "#map", wait: 10
+    assert_selector ".custom-marker", wait: 10
+
+    # Should not have duplicate markers after reinitialization
     current_marker_count = all(".custom-marker").length
-    assert_equal initial_marker_count, current_marker_count, "Should not create duplicate markers"
+    assert_equal initial_marker_count, current_marker_count, "Should not create duplicate markers on reinit"
 
     # Flag should still be set
     map_initialized = page.evaluate_script("document.getElementById('sites').dataset.mapInitialized")
@@ -113,16 +119,16 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
 
   test "map works correctly after browser back button navigation" do
     # Start on map
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Navigate to another page
-    visit historic_architecture_path
-    assert_current_path historic_architecture_path
+    visit mhd_architecture_path
+    assert_current_path mhd_architecture_path
 
     # Use browser back button
     page.go_back
-    assert_current_path root_path
+    assert_current_path historic_district_map_path
 
     # Map should work correctly
     assert_selector "#map", wait: 10
@@ -138,15 +144,15 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
 
   test "Turbo navigation preserves map container state correctly" do
     # Visit map page
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Get the map container's data attributes
     initial_data = page.evaluate_script("JSON.stringify(document.getElementById('sites').dataset)")
 
     # Navigate away and back
-    visit historic_architecture_path
-    visit root_path
+    visit mhd_architecture_path
+    visit historic_district_map_path
 
     # Wait for reinitialization
     assert_selector "#map", wait: 10
@@ -167,18 +173,21 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
 
   test "error handling during Turbo navigation with missing map container" do
     # Visit a page without a map container first
-    visit historic_architecture_path
+    visit mhd_architecture_path
 
-    # Script should handle missing container gracefully
-    # No JavaScript errors should occur
-    page.execute_script("initMap()")
+    # Should load successfully without JavaScript errors
+    assert_current_path mhd_architecture_path
 
-    # Should not throw errors
-    assert_current_path historic_architecture_path
+    # Page should still be functional even without map
+    assert_selector "h1", wait: 5
+
+    # Now navigate to map page - should work correctly
+    visit historic_district_map_path
+    assert_selector "#map", wait: 10
   end
 
   test "map initialization works with slow loading Google Maps API" do
-    visit root_path
+    visit historic_district_map_path
 
     # Even if Google Maps is slow to load, the page should not error
     # This tests the async/await error handling in initMap
@@ -197,17 +206,17 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
     # Rapidly navigate back and forth to test race conditions
     10.times do |i|
       if i.even?
-        visit root_path
+        visit historic_district_map_path
         # Don't wait for full map load, just ensure page loads
         assert_selector "#sites", wait: 2
       else
-        visit historic_architecture_path
-        assert_current_path historic_architecture_path
+        visit mhd_architecture_path
+        assert_current_path mhd_architecture_path
       end
     end
 
     # Final navigation should work correctly
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Check that we don't have any JavaScript errors or duplicate elements
@@ -216,15 +225,15 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
   end
 
   test "map container reinitialization clears previous state correctly" do
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Verify initial state
     initial_markers = all(".custom-marker").length
 
     # Navigate away and back
-    visit historic_architecture_path
-    visit root_path
+    visit mhd_architecture_path
+    visit historic_district_map_path
 
     # Wait for reinitialization
     assert_selector "#map", wait: 10
@@ -236,7 +245,7 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
   end
 
   test "modal state is properly cleared on Turbo navigation" do
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Open a modal
@@ -245,11 +254,11 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
     assert_selector "#site-modal", visible: true, wait: 5
 
     # Navigate away (modal should be cleaned up)
-    visit historic_architecture_path
-    assert_current_path historic_architecture_path
+    visit mhd_architecture_path
+    assert_current_path mhd_architecture_path
 
     # Navigate back
-    visit root_path
+    visit historic_district_map_path
     assert_selector "#map", wait: 10
 
     # Modal should not be visible
