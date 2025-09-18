@@ -124,7 +124,7 @@ class ImageLoadingPerformanceTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     # Should still render the page even with no images
-    assert_select "h1", text: /Historic Architecture/i
+    assert_select "h1", text: /Marquette Historic District/i
   end
 
   test "site image cache URLs are valid and accessible" do
