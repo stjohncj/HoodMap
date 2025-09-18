@@ -9,10 +9,10 @@ Rails.application.config.after_initialize do
       Thread.new do
         # Small delay to ensure database connections are ready
         sleep(2)
-        
+
         # Build and cache all site image URLs
         SiteImageCache.build_and_store_cache
-        
+
         Rails.logger.info "Site image cache initialization complete"
       end
     rescue => e

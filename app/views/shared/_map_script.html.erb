@@ -18,12 +18,12 @@ async function initMap() {
     return;
   }
 
-  // Prevent multiple initializations
-  if (window.mapInitialized) {
-    console.log("Map already initialized, skipping");
+  // Check if map is already initialized for this container
+  if (coords.dataset.mapInitialized === 'true') {
+    console.log("Map already initialized for this container, skipping");
     return;
   }
-  window.mapInitialized = true;
+  coords.dataset.mapInitialized = 'true';
 
   try {
     // Request needed libraries.
@@ -418,6 +418,7 @@ function initializeMap() {
   initMap().catch(console.error);
 }
 
+
 // Handle Turbo events for proper initialization
 document.addEventListener('turbo:load', () => {
   console.log("turbo:load fired");
@@ -464,9 +465,10 @@ document.addEventListener('turbo:load', () => {
 // Fallback for non-Turbo environments
 document.addEventListener('DOMContentLoaded', () => {
   console.log("DOMContentLoaded fired");
-  // Only initialize if Turbo hasn't already done it
+  // Only initialize if container hasn't been initialized yet
   setTimeout(() => {
-    if (!window.mapInitialized) {
+    const coords = document.getElementById("sites");
+    if (coords && coords.dataset.mapInitialized !== 'true') {
       console.log("DOMContentLoaded fallback - initializing map");
       initializeMap();
     }

@@ -1,6 +1,7 @@
-<% 
+<%
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
-complete_gallery_images = images.map { |img| { src: asset_path(img[:src]), alt: img[:alt] } }
+# Note: img[:src] already contains complete Active Storage URLs, no need for asset_path()
+complete_gallery_images = images.map { |img| { src: img[:src], alt: img[:alt] } }
 %>
 <div class="image-gallery">
   <% images.each_with_index do |image_info, index| %>

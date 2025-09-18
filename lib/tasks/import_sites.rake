@@ -5,7 +5,7 @@ namespace :sites do
   ARCHITECTURAL_STYLES = [
     "Colonial Revival",
     "Prairie School",
-    "Prairie Style", 
+    "Prairie Style",
     "Queen Anne",
     "Victorian",
     "Craftsman",
@@ -36,14 +36,14 @@ namespace :sites do
     /designed\s+by\s+(?:architect\s+)?([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
     /built\s+by\s+architect\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
     /plans\s+by\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
-    
+
     # Firm patterns
     /([A-Z][a-zA-Z\s.&-]+?)\s+(?:architects?|architectural\s+firm)(?:\.|,|$)/i,
     /architectural\s+firm\s+of\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.|,|$)/i,
-    
+
     # Plans/drawings attribution (improved)
     /(?:plans\s+(?:drawn\s+)?by|drawings\s+by)\s+([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
-    
+
     # From plans context
     /from\s+([A-Z][a-zA-Z\s.&-]+?)'s\s+plans/i
   ].freeze
@@ -51,7 +51,7 @@ namespace :sites do
   # Known Milwaukee/Wisconsin area architects for improved matching
   KNOWN_ARCHITECTS = [
     "Ferry & Clas",
-    "George Bowman Ferry", 
+    "George Bowman Ferry",
     "Alfred C. Clas",
     "Alexander C. Eschweiler",
     "Russell Barr Williamson",
@@ -102,13 +102,13 @@ namespace :sites do
 
       # Parse latitude and longitude
       latitude, longitude = parse_lat_lng(lat_lng)
-      
+
       # Extract architectural style from description
       architectural_style = extract_architectural_style(description)
-      
+
       # Extract architect from description
       architect = extract_architect(description)
-      
+
       # Extract additional fields from description (only if not already present in CSV)
       extracted_survey_year = survey_year.blank? ? extract_survey_year(description) : nil
       extracted_built_year = built_year.blank? ? extract_built_year(description) : nil
@@ -192,14 +192,14 @@ namespace :sites do
 
   def extract_architect(description)
     return nil if description.blank?
-    
+
     # First priority: check for known architects in text
     KNOWN_ARCHITECTS.each do |architect|
       if description.match(/#{Regexp.escape(architect)}/i)
         return architect
       end
     end
-    
+
     # Second priority: try pattern matching
     ARCHITECT_PATTERNS.each do |pattern|
       match = description.match(pattern)
@@ -208,20 +208,20 @@ namespace :sites do
         return candidate if valid_architect_name?(candidate)
       end
     end
-    
+
     nil
   end
 
   def clean_architect_name(name)
     name.strip
-        .gsub(/\s+/, ' ')                    # Normalize whitespace
-        .gsub(/^(the|a)\s+/i, '')           # Remove leading articles
-        .gsub(/\s+(inc\.?|llc\.?|corp\.?)$/i, '') # Remove corporate suffixes
+        .gsub(/\s+/, " ")                    # Normalize whitespace
+        .gsub(/^(the|a)\s+/i, "")           # Remove leading articles
+        .gsub(/\s+(inc\.?|llc\.?|corp\.?)$/i, "") # Remove corporate suffixes
   end
 
   def valid_architect_name?(name)
     return false if name.blank? || name.length < 3 || name.length > 50
-    
+
     # Reject if it's likely a date, address, or generic term
     return false if name.match?(/^\d+/)                    # Starts with number
     return false if name.match?(/street|avenue|road|drive|blvd/i) # Address terms
@@ -229,14 +229,14 @@ namespace :sites do
     return false if name.match?(/^\d{4}$/)                 # Just a year
     return false if name.match?(/^(for\s+)?this|that|the\s+new|house|building/i) # Generic building terms
     return false if name.match?(/services|work|plans\s+were|foundation/i) # Construction terms
-    
+
     # Should contain at least one letter and reasonable name characters
     name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
   end
 
   def extract_survey_year(description)
     return nil if description.blank?
-    
+
     # Look for survey-related year patterns
     survey_patterns = [
       /survey(?:ed)?\s+(?:in\s+)?(\d{4})/i,
@@ -244,7 +244,7 @@ namespace :sites do
       /(\d{4})\s+survey/i,
       /survey\s+conducted\s+(?:in\s+)?(\d{4})/i
     ]
-    
+
     survey_patterns.each do |pattern|
       match = description.match(pattern)
       if match && match[1]
@@ -253,13 +253,13 @@ namespace :sites do
         return year if year >= 1970 && year <= 2025
       end
     end
-    
+
     nil
   end
 
   def extract_built_year(description)
     return nil if description.blank?
-    
+
     # Look for construction-related year patterns
     built_patterns = [
       /built\s+(?:in\s+)?(\d{4})/i,
@@ -269,7 +269,7 @@ namespace :sites do
       /(\d{4})\s+construction/i,
       /building\s+completed\s+(?:in\s+)?(\d{4})/i
     ]
-    
+
     built_patterns.each do |pattern|
       match = description.match(pattern)
       if match && match[1]
@@ -278,7 +278,7 @@ namespace :sites do
         return year if year >= 1700 && year <= 1980
       end
     end
-    
+
     nil
   end
 
@@ -297,7 +297,7 @@ namespace :sites do
         # Family ownership
         /([A-Z][a-zA-Z]+(?:\s+(?:and\s+)?[A-Z][a-zA-Z]+)*)\s+family/i
       ]
-      
+
       owner_patterns.each do |pattern|
         match = description.match(pattern)
         if match && match[1]
@@ -306,7 +306,7 @@ namespace :sites do
         end
       end
     end
-    
+
     # Fallback: Extract from historic name if it follows pattern "[Name] House"
     if historic_name.present?
       # Look for patterns like "John and Mary Smith House" or "William Johnson House"
@@ -318,13 +318,13 @@ namespace :sites do
         return candidate if valid_owner_name_from_title?(candidate)
       end
     end
-    
+
     nil
   end
 
   def valid_owner_name_from_title?(name)
     return false if name.blank? || name.length < 3 || name.length > 60
-    
+
     # Less strict validation for names from house titles
     # since these are typically correct
     return false if name.match?(/^\d+/)                    # Starts with number
@@ -338,25 +338,25 @@ namespace :sites do
     return false if name.match?(/old|new|former|current|present/i) # Time descriptors
     return false if name.match?(/child|son|daughter|wife|husband/i) # Family relationship terms
     return false if name.match?(/house|home|residence/i) # Property terms
-    
+
     # Allow single word names from titles (like "Kieweg")
     # since houses are often named after families
     return false unless name.split(/\s+/).length >= 1
-    
+
     # Should contain at least one letter and reasonable name characters
     name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
   end
 
   def clean_owner_name(name)
     name.strip
-        .gsub(/\s+/, ' ')                           # Normalize whitespace
-        .gsub(/^(the\s+)/i, '')                    # Remove leading "the"
-        .gsub(/\s+(family|house|residence|home)$/i, '') # Remove trailing descriptors
+        .gsub(/\s+/, " ")                           # Normalize whitespace
+        .gsub(/^(the\s+)/i, "")                    # Remove leading "the"
+        .gsub(/\s+(family|house|residence|home)$/i, "") # Remove trailing descriptors
   end
 
   def valid_owner_name?(name)
     return false if name.blank? || name.length < 3 || name.length > 60
-    
+
     # Reject if it's likely not a person's name
     return false if name.match?(/^\d+/)                    # Starts with number
     return false if name.match?(/street|avenue|road|drive|blvd/i) # Address terms
@@ -374,10 +374,10 @@ namespace :sites do
     return false if name.match?(/old|new|former|current|present/i) # Time descriptors
     return false if name.match?(/child|son|daughter|wife|husband/i) # Family relationship terms
     return false if name.match?(/house|home|residence/i) # Property terms
-    
+
     # Must contain at least 2 words (first and last name minimum)
     return false unless name.split(/\s+/).length >= 2
-    
+
     # Should contain at least one letter and reasonable name characters
     # Allow common name patterns including "and" for couples
     name.match?(/[a-zA-Z]/) && name.match?(/^[a-zA-Z\s.&,-]+$/)
@@ -404,18 +404,18 @@ namespace :sites do
 
         # Sort images by file size (largest first) to make largest image the featured image
         image_files_sorted = image_files.sort_by { |file| -File.size(file) }
-        
+
         # Attach each image (largest first)
         image_files_sorted.each_with_index do |image_path, index|
           filename = File.basename(image_path)
           file_size_kb = (File.size(image_path) / 1024.0).round(1)
-          
+
           site.images.attach(
             io: File.open(image_path),
             filename: filename,
             content_type: "image/#{File.extname(image_path).delete('.').downcase}"
           )
-          
+
           status_indicator = index == 0 ? "→ Featured" : "→ Attached"
           puts "  #{status_indicator} image: #{filename} (#{file_size_kb} KB)"
         end

@@ -1,4 +1,4 @@
-<% 
+<%
 # Convert @random_site_images to format expected by street_gallery
 gallery_images = if @random_site_images.present?
   @random_site_images.map { |img| { src: img[:url], alt: img[:alt] } }
