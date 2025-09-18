@@ -459,58 +459,73 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a-light) 50%, var(--site-primary-a) 100%);
-  color: var(--site-primary-b);
-  padding: 1rem;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  color: var(--site-primary-b-dark);
+  padding: 2rem 2.5rem;
+  margin: -1px -1px 1.5rem -1px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  z-index: 10;
+  border-radius: 1rem 1rem 0 0;
 }
 
 .modal-site-header-left {
   flex: 1;
   text-align: left;
-  margin-left: 3rem;
+  margin-left: 0;
 }
 
 .modal-site-header h2 {
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   font-family: 'Controwell Script', cursive;
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   font-weight: normal;
-  color: var(--site-primary-b);
+  color: var(--site-primary-b-dark);
+  line-height: 1.2;
 }
 
 .modal-site-style {
-  font-size: 1.2rem;
-  color: var(--site-primary-b-dark);
-  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--site-primary-b);
+  font-weight: 500;
   margin: 0.25rem 0 0 0;
-  padding-left: 2rem;
+  padding-left: 0;
+  opacity: 0.9;
 }
 
 .modal-site-header-details {
   display: flex;
   flex-direction: column;
   text-align: right;
-  gap: 0.25rem;
-  margin-right: 5rem;
+  gap: 0.5rem;
+  margin-right: 0;
   margin-top: 0.3rem;
+  min-width: 200px;
 }
 
 .modal-site-address {
   font-size: 1.4rem;
-  opacity: 0.95;
+  opacity: 0.9;
   margin: 0;
   color: var(--site-primary-b-dark);
   font-family: 'Controwell Script', cursive;
+  font-weight: 500;
 }
 
 .modal-site-year {
-  font-size: 1.2rem;
-  color: var(--site-primary-b-dark);
-  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--site-primary-b);
+  font-weight: 500;
   margin: 0;
+  opacity: 0.9;
 }
 
 .modal-site-content {
@@ -692,23 +707,37 @@
   }
   
   .modal-site-header {
-    padding: 1.5rem;
+    padding: 1.5rem 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
   }
-  
+
   .modal-site-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  .modal-site-header-left {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .modal-site-header-details {
+    text-align: center;
+    margin-right: 0;
+    min-width: auto;
   }
 
   .modal-site-style {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .modal-site-year {
-    font-size: 1rem;
+    font-size: 0.95rem;
   }
 
   .modal-site-address {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   .modal-site-content {
