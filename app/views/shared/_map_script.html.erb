@@ -1,8 +1,8 @@
 <script type="module">
 // Map configuration constants
 const MAP_ZOOM_INITIAL = 16;
-const MAP_ZOOM_MIN_AFTER_BOUNDS = 17;
-const MAP_BOUNDING_ZOOM_MAX = 20;
+const MAP_ZOOM_MIN_AFTER_BOUNDS = 14; // Allow zooming out more to show all markers
+const MAP_ZOOM_MAX_AFTER_BOUNDS = 18; // Don't zoom in too close initially
 
 async function initMap() {
   console.log("initMap called, DOM ready state:", document.readyState);
@@ -259,15 +259,24 @@ async function initMap() {
       });
     });
 
-    // Fit the map to all markers with a minimum zoom
+    // Fit the map to all markers with padding for better visibility
     if (sites.length > 0) {
-      map.fitBounds(bounds);
+      // Add padding to ensure markers aren't right at the edge
+      const padding = {
+        top: 25,
+        right: 25,
+        bottom: 25,
+        left: 25
+      };
 
-      // Add a listener to ensure minimum zoom after bounds fit
+      map.fitBounds(bounds, padding);
+
+      // Add a listener to ensure appropriate zoom level
       google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
         const currentZoom = map.getZoom();
-        if (currentZoom > MAP_BOUNDING_ZOOM_MAX) {
-          map.setZoom(MAP_BOUNDING_ZOOM_MAX);
+        // Ensure zoom is within reasonable bounds
+        if (currentZoom > MAP_ZOOM_MAX_AFTER_BOUNDS) {
+          map.setZoom(MAP_ZOOM_MAX_AFTER_BOUNDS);
         } else if (currentZoom < MAP_ZOOM_MIN_AFTER_BOUNDS) {
           map.setZoom(MAP_ZOOM_MIN_AFTER_BOUNDS);
         }
