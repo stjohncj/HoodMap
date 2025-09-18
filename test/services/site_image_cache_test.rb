@@ -101,17 +101,24 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   end
 
   test "build_and_store_cache stores cache and timestamp" do
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     cache = SiteImageCache.build_and_store_cache
 
     stored_cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
     timestamp = Rails.cache.read("#{SiteImageCache::CACHE_KEY}_timestamp")
 
+    assert_not_nil cache, "build_and_store_cache should return a cache structure, not nil"
     assert_equal cache, stored_cache
     assert_kind_of Hash, cache
     assert_includes cache.keys, :images
     assert_includes cache.keys, :sites
     assert_kind_of Time, timestamp
     assert_in_delta Time.current, timestamp, 5.seconds
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "cache_exists? returns false when cache is empty" do
@@ -121,10 +128,14 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   end
 
   test "cache_exists? returns appropriate value based on cache content" do
-    SiteImageCache.build_and_store_cache
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
+    cache = SiteImageCache.build_and_store_cache
 
     # Check if cache was stored correctly
-    cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
+    stored_cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
+    assert_not_nil cache, "build_and_store_cache should return a cache structure, not nil"
     assert cache.present?
     assert_kind_of Hash, cache
     assert_includes cache.keys, :images
@@ -137,6 +148,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
     else
       assert_not SiteImageCache.cache_exists?
     end
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "cache_stats returns correct structure" do
@@ -172,12 +186,15 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   end
 
   test "random_images rebuilds cache when empty" do
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
     Rails.cache.clear
 
     result = SiteImageCache.random_images(3)
 
     # Should rebuild cache automatically
     cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
+    assert_not_nil cache, "Cache should be rebuilt and not be nil"
     assert cache.present?
     assert_kind_of Hash, cache
     assert_kind_of Array, result
@@ -188,6 +205,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
     else
       assert_equal 0, result.length
     end
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "random_images returns correct structure" do
@@ -210,6 +230,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   end
 
   test "random_images filters out images without URLs" do
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     # Create cache with some invalid data
     invalid_cache = {
       images: {
@@ -231,6 +254,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
 
     # In this test we intentionally put one valid image, so we should get exactly one back
     assert_equal 1, result.length, "Should return exactly one valid image from test cache"
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "cached_image_url returns URL for valid image ID" do
@@ -312,6 +338,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   end
 
   test "refresh_cache! rebuilds and stores cache" do
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     # Clear cache first
     Rails.cache.clear
     assert_not SiteImageCache.cache_exists?
@@ -320,9 +349,13 @@ class SiteImageCacheTest < ActiveSupport::TestCase
 
     # Cache should be rebuilt and method should return the cache
     cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
+    assert_not_nil result, "refresh_cache! should return a cache structure, not nil"
     assert cache.present?
     assert_kind_of Hash, cache
     assert_equal cache, result
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   private

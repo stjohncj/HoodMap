@@ -65,6 +65,9 @@ class SiteImageCache
       cache = build_and_store_cache
     end
 
+    # Ensure cache is a valid hash with expected structure
+    return [] unless cache.is_a?(Hash) && cache.key?(:images)
+
     image_cache = cache[:images] || {}
 
     # Return random sample of cached images using pre-generated URLs (no DB queries!)
@@ -136,5 +139,14 @@ class SiteImageCache
     Rails.cache.write(CACHE_KEY, cache)
     Rails.cache.write("#{CACHE_KEY}_timestamp", Time.current)
     cache
+  rescue => e
+    Rails.logger.error "Error building cache: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+
+    # Return empty cache structure on error
+    empty_cache = { images: {}, sites: {} }
+    Rails.cache.write(CACHE_KEY, empty_cache)
+    Rails.cache.write("#{CACHE_KEY}_timestamp", Time.current)
+    empty_cache
   end
 end
