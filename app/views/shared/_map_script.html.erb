@@ -177,11 +177,24 @@ async function initMap() {
             sidebarItem.style.transform = 'scale(1.02)';
             sidebarItem.style.transition = 'all 0.2s ease-in-out';
 
-            // Scroll the sidebar item into view
-            sidebarItem.scrollIntoView({
-              behavior: 'smooth',
-              block: 'center'
-            });
+            // Scroll only within the sidebar container, not the entire page
+            const sidebarList = document.querySelector('.sites-sidebar ol');
+            if (sidebarList) {
+              const itemTop = sidebarItem.offsetTop;
+              const itemHeight = sidebarItem.offsetHeight;
+              const listScrollTop = sidebarList.scrollTop;
+              const listHeight = sidebarList.offsetHeight;
+
+              // Check if item is outside visible area
+              if (itemTop < listScrollTop || itemTop + itemHeight > listScrollTop + listHeight) {
+                // Scroll to center the item in the sidebar
+                const targetScrollTop = itemTop - (listHeight / 2) + (itemHeight / 2);
+                sidebarList.scrollTo({
+                  top: Math.max(0, targetScrollTop),
+                  behavior: 'smooth'
+                });
+              }
+            }
           }
         });
 
@@ -365,11 +378,24 @@ function showSiteModal(siteId, wasInFullscreen = false) {
     sidebarItem.style.fontWeight = '600';
     sidebarItem.style.transition = 'all 0.2s ease-in-out';
 
-    // Scroll the sidebar item into view
-    sidebarItem.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
+    // Scroll only within the sidebar container, not the entire page
+    const sidebarList = document.querySelector('.sites-sidebar ol');
+    if (sidebarList) {
+      const itemTop = sidebarItem.offsetTop;
+      const itemHeight = sidebarItem.offsetHeight;
+      const listScrollTop = sidebarList.scrollTop;
+      const listHeight = sidebarList.offsetHeight;
+
+      // Check if item is outside visible area
+      if (itemTop < listScrollTop || itemTop + itemHeight > listScrollTop + listHeight) {
+        // Scroll to center the item in the sidebar
+        const targetScrollTop = itemTop - (listHeight / 2) + (itemHeight / 2);
+        sidebarList.scrollTo({
+          top: Math.max(0, targetScrollTop),
+          behavior: 'smooth'
+        });
+      }
+    }
   }
 
   // Fetch site content
