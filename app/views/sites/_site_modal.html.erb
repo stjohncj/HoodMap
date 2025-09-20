@@ -24,13 +24,17 @@
     <% if site.images.any? %>
       <div class="image-gallery">
         <% site.images.each_with_index do |image, index| %>
-          <a href="#" onclick="openImageGallery(<%= {
+          <% gallery_data = {
             images: site.images.map.with_index { |img, i| {
               src: url_for(img),
               alt: site_image_alt_text(site, i + 1, site.images.count)
             } },
             currentIndex: index
-          }.to_json.html_safe %>); return false;" class="gallery-image-link">
+          }.to_json %>
+          <a href="#"
+             data-gallery-data="<%= html_escape(gallery_data) %>"
+             onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
+             class="gallery-image-link">
             <%= image_tag(image, alt: site_image_alt_text(site, index + 1, site.images.count), class: "gallery-image") %>
           </a>
         <% end %>
