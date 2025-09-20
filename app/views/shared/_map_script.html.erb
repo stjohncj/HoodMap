@@ -1,8 +1,8 @@
 <script type="module">
 // Map configuration constants
-const MAP_ZOOM_INITIAL = 16;
-const MAP_ZOOM_MIN_AFTER_BOUNDS = 14; // Allow zooming out more to show all markers
-const MAP_ZOOM_MAX_AFTER_BOUNDS = 18; // Don't zoom in too close initially
+const MAP_ZOOM_INITIAL = 17;
+const MAP_ZOOM_MIN_AFTER_BOUNDS = 17; // Force closer zoom to reduce space around markers
+const MAP_ZOOM_MAX_AFTER_BOUNDS = 20; // Allow closer zoom for better icon visibility
 
 // Flag to track when a modal is being opened
 let isOpeningModal = false;
@@ -302,12 +302,12 @@ async function initMap() {
 
     // Fit the map to all markers with padding for better visibility
     if (sites.length > 0) {
-      // Add padding to ensure markers aren't right at the edge
+      // Minimal padding to allow closer zoom while keeping markers visible
       const padding = {
-        top: 25,
-        right: 25,
-        bottom: 25,
-        left: 25
+        top: 15,
+        right: 15,
+        bottom: 15,
+        left: 15
       };
 
       map.fitBounds(bounds, padding);
