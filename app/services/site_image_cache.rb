@@ -1,7 +1,7 @@
 # Service class for caching site images and their URLs at application startup
 # This eliminates the need for repeated database queries and Active Storage URL generation
 class SiteImageCache
-  CACHE_KEY = "site_image_cache".freeze
+  CACHE_KEY = 'site_image_cache'.freeze
 
   # Build the complete image cache with pre-generated URLs
   def self.build_cache
