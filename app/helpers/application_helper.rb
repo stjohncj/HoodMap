@@ -3,13 +3,13 @@ module ApplicationHelper
   # Returns the cached URL if available, otherwise falls back to Active Storage
   def cached_site_image_url(image_or_id)
     return nil if image_or_id.nil?
-    
+
     image_id = image_or_id.is_a?(ActiveStorage::Attachment) ? image_or_id.id : image_or_id
-    
+
     # Try to get from cache first
     cached_url = SiteImageCache.cached_image_url(image_id)
     return cached_url if cached_url.present?
-    
+
     # Fallback to Active Storage if cache miss
     if image_or_id.is_a?(ActiveStorage::Attachment)
       url_for(image_or_id)
@@ -19,19 +19,24 @@ module ApplicationHelper
       attachment ? url_for(attachment) : nil
     end
   end
-  
+
   # Get cache statistics for debugging/admin purposes
   def site_image_cache_stats
     SiteImageCache.cache_stats
   end
-  
+
   # Check if the image cache is properly loaded
   def site_image_cache_loaded?
     SiteImageCache.cache_exists?
   end
-  
+
   # Manual cache refresh (for admin/development use)
   def refresh_site_image_cache!
     SiteImageCache.refresh_cache!
+  end
+
+  # Generate alt text for site images
+  def site_image_alt_text(site, photo_number, total_photos)
+    "Historic home, the #{site.historic_name} - Photo #{photo_number} of #{total_photos}"
   end
 end

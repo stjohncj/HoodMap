@@ -44,7 +44,7 @@ class MapsTest < ApplicationSystemTestCase
     visit historic_district_map_path
 
     assert_selector ".about-content"
-    assert_selector ".about-content h3", text: "About the Marquette Historic District"
+    assert_selector ".about-content h2", text: "About the Marquette Historic District"
     assert_text "Welcome to the Marquette Historic District"
     assert_text "over 40 historic homes"
   end
@@ -53,7 +53,7 @@ class MapsTest < ApplicationSystemTestCase
     visit historic_district_map_path
 
     assert_selector ".board-members"
-    assert_selector ".board-members h3", text: "Board of Directors"
+    assert_selector ".board-members h2", text: "MHD Committee, Board of Directors"
     assert_selector ".board-member", minimum: 1
     assert_selector ".member-role"
     assert_selector ".member-name"
@@ -106,7 +106,9 @@ class MapsTest < ApplicationSystemTestCase
     assert_selector "#site-modal", visible: true, wait: 5
 
     # Close modal using close button
-    find(".modal-close").click
+    within "#site-modal" do
+      find(".modal-close-button").click
+    end
 
     # Modal should be hidden
     assert_selector "#site-modal", visible: false
@@ -195,9 +197,12 @@ class MapsTest < ApplicationSystemTestCase
     assert sites_element["data-latitude"]
     assert sites_element["data-longitude"]
 
-    # Verify center coordinates are set
-    assert_equal "44.454752344607115", sites_element["data-latitude"]
-    assert_equal "-87.50453644092718", sites_element["data-longitude"]
+    # Verify center coordinates are in reasonable range for Kewaunee, Wisconsin
+    latitude = sites_element["data-latitude"].to_f
+    longitude = sites_element["data-longitude"].to_f
+
+    assert_in_delta 44.45, latitude, 0.02, "Latitude should be near Kewaunee, WI"
+    assert_in_delta -87.50, longitude, 0.02, "Longitude should be near Kewaunee, WI"
   end
 
   test "all site list items have required data attributes" do

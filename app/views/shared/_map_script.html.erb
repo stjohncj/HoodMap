@@ -1,0 +1,482 @@
+<script type="module">
+// Map configuration constants
+const MAP_ZOOM_INITIAL = 16;
+const MAP_ZOOM_MIN_AFTER_BOUNDS = 14; // Allow zooming out more to show all markers
+const MAP_ZOOM_MAX_AFTER_BOUNDS = 18; // Don't zoom in too close initially
+
+// Flag to track when a modal is being opened
+let isOpeningModal = false;
+
+async function initMap() {
+  console.log("initMap called, DOM ready state:", document.readyState);
+
+  // Check if map container exists (only initialize on map page)
+  const coords = document.getElementById("sites");
+  console.log("Found #sites element:", coords);
+  if (!coords) {
+    console.log("No #sites element found, skipping map initialization");
+    return;
+  }
+
+  // Check if map is already initialized for this container
+  if (coords.dataset.mapInitialized === 'true') {
+    console.log("Map already initialized for this container, skipping");
+    return;
+  }
+  coords.dataset.mapInitialized = 'true';
+
+  try {
+    // Request needed libraries.
+    const { Map: GoogleMap } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+    const latStr = coords.getAttribute("data-latitude");
+    const lngStr = coords.getAttribute("data-longitude");
+
+    if (!latStr || !lngStr) {
+      console.error("Missing latitude or longitude data");
+      return;
+    }
+
+    const center = {
+      lat: parseFloat(latStr),
+      lng: parseFloat(lngStr)
+    };
+
+    const mapElement = document.getElementById("map");
+    console.log("Looking for #map element:", mapElement);
+    console.log("All elements with id 'map':", document.querySelectorAll("#map"));
+    console.log("All elements with class containing 'map':", document.querySelectorAll("[class*='map']"));
+
+    if (!mapElement) {
+      console.error("Map element not found - check if #map exists in DOM");
+      console.log("Available elements:", document.querySelectorAll("*"));
+      return;
+    }
+
+    const map = new GoogleMap(mapElement, {
+      zoom: MAP_ZOOM_INITIAL,
+      center: center,
+      mapId: "MARQUETTE_HISTORIC_DISTRICT",
+    });
+
+    // Create bounds to fit all markers
+    const bounds = new google.maps.LatLngBounds();
+    const sites = document.querySelectorAll("li.site-list-item");
+
+    // Store marker references for hover effects
+    const markerMap = new Map();
+
+    // Z-index counter starting at base map z-index + 100
+    let baseZIndex = 100;
+
+    sites.forEach((site, index) => {
+      // Create custom house marker
+      const markerContent = document.createElement('div');
+      markerContent.className = 'custom-marker';
+      const currentIconZIndex = baseZIndex + index;
+      markerContent.style.zIndex = currentIconZIndex.toString();
+      markerContent.style.position = 'relative';
+
+      // Get the house colors - consistent for all markers
+      const rootStyles = getComputedStyle(document.documentElement);
+      let houseIconColor = rootStyles.getPropertyValue('--site-primary-b-dark').trim();
+      let houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
+
+      // Validate colors to prevent XSS - ensure they're valid CSS colors
+      const colorRegex = /^(#[0-9a-fA-F]{3,6}|rgb\([^)]*\)|rgba\([^)]*\)|[a-zA-Z]+)$/;
+      if (!colorRegex.test(houseIconColor)) houseIconColor = '#4f317d';
+      if (!colorRegex.test(houseInteriorColor)) houseInteriorColor = '#f9a825';
+
+      markerContent.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
+          <!-- House interior background -->
+          <path d="M7,12H17V18H7V12Z" fill="${houseInteriorColor}"/>
+          <!-- House outline and structure -->
+          <path d="M12,5L19.5,12H17V18H13.5V13H10.5V18H7V12H5L12,5Z" fill="none" stroke="${houseIconColor}" stroke-width="1.5"/>
+          <!-- Door -->
+          <rect x="10.5" y="13.5" width="3" height="4.5" fill="${houseIconColor}"/>
+        </svg>
+      `;
+
+      const siteLatStr = site.getAttribute("data-latitude");
+      const siteLngStr = site.getAttribute("data-longitude");
+      const siteId = site.getAttribute("data-id");
+      const historicName = site.getAttribute("data-historic-name");
+
+      if (!siteLatStr || !siteLngStr || !siteId || !historicName) {
+        console.warn("Missing required data attributes for site", site);
+        return;
+      }
+
+      const position = {
+        lat: parseFloat(siteLatStr),
+        lng: parseFloat(siteLngStr)
+      };
+
+      // Add this position to bounds
+      bounds.extend(position);
+
+      const marker = new AdvancedMarkerElement({
+        title: historicName,
+        position: position,
+        map: map,
+        gmpClickable: true,
+        gmpDraggable: false,
+        content: markerContent,
+        zIndex: currentIconZIndex
+      });
+
+      // Add event listeners to the marker's element/content
+      if (marker.content) {
+        marker.content.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          // Set flag to prevent mouseleave from clearing sidebar highlighting
+          isOpeningModal = true;
+
+          const wasInFullscreen = isInFullscreenMode();
+          showSiteModal(siteId, wasInFullscreen);
+
+          // Reset flag after a short delay to allow modal to open
+          setTimeout(() => {
+            isOpeningModal = false;
+          }, 100);
+        });
+
+        marker.content.addEventListener("mouseenter", () => {
+          markerContent.style.transform = 'scale(1.2)';
+          markerContent.style.transition = 'transform 0.2s ease-in-out';
+
+          // Change colors on hover
+          const svg = markerContent.querySelector('svg');
+          const paths = svg.querySelectorAll('path');
+          const rect = svg.querySelector('rect');
+          const hoverColor = rootStyles.getPropertyValue('--site-primary-a').trim();
+
+          paths.forEach((path, index) => {
+            // Change stroke if it exists
+            if (path.getAttribute('stroke')) {
+              path.setAttribute('stroke', hoverColor);
+            }
+            // Change fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', hoverColor);
+            }
+          });
+          if (rect) {
+            rect.setAttribute('fill', hoverColor);
+          }
+
+          // Highlight corresponding sidebar item and scroll to it
+          const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+          if (sidebarItem) {
+            sidebarItem.style.backgroundColor = 'rgba(249, 168, 37, 0.1)';
+            sidebarItem.style.transform = 'scale(1.02)';
+            sidebarItem.style.transition = 'all 0.2s ease-in-out';
+
+            // Scroll the sidebar item into view
+            sidebarItem.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+          }
+        });
+
+        marker.content.addEventListener("mouseleave", () => {
+          markerContent.style.transform = 'scale(1)';
+
+          // Reset colors on mouse leave
+          const svg = markerContent.querySelector('svg');
+          const paths = svg.querySelectorAll('path');
+          const rect = svg.querySelector('rect');
+
+          paths.forEach(path => {
+            // Reset stroke if it exists
+            if (path.getAttribute('stroke')) {
+              path.setAttribute('stroke', houseIconColor);
+            }
+            // Reset fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', houseInteriorColor);
+            }
+          });
+          if (rect) {
+            rect.setAttribute('fill', houseIconColor);
+          }
+
+          // Reset sidebar item highlighting (unless we're opening a modal)
+          if (!isOpeningModal) {
+            const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+            if (sidebarItem) {
+              sidebarItem.style.backgroundColor = '';
+              sidebarItem.style.transform = '';
+              sidebarItem.style.transition = '';
+            }
+          }
+        });
+      }
+
+      // Store marker reference for sidebar hover effects
+      markerMap.set(siteId, { marker, markerContent, houseIconColor });
+    });
+
+    // Add hover effects from sidebar to map markers
+    // Reuse the same hover color as the marker hover effects
+
+    sites.forEach((site) => {
+      const siteId = site.getAttribute("data-id");
+      if (!siteId || !markerMap.has(siteId)) return;
+
+      const { markerContent, houseIconColor } = markerMap.get(siteId);
+
+      // Add hover effects to sidebar items
+      site.addEventListener("mouseenter", () => {
+        try {
+          console.log('Sidebar hover for site:', siteId);
+          console.log('Marker content:', markerContent);
+
+          // Highlight the corresponding marker
+          markerContent.style.transform = 'scale(1.2)';
+          markerContent.style.transition = 'transform 0.2s ease-in-out';
+
+          // Change marker colors
+          const svg = markerContent.querySelector('svg');
+          if (svg) {
+            const paths = svg.querySelectorAll('path');
+            const rect = svg.querySelector('rect');
+            const hoverColor = '#f59e0b'; // Direct amber color value
+
+            paths.forEach((path) => {
+              // Change stroke if it exists
+              if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+                path.setAttribute('stroke', hoverColor);
+              }
+              // Change fill if it exists and is not "none"
+              const fillValue = path.getAttribute('fill');
+              if (fillValue && fillValue !== 'none') {
+                path.setAttribute('fill', hoverColor);
+              }
+            });
+            if (rect) {
+              rect.setAttribute('fill', hoverColor);
+            }
+          }
+        } catch (error) {
+          console.error('Error in sidebar hover:', error);
+        }
+      });
+
+      site.addEventListener("mouseleave", () => {
+        // Reset marker appearance
+        markerContent.style.transform = 'scale(1)';
+
+        // Reset marker colors
+        const svg = markerContent.querySelector('svg');
+        if (svg) {
+          const paths = svg.querySelectorAll('path');
+          const rect = svg.querySelector('rect');
+          const originalStrokeColor = '#1e293b'; // Direct dark color value
+          const originalFillColor = '#fef3c7'; // Direct light color value
+
+          paths.forEach(path => {
+            // Reset stroke if it exists
+            if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+              path.setAttribute('stroke', originalStrokeColor);
+            }
+            // Reset fill if it exists and is not "none"
+            const fillValue = path.getAttribute('fill');
+            if (fillValue && fillValue !== 'none') {
+              path.setAttribute('fill', originalFillColor);
+            }
+          });
+          if (rect) {
+            rect.setAttribute('fill', originalStrokeColor);
+          }
+        }
+      });
+    });
+
+    // Fit the map to all markers with padding for better visibility
+    if (sites.length > 0) {
+      // Add padding to ensure markers aren't right at the edge
+      const padding = {
+        top: 25,
+        right: 25,
+        bottom: 25,
+        left: 25
+      };
+
+      map.fitBounds(bounds, padding);
+
+      // Add a listener to ensure appropriate zoom level
+      google.maps.event.addListenerOnce(map, 'bounds_changed', () => {
+        const currentZoom = map.getZoom();
+        // Ensure zoom is within reasonable bounds
+        if (currentZoom > MAP_ZOOM_MAX_AFTER_BOUNDS) {
+          map.setZoom(MAP_ZOOM_MAX_AFTER_BOUNDS);
+        } else if (currentZoom < MAP_ZOOM_MIN_AFTER_BOUNDS) {
+          map.setZoom(MAP_ZOOM_MIN_AFTER_BOUNDS);
+        }
+      });
+    }
+
+  } catch (error) {
+    console.error("Error initializing map:", error);
+  }
+}
+
+function isInFullscreenMode() {
+  return document.fullscreenElement ||
+         document.webkitFullscreenElement ||
+         document.mozFullScreenElement ||
+         document.msFullscreenElement;
+}
+
+function showSiteModal(siteId, wasInFullscreen = false) {
+  const modal = document.getElementById('site-modal');
+  const modalContent = document.getElementById('modal-site-content');
+
+  if (!modal || !modalContent) {
+    console.error('Modal elements not found');
+    return;
+  }
+
+  // Show loading state
+  modalContent.innerHTML = '<div class="loading">Loading site details...</div>';
+  modal.style.display = 'block';
+
+  // Highlight and scroll to the corresponding sidebar item
+  const sidebarItem = document.querySelector(`[data-id="${siteId}"]`);
+  if (sidebarItem) {
+    // Clear any existing highlights first
+    document.querySelectorAll('.site-list-item').forEach(item => {
+      item.style.backgroundColor = '';
+      item.style.transform = '';
+      item.style.fontWeight = '';
+    });
+
+    // Highlight the selected item
+    sidebarItem.style.backgroundColor = 'rgba(249, 168, 37, 0.2)';
+    sidebarItem.style.transform = 'scale(1.02)';
+    sidebarItem.style.fontWeight = '600';
+    sidebarItem.style.transition = 'all 0.2s ease-in-out';
+
+    // Scroll the sidebar item into view
+    sidebarItem.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  }
+
+  // Fetch site content
+  fetch(`/modal/houses/${siteId}`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(html => {
+      modalContent.innerHTML = html;
+
+      // Initialize any gallery components in the loaded content
+      const galleries = modalContent.querySelectorAll('[data-controller="gallery"]');
+      galleries.forEach(gallery => {
+        // Dispatch a custom event to initialize the gallery
+        const event = new CustomEvent('gallery:initialize', {
+          detail: { element: gallery }
+        });
+        document.dispatchEvent(event);
+      });
+    })
+    .catch(error => {
+      console.error('Error loading site details:', error);
+      modalContent.innerHTML = '<div class="error">Error loading site details. Please try again.</div>';
+    });
+}
+
+function closeSiteModal() {
+  const modal = document.getElementById('site-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+
+  // Clear sidebar highlighting when modal closes
+  document.querySelectorAll('.site-list-item').forEach(item => {
+    item.style.backgroundColor = '';
+    item.style.transform = '';
+    item.style.fontWeight = '';
+    item.style.transition = '';
+  });
+}
+
+// Make closeSiteModal globally available
+window.closeSiteModal = closeSiteModal;
+
+// Event listeners for modal and map initialization
+function initializeMap() {
+  console.log("initializeMap called");
+  initMap().catch(console.error);
+}
+
+
+// Handle Turbo events for proper initialization
+document.addEventListener('turbo:load', () => {
+  console.log("turbo:load fired");
+
+  // Setup modal event handlers
+  const modal = document.getElementById('site-modal');
+  if (modal) {
+    // Close modal when clicking the close button
+    const closeButton = modal.querySelector('.modal-close');
+    if (closeButton) {
+      closeButton.addEventListener('click', closeSiteModal);
+    }
+
+    // Close modal when clicking the backdrop
+    const backdrop = modal.querySelector('.modal-backdrop-map');
+    if (backdrop) {
+      backdrop.addEventListener('click', closeSiteModal);
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.style.display === 'block') {
+        closeSiteModal();
+      }
+    });
+  }
+
+  // Add click handlers to site list items
+  const siteListItems = document.querySelectorAll('li.site-list-item');
+  siteListItems.forEach(item => {
+    item.addEventListener('click', (event) => {
+      event.preventDefault();
+      const siteId = item.getAttribute('data-id');
+      if (siteId) {
+        showSiteModal(siteId);
+      }
+    });
+  });
+
+  // Initialize the map
+  initializeMap();
+});
+
+// Fallback for non-Turbo environments
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOMContentLoaded fired");
+  // Only initialize if container hasn't been initialized yet
+  setTimeout(() => {
+    const coords = document.getElementById("sites");
+    if (coords && coords.dataset.mapInitialized !== 'true') {
+      console.log("DOMContentLoaded fallback - initializing map");
+      initializeMap();
+    }
+  }, 100);
+});
+</script>

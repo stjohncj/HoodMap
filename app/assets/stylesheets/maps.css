@@ -257,12 +257,13 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 600px; /* Match map height exactly */
   z-index: 1000;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
+  border-radius: 1rem; /* Match map border-radius */
   box-sizing: border-box;
 }
 
@@ -417,7 +418,7 @@
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 1);
+  background: rgba(128, 128, 128, 0.3);
   color: #374151;
   transform: scale(1.1);
 }
@@ -458,58 +459,106 @@
 }
 
 .modal-site-header {
-  background: linear-gradient(135deg, var(--site-primary-a) 0%, var(--site-primary-a-light) 50%, var(--site-primary-a) 100%);
-  color: var(--site-primary-b);
-  padding: 1rem;
+  position: sticky;
+  top: 0;
+  background: rgba(255, 251, 235, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  color: var(--site-primary-b-dark);
+  padding: 0.5rem 2.5rem 0.5rem 4.5rem;
+  margin: -1px -1px 1.5rem -1px;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  z-index: 10;
+  border-radius: 1rem 1rem 0 0;
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 0.75rem;
+  left: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--site-primary-b-dark);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+
+.modal-close-button:hover {
+  background: rgba(128, 128, 128, 0.3);
+  transform: scale(1.1);
+}
+
+.modal-close-button span {
+  line-height: 1;
+  font-weight: normal;
 }
 
 .modal-site-header-left {
   flex: 1;
   text-align: left;
-  margin-left: 3rem;
+  margin-left: 0;
+  margin-top: 0.15rem;
 }
 
 .modal-site-header h2 {
-  margin: 0;
+  margin: 0 0 0.15rem 0;
   font-family: 'Controwell Script', cursive;
-  font-size: 2.2rem;
+  font-size: 1.8rem;
   font-weight: normal;
-  color: var(--site-primary-b);
+  color: var(--site-primary-b-dark);
+  line-height: 1.1;
 }
 
 .modal-site-style {
-  font-size: 1.2rem;
-  color: var(--site-primary-b-dark);
-  font-weight: 600;
-  margin: 0.25rem 0 0 0;
+  font-size: 1.1rem;
+  color: var(--site-primary-b);
+  font-weight: 500;
+  margin: 0;
   padding-left: 2rem;
+  opacity: 0.9;
+  align-self: flex-end;
 }
 
 .modal-site-header-details {
   display: flex;
   flex-direction: column;
   text-align: right;
-  gap: 0.25rem;
-  margin-right: 5rem;
-  margin-top: 0.3rem;
+  gap: 0.2rem;
+  margin-right: 0;
+  margin-top: 0;
+  min-width: 200px;
 }
 
 .modal-site-address {
   font-size: 1.4rem;
-  opacity: 0.95;
+  opacity: 0.9;
   margin: 0;
   color: var(--site-primary-b-dark);
   font-family: 'Controwell Script', cursive;
+  font-weight: 500;
 }
 
 .modal-site-year {
-  font-size: 1.2rem;
-  color: var(--site-primary-b-dark);
-  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--site-primary-b);
+  font-weight: 500;
   margin: 0;
+  opacity: 0.9;
 }
 
 .modal-site-content {
@@ -614,7 +663,9 @@
 }
 
 .modal-gallery-item.featured .modal-gallery-image {
-  height: 400px;
+  height: 180px;
+  max-width: 500px;
+  width: 100%;
 }
 
 .modal-gallery-image:hover {
@@ -656,7 +707,18 @@
 
 .modal-detail-grid {
   display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.coordinates {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: var(--site-primary-b-dark);
 }
 
 .modal-detail-item {
@@ -691,13 +753,39 @@
   }
   
   .modal-site-header {
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
-  
+
   .modal-site-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
-  
+
+  .modal-site-header-left {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .modal-site-header-details {
+    text-align: center;
+    margin-right: 0;
+    min-width: auto;
+  }
+
+  .modal-site-style {
+    font-size: 0.95rem;
+  }
+
+  .modal-site-year {
+    font-size: 0.95rem;
+  }
+
+  .modal-site-address {
+    font-size: 1.3rem;
+  }
+
   .modal-site-content {
     padding: 1.5rem;
   }
@@ -717,6 +805,7 @@
   
   /* Map modal responsive */
   .site-modal-map-overlay {
+    height: 500px; /* Match mobile map height exactly */
     padding: 0.5rem;
   }
   
@@ -746,7 +835,8 @@
   }
   
   .modal-gallery-item.featured .modal-gallery-image {
-    height: 250px;
+    height: 150px;
+    max-width: 100%;
   }
 }
 

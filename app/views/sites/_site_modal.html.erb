@@ -1,13 +1,13 @@
 <div class="site-modal-detail" data-controller="gallery">
   <div class="modal-site-header">
+    <button class="modal-close-button" onclick="closeSiteModal()" aria-label="Close modal">
+      <span>&times;</span>
+    </button>
     <div class="modal-site-header-left">
       <h2><%= site.historic_name %></h2>
-      <% if site.images.any? %>
-        <p class="modal-site-photo-count"><%= pluralize(site.images.count, 'photo') %></p>
-      <% end %>
       <% if site.architectural_style.present? %>
         <p class="modal-site-style">
-          <%= site.architectural_style %><% if site.architect.present? %> by architect <%= site.architect %><% end %>
+          <%= site.architectural_style %>
         </p>
       <% end %>
     </div>
@@ -25,20 +25,20 @@
       <div class="image-gallery">
         <% site.images.each_with_index do |image, index| %>
           <a href="#" onclick="openImageGallery(<%= {
-            images: site.images.map.with_index { |img, i| { 
-              src: url_for(img), 
-              alt: "Historic home, the \"#{site.historic_name}\" - Photo #{i + 1} of #{site.images.count}" 
+            images: site.images.map.with_index { |img, i| {
+              src: url_for(img),
+              alt: site_image_alt_text(site, i + 1, site.images.count)
             } },
             currentIndex: index
           }.to_json.html_safe %>); return false;" class="gallery-image-link">
-            <%= image_tag(image, alt: "Historic home, the \"#{site.historic_name}\" - Photo #{index + 1} of #{site.images.count}", class: "gallery-image") %>
+            <%= image_tag(image, alt: site_image_alt_text(site, index + 1, site.images.count), class: "gallery-image") %>
           </a>
         <% end %>
       </div>
     <% else %>
       <div class="modal-image-gallery">
         <div class="modal-gallery-item featured">
-          <%= image_tag("site-photos-not-available.png", alt: "Site photos not available", class: "modal-gallery-image") %>
+          <%= image_tag("no-image-placeholder.png", alt: "No image available", class: "modal-gallery-image") %>
         </div>
       </div>
     <% end %>
@@ -57,6 +57,7 @@
     
     <!-- Property details section -->
     <div class="modal-site-details">
+      <h4>Property Details</h4>
       <div class="modal-detail-grid">
         <% if site.original_owner.present? %>
           <div class="modal-detail-item">
@@ -79,11 +80,19 @@
           </div>
         <% end %>
 
-
         <% if site.survey_year.present? %>
           <div class="modal-detail-item">
-            <span class="modal-detail-label">Survey Year</span>
+            <span class="modal-detail-label">Historic Survey</span>
             <span class="modal-detail-value"><%= site.survey_year %></span>
+          </div>
+        <% end %>
+
+        <% if site.latitude.present? && site.longitude.present? %>
+          <div class="modal-detail-item">
+            <span class="modal-detail-label">Location</span>
+            <span class="modal-detail-value">
+              <span class="coordinates"><%= number_with_precision(site.latitude, precision: 6) %>, <%= number_with_precision(site.longitude, precision: 6) %></span>
+            </span>
           </div>
         <% end %>
       </div>
