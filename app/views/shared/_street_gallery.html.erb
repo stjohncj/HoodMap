@@ -1,7 +1,8 @@
 <%
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
 # Map the images to extract only src and alt properties needed for the JavaScript gallery
-complete_gallery_images = images.map { |img| { src: img[:src], alt: img[:alt] } }
+# Use asset_path to get the full path with fingerprint for each image
+complete_gallery_images = images.map { |img| { src: asset_path(img[:src]), alt: img[:alt] } }
 %>
 <div class="image-gallery">
   <% images.each_with_index do |image_info, index| %>
