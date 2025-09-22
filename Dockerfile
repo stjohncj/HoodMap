@@ -2,8 +2,8 @@
 # check=error=true
 
 # This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t hood_map .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name hood_map hood_map
+# docker build -t hood_map . --build-arg SECRET_KEY_BASE=<your_secret_key>
+# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> -e SECRET_KEY_BASE=<your_secret_key> --name hood_map hood_map
 
 # For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
@@ -28,6 +28,9 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
+# Build argument for SECRET_KEY_BASE
+ARG SECRET_KEY_BASE
+
 # Install packages needed to build gems
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git libpq-dev pkg-config && \
@@ -45,8 +48,9 @@ COPY . .
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+# Precompiling assets for production using SECRET_KEY_BASE from environment
+# Falls back to placeholder if SECRET_KEY_BASE is not provided during build
+RUN SECRET_KEY_BASE=${SECRET_KEY_BASE:-$(openssl rand -hex 64)} ./bin/rails assets:precompile
 
 
 
