@@ -12,7 +12,13 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  if [ -n "${DATABASE_URL}" ]; then
+    echo "Database URL found, running db:prepare"
+    ./bin/rails db:prepare
+  else
+    echo "WARNING: DATABASE_URL not set, skipping database setup"
+    echo "The app will fail if it tries to access the database"
+  fi
 fi
 
 exec "${@}"
