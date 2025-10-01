@@ -1,5 +1,9 @@
 #!/bin/bash -e
 
+# Debug: Show environment variables
+echo "DEBUG: Environment variables starting with RAILS, SECRET, or DATABASE:"
+env | grep -E '^(RAILS|SECRET|DATABASE)' || echo "None found"
+
 # Enable jemalloc for reduced memory usage and latency.
 if [ -z "${LD_PRELOAD+x}" ]; then
     LD_PRELOAD=$(find /usr/lib -name libjemalloc.so.2 -print -quit)
