@@ -31,18 +31,28 @@ test:
 # Production configuration for Railway and other cloud providers
 # Uses DATABASE_URL environment variable which Railway provides automatically
 production:
-  primary:
-    url: <%= ENV["DATABASE_URL"] %>
+  <% if ENV["DATABASE_URL"].present? %>
+    primary:
+      url: <%= ENV["DATABASE_URL"] %>
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    cache:
+      url: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+      migrations_paths: db/cache_migrate
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    queue:
+      url: <%= ENV["QUEUE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+      migrations_paths: db/queue_migrate
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    cable:
+      url: <%= ENV["CABLE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+      migrations_paths: db/cable_migrate
+      pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  <% else %>
+    # Fallback when DATABASE_URL is not set - app won't work but will start
+    adapter: postgresql
+    database: hood_map_production
+    host: localhost
+    username: postgres
+    password: ""
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  cache:
-    url: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
-    migrations_paths: db/cache_migrate
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  queue:
-    url: <%= ENV["QUEUE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
-    migrations_paths: db/queue_migrate
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  cable:
-    url: <%= ENV["CABLE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
-    migrations_paths: db/cable_migrate
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  <% end %>
