@@ -21,7 +21,7 @@ if Rails.env.production?
 
   # Ensure HTTPS is enforced at the application level
   Rails.application.config.session_store :cookie_store,
-    key: '_hood_map_session',
+    key: "_hood_map_session",
     secure: true,
     httponly: true,
     same_site: :lax
