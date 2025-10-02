@@ -41,3 +41,7 @@
 
 # Ignore macOS system files
 .DS_Store
+
+# Railway CLI config (optional - can be committed if you want to share config)
+railway.json
+railway.toml
