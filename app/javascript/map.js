@@ -56,9 +56,6 @@ async function initMap() {
       const currentIconZIndex = baseZIndex + index;
       markerContent.style.zIndex = currentIconZIndex.toString();
       markerContent.style.position = 'relative';
-      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-        console.log(`Setting house icon ${index} z-index to:`, currentIconZIndex);
-      }
 
       // Get the house colors based on the site index for two-tone effect
       const rootStyles = getComputedStyle(document.documentElement);
@@ -66,13 +63,6 @@ async function initMap() {
         ? rootStyles.getPropertyValue('--site-primary-b-dark').trim()
         : rootStyles.getPropertyValue('--site-primary-a-light').trim();
       const houseInteriorColor = rootStyles.getPropertyValue('--site-primary-a-light').trim();
-
-      if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-        console.log('House icon colors for index', index, ':', {
-          houseIconColor,
-          houseInteriorColor
-        });
-      }
 
       markerContent.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" class="house-icon">
@@ -124,9 +114,6 @@ async function initMap() {
         });
 
         marker.content.addEventListener("mouseenter", () => {
-          if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'development') {
-            console.log('Mouse over marker for site:', siteId, 'Position:', position, 'Map bounds:', map?.getBounds());
-          }
           markerContent.style.transform = 'scale(1.2)';
           markerContent.style.transition = 'transform 0.2s ease-in-out';
 
