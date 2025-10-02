@@ -16,6 +16,9 @@ if Rails.env.production?
     policy.frame_src "https://maps.googleapis.com"
   end
 
+  # Force CSP to be applied
+  Rails.application.config.content_security_policy_report_only = false
+
   # Ensure HTTPS is enforced at the application level
   Rails.application.config.session_store :cookie_store,
     key: '_hood_map_session',
