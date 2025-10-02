@@ -9,14 +9,6 @@ fi
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
-
-  # Also ensure cache/queue/cable databases are set up
-  ./bin/rails db:create:cache || true
-  ./bin/rails db:schema:load:cache || true
-  ./bin/rails db:create:queue || true
-  ./bin/rails db:schema:load:queue || true
-  ./bin/rails db:create:cable || true
-  ./bin/rails db:schema:load:cable || true
 fi
 
 exec "${@}"
