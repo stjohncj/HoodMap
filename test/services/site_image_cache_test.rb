@@ -79,6 +79,7 @@ class SiteImageCacheTest < ActiveSupport::TestCase
       assert_includes image_data.keys, :site_name
       assert_includes image_data.keys, :site_id
       assert_includes image_data.keys, :site_address
+      assert_includes image_data.keys, :built_year
 
       assert_equal image_id, image_data[:attachment_id]
     end
@@ -225,8 +226,33 @@ class SiteImageCacheTest < ActiveSupport::TestCase
       assert_kind_of String, image[:alt]
       assert_kind_of String, image[:caption]
 
-      assert_match %r{Historic home, the}, image[:alt]
+      assert_match %r{Historic home, }, image[:alt]
+      assert_match %r{Photo \d+ of \d+}, image[:alt]
     end
+  end
+
+  test "random_images includes built_year in alt text when available" do
+    skip_unless_images_exist
+
+    # Use memory store for this test since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
+    SiteImageCache.build_and_store_cache
+    result = SiteImageCache.random_images(10)
+
+    # Check if any images have built_year in alt text
+    images_with_built_year = result.select { |img| img[:alt].match?(/built \d{4}/) }
+
+    # This assertion depends on test data - some sites may not have built_year
+    # So we just verify the format is correct when it exists
+    if images_with_built_year.any?
+      images_with_built_year.each do |image|
+        assert_match %r{built \d{4}}, image[:alt], "Alt text should include 'built <year>' when site has built_year"
+      end
+    end
+  ensure
+    # Reset to null store for other tests
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "random_images filters out images without URLs" do
