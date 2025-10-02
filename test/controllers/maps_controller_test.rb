@@ -138,7 +138,7 @@ class MapsControllerTest < ActionDispatch::IntegrationTest
   test "historic_district should set proper meta tags" do
     get historic_district_map_path
 
-    assert_select "title", "Hood Map"
+    assert_select "title", "Marquette Historic District"
     assert_select "meta[name='viewport']"
     assert_select "meta[name='apple-mobile-web-app-capable']"
   end
