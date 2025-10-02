@@ -11,12 +11,6 @@ module HoodMap
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
-    # Set secret_key_base from environment variable if available
-    # This is needed when RAILS_MASTER_KEY is not available
-    if ENV['SECRET_KEY_BASE'].present?
-      config.secret_key_base = ENV['SECRET_KEY_BASE']
-    end
-
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

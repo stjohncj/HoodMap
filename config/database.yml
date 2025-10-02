@@ -31,7 +31,6 @@ test:
 # Production configuration for Railway and other cloud providers
 # Uses DATABASE_URL environment variable which Railway provides automatically
 production:
-<% if ENV["DATABASE_URL"].present? %>
   primary:
     url: <%= ENV["DATABASE_URL"] %>
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -47,34 +46,3 @@ production:
     url: <%= ENV["CABLE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
     migrations_paths: db/cable_migrate
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-<% else %>
-  # Fallback when DATABASE_URL is not set - provides all required databases
-  primary:
-    adapter: postgresql
-    database: hood_map_production
-    host: localhost
-    username: postgres
-    password: ""
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  cache:
-    adapter: postgresql
-    database: hood_map_production_cache
-    host: localhost
-    username: postgres
-    password: ""
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  queue:
-    adapter: postgresql
-    database: hood_map_production_queue
-    host: localhost
-    username: postgres
-    password: ""
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  cable:
-    adapter: postgresql
-    database: hood_map_production_cable
-    host: localhost
-    username: postgres
-    password: ""
-    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-<% end %>
