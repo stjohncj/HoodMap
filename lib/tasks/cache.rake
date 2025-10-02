@@ -1,5 +1,7 @@
 namespace :cache do
   desc "Refresh the site image cache"
+  # The image cache includes descriptive text about the site images
+  # that comes from the database.
   task refresh: :environment do
     puts "Refreshing site image cache..."
     cache = SiteImageCache.refresh_cache!
