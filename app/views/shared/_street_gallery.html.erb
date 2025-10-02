@@ -1,9 +1,9 @@
 <%
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
 # Map the images to extract only src and alt properties needed for the JavaScript gallery
-# Handle both Active Storage URLs (start with '/') and asset pipeline files
+# Handle both Active Storage URLs (start with '/' or 'http') and asset pipeline files
 complete_gallery_images = images.map do |img|
-  src = img[:src].start_with?('/') ? img[:src] : asset_path(img[:src])
+  src = (img[:src].start_with?('/') || img[:src].start_with?('http')) ? img[:src] : asset_path(img[:src])
   { src: src, alt: img[:alt] }
 end
 %>

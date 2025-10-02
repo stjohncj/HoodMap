@@ -61,7 +61,7 @@ class SiteImageCacheTest < ActiveSupport::TestCase
     cache[:images].each do |image_id, image_data|
       assert_includes image_data.keys, :url, "Image data should include pre-generated URL"
       assert_kind_of String, image_data[:url], "URL should be a string"
-      assert_match %r{^/rails/active_storage/blobs}, image_data[:url], "URL should be Active Storage path"
+      assert_match %r{/rails/active_storage/blobs}, image_data[:url], "URL should be Active Storage path"
     end
   end
 
@@ -332,7 +332,7 @@ class SiteImageCacheTest < ActiveSupport::TestCase
 
       result.each do |url|
         assert_kind_of String, url
-        assert_match %r{^/rails/active_storage/blobs}, url
+        assert_match %r{/rails/active_storage/blobs}, url
       end
     end
   end

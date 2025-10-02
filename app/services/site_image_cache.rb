@@ -22,7 +22,8 @@ class SiteImageCache
 
       site.images.each do |image|
         # Pre-generate URLs at cache build time for maximum performance
-        url = Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
+        # Use polymorphic_url which handles Active Storage attachments properly
+        url = Rails.application.routes.url_helpers.url_for(image)
 
         image_cache[image.id] = {
           attachment_id: image.id,

@@ -137,12 +137,13 @@ class ImageLoadingPerformanceTest < ActionDispatch::IntegrationTest
     cache[:images].each do |image_id, image_data|
       url = image_data[:url]
       assert url.present?, "Image #{image_id} should have a URL"
-      assert url.start_with?("/rails/active_storage/blobs"),
+      assert url.include?("/rails/active_storage/blobs"),
              "URL should be Active Storage path: #{url}"
 
-      # Test that URL is accessible
-      get url
-      assert_response :success, "Image URL should be accessible: #{url}"
+      # Test that URL is accessible (extract path from full URL if needed)
+      url_path = URI.parse(url).path
+      get url_path
+      assert_response :success, "Image URL should be accessible: #{url_path}"
     end
   end
 
