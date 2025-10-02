@@ -129,10 +129,16 @@ async function initMap() {
           }
           markerContent.style.transform = 'scale(1.2)';
           markerContent.style.transition = 'transform 0.2s ease-in-out';
+
+          // Highlight corresponding sidebar item and scroll it into view
+          highlightSidebarItem(siteId);
         });
 
         marker.content.addEventListener("mouseleave", () => {
           markerContent.style.transform = 'scale(1)';
+
+          // Remove highlight from sidebar item
+          unhighlightSidebarItem(siteId);
         });
       }
     });
@@ -208,6 +214,49 @@ function closeSiteModal() {
   const modal = document.getElementById('site-modal');
   if (modal) {
     modal.style.display = 'none';
+  }
+}
+
+// Highlight sidebar item and scroll it into centered view
+function highlightSidebarItem(siteId) {
+  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
+  if (!sidebarItem) return;
+
+  // Remove existing highlights
+  document.querySelectorAll('li.site-list-item.highlighted').forEach(item => {
+    item.classList.remove('highlighted');
+  });
+
+  // Add highlight to current item
+  sidebarItem.classList.add('highlighted');
+
+  // Scroll to center the item in the sidebar
+  const sidebar = document.querySelector('.sites-sidebar ol');
+  if (!sidebar) return;
+
+  const sidebarRect = sidebar.getBoundingClientRect();
+  const itemRect = sidebarItem.getBoundingClientRect();
+
+  // Calculate scroll position to center the item
+  // scrollTop = (item's position relative to container) - (half of container height) + (half of item height)
+  const itemOffsetTop = sidebarItem.offsetTop;
+  const itemHeight = itemRect.height;
+  const sidebarHeight = sidebarRect.height;
+
+  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
+
+  // Smooth scroll to the target position
+  sidebar.scrollTo({
+    top: targetScrollTop,
+    behavior: 'smooth'
+  });
+}
+
+// Remove highlight from sidebar item
+function unhighlightSidebarItem(siteId) {
+  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
+  if (sidebarItem) {
+    sidebarItem.classList.remove('highlighted');
   }
 }
 
