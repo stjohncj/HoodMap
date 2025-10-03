@@ -121,16 +121,19 @@
   transition: all 0.2s ease;
 }
 
-/* Highlight effect for sidebar items when triggered by map marker hover events; should match hover CSS */
-.site-list-item.highlighted {
-  background: var(--mhd-light-lighter);
+/* Hover state for sidebar items - lighter background */
+.site-list-item:hover {
+  background: var(--site-highlight-background);
   border-color: var(--site-primary-b);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
 }
 
-.site-list-item:hover {
-  background: var(--site-highlight-background);
+/* Highlight effect for sidebar items when triggered by map marker hover or click events */
+/* This should be darker than :hover and must come after to override */
+.site-list-item.highlighted,
+.site-list-item.highlighted:hover {
+  background: var(--mhd-light-lighter);
   border-color: var(--site-primary-b);
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);

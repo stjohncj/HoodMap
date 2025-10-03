@@ -204,6 +204,9 @@ function showSiteModal(siteId, wasInFullscreen = false) {
     return;
   }
 
+  // Highlight the sidebar item when opening modal
+  highlightSidebarItem(siteId);
+
   // Show loading state
   modalContent.innerHTML = '<div class="loading">Loading site details...</div>';
   modal.style.display = 'block';
@@ -239,6 +242,11 @@ function closeSiteModal() {
   const modal = document.getElementById('site-modal');
   if (modal) {
     modal.style.display = 'none';
+
+    // Remove highlight from any highlighted sidebar item
+    document.querySelectorAll('li.site-list-item.highlighted').forEach(item => {
+      item.classList.remove('highlighted');
+    });
   }
 }
 

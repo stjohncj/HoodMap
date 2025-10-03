@@ -30,6 +30,9 @@
   --mhd-light-lighter: #fef3c7;
   /* Light cream/vanilla */
   --mhd-light-darker: #fcd34d;
+  /* Lighter cream/vanilla */
+  --site-highlight-background: #fffbeb;
+  /* Very light cream for hover states */
 
   /* KHS Site Primary Color Aliases */
   /* --site-primary-a: var(--khs-gold);
