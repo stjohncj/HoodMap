@@ -22,7 +22,10 @@ class SiteImageCache
 
       site.images.each do |image|
         # Pre-generate URLs at cache build time for maximum performance
-        # Use rails_blob_path for path-only URLs (no host required)
+        # Use rails_blob_path for path-only URLs (no host required).
+        # NOTE: Path-only URLs are suitable for internal application use (e.g., web navigation).
+        # For contexts like email notifications or external integrations, use full URLs with host:
+        #   Rails.application.routes.url_helpers.rails_blob_url(image, host: <your_host>)
         url = Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
 
         image_cache[image.id] = {

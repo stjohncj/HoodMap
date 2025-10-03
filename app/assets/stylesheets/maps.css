@@ -121,7 +121,7 @@
   transition: all 0.2s ease;
 }
 
-/* Highlight effect for sidebar scrolling from map? should match hover CSS */
+/* Highlight effect for sidebar items when triggered by map marker hover events; should match hover CSS */
 .site-list-item.highlighted {
   background: var(--mhd-light-lighter);
   border-color: var(--site-primary-b);
