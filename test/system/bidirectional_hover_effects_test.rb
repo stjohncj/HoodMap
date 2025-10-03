@@ -344,13 +344,13 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
            "Sidebar item should have highlighted class when hovering map marker"
 
     # Get the computed background color when highlighted via map hover
-    map_hover_bg = page.evaluate_script("
+    map_hover_bg = page.evaluate_script(<<~JS)
       (function() {
         const item = document.querySelector('.site-list-item.highlighted');
         if (!item) return null;
         return window.getComputedStyle(item).backgroundColor;
       })()
-    ")
+    JS
 
     # Stop hovering marker by calling unhighlightSidebarItem
     page.execute_script("window.unhighlightSidebarItem(arguments[0])", site_id)
@@ -362,7 +362,7 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
 
     # Test 2: Hover over sidebar item (no .highlighted class added, just CSS :hover)
     # Get the computed background color when hovering sidebar directly
-    sidebar_hover_bg = page.evaluate_script("
+    sidebar_hover_bg = page.evaluate_script(<<~JS)
       (function() {
         const item = document.querySelector('.site-list-item');
         if (!item) return null;
@@ -373,7 +373,7 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
         // Get computed style - :hover should be active
         return window.getComputedStyle(item).backgroundColor;
       })()
-    ")
+    JS
 
     # The hover backgrounds should be different:
     # - Map marker hover uses .highlighted class with #d2bb94
