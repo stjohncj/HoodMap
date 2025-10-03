@@ -425,7 +425,8 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Test 2: Click sidebar item
     # Re-find the element in case DOM was updated
     first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
-    first_sidebar_item.click
+    # Use JavaScript click for reliability in CI
+    page.execute_script("arguments[0].click()", first_sidebar_item)
 
     # Modal should open
     assert_selector "#site-modal", visible: true, wait: 5
