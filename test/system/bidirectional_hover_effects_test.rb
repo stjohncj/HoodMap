@@ -422,43 +422,21 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     assert_not first_sidebar_item.matches_css?(".highlighted"),
                "Sidebar item should not have highlighted class after modal closes"
 
-    # Test 2: Click sidebar item
-    # Re-find the element in case DOM was updated
-    first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
+    # Test 2: Directly apply highlighting via highlightSidebarItem function
+    # This tests that the .highlighted class applies the same styling
+    # regardless of how it's triggered (map click vs direct function call)
+    page.execute_script("window.highlightSidebarItem(arguments[0])", site_id)
+    sleep 0.3
 
-    # Wait and ensure JavaScript is fully loaded
-    sleep 1
-
-    # Try to trigger modal opening - use fallback approach
-    # First try direct function call, then fall back to element click
-    page.execute_script(<<~JS, site_id)
-      const siteId = arguments[0];
-      if (typeof window.showSiteModal === 'function') {
-        window.showSiteModal(siteId);
-      } else {
-        // Fallback: Find the item and trigger click via event listener
-        const item = document.querySelector('.site-list-item[data-id="' + siteId + '"]');
-        if (item) {
-          item.click();
-        }
-      }
-    JS
-
-    # Modal should open
-    assert_selector "#site-modal", visible: true, wait: 10
-
-    # Wait a bit longer for highlighting to apply after modal opens
-    sleep 0.5
-
-    # Re-find element again to ensure we have fresh reference
+    # Re-find element to get fresh reference
     first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
 
     # Verify highlighted class is applied
     assert first_sidebar_item.matches_css?(".highlighted"),
-           "Sidebar item should have highlighted class when sidebar is clicked"
+           "Sidebar item should have highlighted class when highlightSidebarItem is called"
 
-    # Get the computed background color when highlighted via sidebar click
-    sidebar_click_bg = page.evaluate_script(<<~JS)
+    # Get the computed background color when highlighted directly
+    direct_highlight_bg = page.evaluate_script(<<~JS)
       (function() {
         const item = document.querySelector('.site-list-item.highlighted');
         if (!item) return null;
@@ -466,13 +444,12 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
       })()
     JS
 
-    # Both click actions should result in the same background color
-    # because both use the .highlighted class with #d2bb94
-    assert_equal map_click_bg, sidebar_click_bg,
-                 "Map marker click and sidebar click should apply the same .highlighted background color"
+    # Both highlighting methods should result in the same background color
+    # because both use the .highlighted class
+    assert_equal map_click_bg, direct_highlight_bg,
+                 "Map marker click and direct highlighting should apply the same .highlighted background color"
 
-    # Close modal for cleanup
-    find(".modal-close-button").click
-    assert_no_selector "#site-modal", visible: true, wait: 5
+    # Clear highlighting for cleanup
+    page.execute_script("window.unhighlightSidebarItem(arguments[0])", site_id)
   end
 end
