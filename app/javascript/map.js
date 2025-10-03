@@ -152,9 +152,9 @@ async function initMap() {
 
 function isInFullscreenMode() {
   return document.fullscreenElement ||
-         document.webkitFullscreenElement ||
-         document.mozFullScreenElement ||
-         document.msFullscreenElement;
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement;
 }
 
 function showSiteModal(siteId, wasInFullscreen = false) {
@@ -221,21 +221,12 @@ function highlightSidebarItem(siteId) {
   const sidebar = document.querySelector('.sites-sidebar ol');
   if (!sidebar) return;
 
-  const sidebarRect = sidebar.getBoundingClientRect();
-  const itemRect = sidebarItem.getBoundingClientRect();
-
-  // Calculate scroll position to center the item
-  // scrollTop = (item's position relative to container) - (half of container height) + (half of item height)
-  const itemOffsetTop = sidebarItem.offsetTop;
-  const itemHeight = itemRect.height;
-  const sidebarHeight = sidebarRect.height;
-
-  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
-
-  // Smooth scroll to the target position
-  sidebar.scrollTo({
-    top: targetScrollTop,
-    behavior: 'smooth'
+  // Use scrollIntoView with block: 'center' for reliable centering
+  // This ensures the item is always visible and centered in the viewport
+  sidebarItem.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+    inline: 'nearest'
   });
 }
 
@@ -246,6 +237,10 @@ function unhighlightSidebarItem(siteId) {
     sidebarItem.classList.remove('highlighted');
   }
 }
+
+// Make functions globally available immediately
+window.highlightSidebarItem = highlightSidebarItem;
+window.unhighlightSidebarItem = unhighlightSidebarItem;
 
 // Make closeSiteModal globally available
 window.closeSiteModal = closeSiteModal;

@@ -121,6 +121,14 @@
   transition: all 0.2s ease;
 }
 
+/* Highlight effect for sidebar scrolling from map? should match hover CSS */
+.site-list-item.highlighted {
+  background: var(--mhd-light-lighter);
+  border-color: var(--site-primary-b);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
+}
+
 .site-list-item:hover {
   background: var(--site-highlight-background);
   border-color: var(--site-primary-b);
@@ -129,6 +137,7 @@
 }
 
 .site-list-item:active {
+  background: var(--mhd-light-lighter);
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
@@ -155,14 +164,7 @@
   font-size: 0.9rem;
 }
 
-/* Highlight effect for sidebar scrolling */
-.site-list-item.highlighted {
-  background: var(--site-primary-a) !important;
-  border-color: var(--site-primary-b) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 4px 8px rgba(79, 49, 125, 0.3) !important;
-  transition: all 0.3s ease !important;
-}
+
 
 /* HTML marker styles */
 .marker-tag {
@@ -257,13 +259,15 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 750px; /* Match map height exactly */
+  height: 750px;
+  /* Match map height exactly */
   z-index: 1000;
   display: flex;
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
-  border-radius: 1rem; /* Match map border-radius */
+  border-radius: 1rem;
+  /* Match map border-radius */
   box-sizing: border-box;
 }
 
@@ -389,6 +393,7 @@
     opacity: 0;
     transform: translateY(-50px) scale(0.95);
   }
+
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -698,7 +703,8 @@
   color: #4b5563;
   line-height: 1.7;
   margin: 0 0 1rem 0;
-  text-indent: 2rem; /* Add paragraph indentation */
+  text-indent: 2rem;
+  /* Add paragraph indentation */
 }
 
 .description-paragraph:last-child {
@@ -746,12 +752,12 @@
     align-items: flex-start;
     padding-top: 2rem;
   }
-  
+
   .modal-content {
     max-height: 95vh;
     margin-top: 0;
   }
-  
+
   .modal-site-header {
     padding: 1rem 1.5rem;
     flex-direction: column;
@@ -789,51 +795,52 @@
   .modal-site-content {
     padding: 1.5rem;
   }
-  
+
   .modal-image-gallery {
     justify-content: center;
   }
-  
+
   .modal-gallery-item {
     width: 100%;
     max-width: 300px;
   }
-  
+
   .modal-detail-item {
     grid-template-columns: 1fr;
   }
-  
+
   /* Map modal responsive */
   .site-modal-map-overlay {
-    height: 500px; /* Match mobile map height exactly */
+    height: 500px;
+    /* Match mobile map height exactly */
     padding: 0.5rem;
   }
-  
+
   .modal-content-map {
     max-width: 100%;
     max-height: 95%;
   }
-  
+
   /* Fullscreen modal responsive */
   .site-modal-map-overlay.fullscreen-modal {
     padding: 1rem;
   }
-  
+
   .site-modal-map-overlay.fullscreen-modal .modal-content-map {
     width: 95vw;
     height: 95vh;
     max-width: none;
   }
-  
+
   .modal-content-grid {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .modal-image-gallery {
     justify-content: center;
   }
-  
+
   .modal-gallery-item.featured .modal-gallery-image {
     height: 150px;
     max-width: 100%;
@@ -842,9 +849,12 @@
 
 /* Animation Keyframes */
 @keyframes backgroundShift {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: center, 0 0;
   }
+
   50% {
     background-position: center, -60px -30px;
   }
@@ -854,24 +864,31 @@
   0% {
     background-position: 30% 70%, 70% 30%, 90% 80%;
   }
+
   100% {
     background-position: 70% 30%, 30% 70%, 10% 20%;
   }
 }
 
 @keyframes titleShimmer {
-  0%, 100% {
+
+  0%,
+  100% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
 }
 
 @keyframes titleFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
   }
+
   50% {
     transform: translateY(-3px) scale(1.02);
   }
