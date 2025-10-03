@@ -23,12 +23,16 @@
 
   --mhd-dark: #1e3a8a;
   /* Deep professional blue */
-  --mhd-light: #f59e0b;
+  --mhd-light: #d2bb94;
   /* Warm amber/gold */
   --mhd-dark-darker: #1e293b;
   /* Very dark slate blue */
   --mhd-light-lighter: #fef3c7;
   /* Light cream/vanilla */
+  --mhd-light-darker: #fcd34d;
+  /* Lighter cream/vanilla */
+  --site-highlight-background: #fffbeb;
+  /* Very light cream for hover states */
 
   /* KHS Site Primary Color Aliases */
   /* --site-primary-a: var(--khs-gold);
@@ -41,9 +45,11 @@
   --site-primary-b: var(--mhd-dark);
   --site-primary-b-dark: var(--mhd-dark-darker);
 
+
   /* Highlight Colors */
-  --site-highlight-background: #fffbeb;
-  
+  --menu-background-highlight: var(--mhd-light-lighter);
+  --menu-background-active: var(--mhd-light-darker);
+
   /* Secondary Text Color */
   --site-secondary-text: #6b7280;
 }

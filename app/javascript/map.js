@@ -3,6 +3,44 @@ const MAP_ZOOM_INITIAL = 16;
 const MAP_ZOOM_MIN_AFTER_BOUNDS = 17;
 const MAP_BOUNDING_ZOOM_MAX = 20;
 
+// Highlight sidebar item and scroll it into centered view
+function highlightSidebarItem(siteId) {
+  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
+  if (!sidebarItem) return;
+
+  // Remove existing highlights
+  document.querySelectorAll('li.site-list-item.highlighted').forEach(item => {
+    item.classList.remove('highlighted');
+  });
+
+  // Add highlight to current item
+  sidebarItem.classList.add('highlighted');
+
+  // Scroll to center the item in the sidebar
+  const sidebar = document.querySelector('.sites-sidebar ol');
+  if (!sidebar) return;
+
+  // Use scrollIntoView with block: 'center' for reliable centering
+  // This ensures the item is always visible and centered in the viewport
+  sidebarItem.scrollIntoView({
+    behavior: 'smooth',
+    block: 'center',
+    inline: 'nearest'
+  });
+}
+
+// Remove highlight from sidebar item
+function unhighlightSidebarItem(siteId) {
+  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
+  if (sidebarItem) {
+    sidebarItem.classList.remove('highlighted');
+  }
+}
+
+// Make functions globally available immediately
+window.highlightSidebarItem = highlightSidebarItem;
+window.unhighlightSidebarItem = unhighlightSidebarItem;
+
 async function initMap() {
   // Check if map container exists (only initialize on map page)
   const coords = document.getElementById("sites");
@@ -166,6 +204,9 @@ function showSiteModal(siteId, wasInFullscreen = false) {
     return;
   }
 
+  // Highlight the sidebar item when opening modal
+  highlightSidebarItem(siteId);
+
   // Show loading state
   modalContent.innerHTML = '<div class="loading">Loading site details...</div>';
   modal.style.display = 'block';
@@ -201,8 +242,17 @@ function closeSiteModal() {
   const modal = document.getElementById('site-modal');
   if (modal) {
     modal.style.display = 'none';
+
+    // Remove highlight from any highlighted sidebar item
+    document.querySelectorAll('li.site-list-item.highlighted').forEach(item => {
+      item.classList.remove('highlighted');
+    });
   }
 }
+
+// Make modal functions globally available
+window.showSiteModal = showSiteModal;
+window.closeSiteModal = closeSiteModal;
 
 // Highlight sidebar item and scroll it into centered view
 function highlightSidebarItem(siteId) {
@@ -241,9 +291,6 @@ function unhighlightSidebarItem(siteId) {
 // Make functions globally available immediately
 window.highlightSidebarItem = highlightSidebarItem;
 window.unhighlightSidebarItem = unhighlightSidebarItem;
-
-// Make closeSiteModal globally available
-window.closeSiteModal = closeSiteModal;
 
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {
