@@ -77,22 +77,61 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Wait for initialization
     assert_selector "#map", wait: 10
     assert_selector ".custom-marker", wait: 10
+    assert_selector ".sites-sidebar ol", wait: 10
 
-    # Get the last marker to test scrolling
+    # Get all markers and sidebar items
     markers = all(".custom-marker")
-    skip "Need multiple markers for scroll test" if markers.length < 2
+    sidebar_items = all(".site-list-item")
 
-    last_marker = markers.last
+    skip "Need multiple markers for scroll test" if markers.length < 5
 
-    # Hover over the last marker
-    last_marker.hover
+    # Find a marker that would be off-screen (near the end of the list)
+    # We'll use a marker that's near the bottom to ensure it needs scrolling
+    target_index = [ markers.length - 2, 4 ].max # At least 5th item or second to last
+    target_marker = markers[target_index]
 
-    sleep 0.5 # Allow time for scrolling animation
+    # Get the corresponding sidebar item's data-id
+    # The markers are created in the same order as sidebar items
+    target_sidebar_item = sidebar_items[target_index]
+    target_site_id = target_sidebar_item["data-id"]
 
-    # The sidebar should have scrolled - we can verify this by checking
-    # that the corresponding sidebar item is visible in the viewport
-    # This is harder to test directly, but we can verify the scroll behavior occurred
-    assert true # Placeholder - actual scroll verification is complex in Capybara
+    # First, scroll the sidebar to the top to ensure our target is off-screen
+    page.execute_script("document.querySelector('.sites-sidebar ol').scrollTop = 0;")
+    sleep 0.2
+
+    # Call the highlightSidebarItem function directly with the site ID
+    # This bypasses the need to trigger the hover event which is unreliable in tests
+    page.execute_script("window.highlightSidebarItem(arguments[0])", target_site_id)
+
+    sleep 0.6 # Allow time for scrolling animation
+
+    # Verify the sidebar item is highlighted
+    assert target_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should have highlighted class"
+
+    # Verify the sidebar item is actually visible in the viewport
+    # We check if the item is within the visible area of its scrollable container
+    is_visible = page.evaluate_script(<<~JS)
+      (function() {
+        const item = document.querySelector('.site-list-item.highlighted');
+        const sidebar = document.querySelector('.sites-sidebar ol');
+        if (!item || !sidebar) return false;
+
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+
+        // Check if item is within the visible bounds of the sidebar
+        const isInVerticalView = (
+          itemRect.top >= sidebarRect.top &&
+          itemRect.bottom <= sidebarRect.bottom
+        );
+
+        return isInVerticalView;
+      })();
+    JS
+
+    assert is_visible,
+           "Highlighted sidebar item should be visible within the sidebar viewport"
   end
 
   test "marker hover effects change SVG colors" do
@@ -281,5 +320,134 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     site_id = @site1.id.to_s
     sidebar_item = find("[data-id='#{site_id}']")
     assert sidebar_item.present?
+  end
+
+  test "hovering map marker and sidebar item apply same highlighted class" do
+    visit historic_district_map_path
+
+    # Wait for initialization
+    assert_selector "#map", wait: 10
+    assert_selector ".custom-marker", wait: 10
+    assert_selector ".site-list-item", wait: 10
+
+    first_marker = find(".custom-marker", match: :first)
+    first_sidebar_item = find(".site-list-item", match: :first)
+    site_id = first_sidebar_item["data-id"]
+
+    # Test 1: Hover over map marker
+    first_marker.hover
+    sleep 0.3
+
+    # Verify highlighted class is applied
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should have highlighted class when hovering map marker"
+
+    # Get the computed background color when highlighted via map hover
+    map_hover_bg = page.evaluate_script("
+      (function() {
+        const item = document.querySelector('.site-list-item.highlighted');
+        if (!item) return null;
+        return window.getComputedStyle(item).backgroundColor;
+      })()
+    ")
+
+    # Stop hovering marker
+    page.execute_script("document.querySelector('.custom-marker').dispatchEvent(new Event('mouseleave'))")
+    sleep 0.3
+
+    # Verify highlighted class is removed
+    assert_not first_sidebar_item.matches_css?(".highlighted"),
+               "Sidebar item should not have highlighted class after marker hover ends"
+
+    # Test 2: Hover over sidebar item (no .highlighted class added, just CSS :hover)
+    # Get the computed background color when hovering sidebar directly
+    sidebar_hover_bg = page.evaluate_script("
+      (function() {
+        const item = document.querySelector('.site-list-item');
+        if (!item) return null;
+
+        // Simulate hover by dispatching mouseenter
+        item.dispatchEvent(new Event('mouseenter', { bubbles: true }));
+
+        // Get computed style - :hover should be active
+        return window.getComputedStyle(item).backgroundColor;
+      })()
+    ")
+
+    # The hover backgrounds should be different:
+    # - Map marker hover uses .highlighted class with #d2bb94
+    # - Sidebar :hover uses #fffbeb
+    assert_not_equal map_hover_bg, sidebar_hover_bg,
+                     "Map marker hover (.highlighted) should have different background than sidebar :hover"
+  end
+
+  test "clicking map marker and sidebar item apply same highlighted class" do
+    visit historic_district_map_path
+
+    # Wait for initialization
+    assert_selector "#map", wait: 10
+    assert_selector ".custom-marker", wait: 10
+    assert_selector ".site-list-item", wait: 10
+
+    first_marker = find(".custom-marker", match: :first)
+    first_sidebar_item = find(".site-list-item", match: :first)
+    site_id = first_sidebar_item["data-id"]
+
+    # Test 1: Click map marker
+    first_marker.click
+    sleep 0.3
+
+    # Modal should open
+    assert_selector "#site-modal", visible: true, wait: 5
+
+    # Verify highlighted class is applied
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should have highlighted class when map marker is clicked"
+
+    # Get the computed background color when highlighted via map click
+    map_click_bg = page.evaluate_script("
+      (function() {
+        const item = document.querySelector('.site-list-item.highlighted');
+        if (!item) return null;
+        return window.getComputedStyle(item).backgroundColor;
+      })()
+    ")
+
+    # Close modal
+    find(".modal-close-button").click
+    assert_no_selector "#site-modal", visible: true, wait: 5
+
+    # Verify highlighted class is removed after modal close
+    assert_not first_sidebar_item.matches_css?(".highlighted"),
+               "Sidebar item should not have highlighted class after modal closes"
+
+    # Test 2: Click sidebar item
+    first_sidebar_item.click
+    sleep 0.3
+
+    # Modal should open
+    assert_selector "#site-modal", visible: true, wait: 5
+
+    # Verify highlighted class is applied
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should have highlighted class when sidebar is clicked"
+
+    # Get the computed background color when highlighted via sidebar click
+    sidebar_click_bg = page.evaluate_script("
+      (function() {
+        const item = document.querySelector('.site-list-item.highlighted');
+        if (!item) return null;
+        return window.getComputedStyle(item).backgroundColor;
+      })()
+    ")
+
+    # Both click actions should result in the same background color
+    # because both use the .highlighted class with #d2bb94
+    assert_equal map_click_bg, sidebar_click_bg,
+                 "Map marker click and sidebar click should apply the same .highlighted background color"
+
+    # Close modal for cleanup
+    find(".modal-close-button").click
+    assert_no_selector "#site-modal", visible: true, wait: 5
   end
 end

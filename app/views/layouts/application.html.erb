@@ -42,7 +42,7 @@
       <div class="container">
         <%= render 'shared/members' %>
         <div style="text-align: center; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 0.875rem;">
-          Engineered gratis as a service to the community by local development firm <a href="https://integrit.dev" target="_blank" rel="noopener noreferrer" style="color: var(--site-primary-b); text-decoration: none; font-weight: 500;" onmouseover="this.style.textDecoration='underline'; this.style.textDecorationThickness='1px'" onmouseout="this.style.textDecoration='none'">IntegritDev, LLC (https://integrit.dev)</a>
+          Proudly developed in Kewaunee's Marquette Historic District by <a href="https://integrit.dev" target="_blank" rel="noopener noreferrer" style="color: var(--site-primary-b); text-decoration: none; font-weight: 500; font-size: 0.9375rem;" onmouseover="this.style.textDecoration='underline'; this.style.textDecorationThickness='1px'; this.style.fontWeight='700'" onmouseout="this.style.textDecoration='none'; this.style.fontWeight='500'">IntegritDev Software</a>, as a service to the community and all who visit.
         </div>
       </div>
     </footer>
@@ -98,12 +98,14 @@
         contentContainer.style.height = '';
         contentContainer.style.overflow = 'visible';
 
-        // Split text into lines and make first line larger
+        // Split text into lines and format with appropriate classes
         const lines = imageAlt.split('\n');
         if (lines.length > 1) {
           const firstLine = `<span class="caption-first-line">${lines[0]}</span>`;
-          const remainingLines = lines.slice(1).join('<br>');
-          caption.innerHTML = firstLine + '<br>' + remainingLines;
+          const middleLines = lines.slice(1, -1).map(line => `<span class="caption-middle-line">${line}</span>`).join('<br>');
+          const lastLine = `<span class="caption-last-line">${lines[lines.length - 1]}</span>`;
+          const parts = [firstLine, middleLines, lastLine].filter(p => p && !p.includes('undefined'));
+          caption.innerHTML = parts.join('<br>');
         } else {
           caption.innerHTML = `<span class="caption-first-line">${imageAlt}</span>`;
         }
@@ -159,12 +161,14 @@
         modalImg.style.transform = 'scale(1)';
         modalImg.style.cursor = 'zoom-in';
 
-        // Update caption
+        // Update caption with appropriate classes
         const lines = currentImage.alt.split('\n');
         if (lines.length > 1) {
           const firstLine = `<span class="caption-first-line">${lines[0]}</span>`;
-          const remainingLines = lines.slice(1).join('<br>');
-          caption.innerHTML = firstLine + '<br>' + remainingLines;
+          const middleLines = lines.slice(1, -1).map(line => `<span class="caption-middle-line">${line}</span>`).join('<br>');
+          const lastLine = `<span class="caption-last-line">${lines[lines.length - 1]}</span>`;
+          const parts = [firstLine, middleLines, lastLine].filter(p => p && !p.includes('undefined'));
+          caption.innerHTML = parts.join('<br>');
         } else {
           caption.innerHTML = `<span class="caption-first-line">${currentImage.alt}</span>`;
         }

@@ -65,3 +65,27 @@ minimal_site:
   latitude: 44.4635
   longitude: -87.5085
   built_year: 1900
+
+colonial_revival:
+  historic_name: "Colonial Revival Mansion"
+  address: "555 Colonial Drive, Kewaunee, WI"
+  architectural_style: "Colonial Revival"
+  latitude: 44.4640
+  longitude: -87.5090
+  built_year: 1920
+
+tudor_revival:
+  historic_name: "Tudor Revival House"
+  address: "666 Tudor Lane, Kewaunee, WI"
+  architectural_style: "Tudor Revival"
+  latitude: 44.4645
+  longitude: -87.5095
+  built_year: 1925
+
+greek_revival:
+  historic_name: "Greek Revival Estate"
+  address: "777 Greek Way, Kewaunee, WI"
+  architectural_style: "Greek Revival"
+  latitude: 44.4650
+  longitude: -87.5100
+  built_year: 1890
