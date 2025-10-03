@@ -7,4 +7,4 @@ Rails.application.load_tasks unless defined?(Rake::Task) && Rake::Task.task_defi
 
 # Call the sites:import rake task
 # The task itself will output progress messages
-Rake::Task["sites:import"].invoke
+Rake::Task["db:sites:import"].invoke
