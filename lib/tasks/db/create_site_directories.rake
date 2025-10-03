@@ -1,6 +1,7 @@
 require "csv"
 
-namespace :sites do
+namespace :db do
+  namespace :sites do
   desc "Create directories in db/site_pics for each site address from CSV"
   task create_directories: :environment do
     csv_file = Rails.root.join("db", "mhd.csv")
@@ -80,5 +81,6 @@ namespace :sites do
 
     # Ensure it's not empty
     sanitized.empty? ? "unknown_address" : sanitized
+  end
   end
 end

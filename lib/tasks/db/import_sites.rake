@@ -1,6 +1,7 @@
 require "csv"
 
-namespace :sites do
+namespace :db do
+  namespace :sites do
   # Architectural styles to search for in descriptions
   ARCHITECTURAL_STYLES = [
     "Colonial Revival",
@@ -459,4 +460,10 @@ namespace :sites do
       [ nil, nil ]
     end
   end
+  end
+end
+
+# Automatically refresh cache after import
+Rake::Task["db:sites:import"].enhance do
+  Rake::Task["db:refresh_cache"].invoke
 end

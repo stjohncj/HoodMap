@@ -22,8 +22,11 @@ class SiteImageCache
 
       site.images.each do |image|
         # Pre-generate URLs at cache build time for maximum performance
-        # Use polymorphic_url which handles Active Storage attachments properly
-        url = Rails.application.routes.url_helpers.url_for(image)
+        # Use rails_blob_path for path-only URLs (no host required).
+        # NOTE: Path-only URLs are suitable for internal application use (e.g., web navigation).
+        # For contexts like email notifications or external integrations, use full URLs with host:
+        #   Rails.application.routes.url_helpers.rails_blob_url(image, host: <your_host>)
+        url = Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)
 
         image_cache[image.id] = {
           attachment_id: image.id,
@@ -33,7 +36,8 @@ class SiteImageCache
           url: url,  # Pre-generated URL - no more database queries needed!
           site_name: site.historic_name || site.address,
           site_id: site.id,
-          site_address: site.address
+          site_address: site.address,
+          built_year: site.built_year
         }
 
         site_image_ids << image.id
@@ -72,13 +76,22 @@ class SiteImageCache
     image_cache = cache[:images] || {}
 
     # Return random sample of cached images using pre-generated URLs (no DB queries!)
-    image_cache.values.sample(count).map do |cached_image|
+    sampled_images = image_cache.values.sample(count).select { |img| img[:url].present? }
+    total_count = sampled_images.length
+
+    sampled_images.map.with_index(1) do |cached_image, index|
+      # Format: Historic home, <House Name>\n<Street Address>\nbuilt <year>\nPhoto <i> of <n>
+      alt_lines = [ "Historic home, #{cached_image[:site_name]}" ]
+      alt_lines << cached_image[:site_address] if cached_image[:site_address].present?
+      alt_lines << "built #{cached_image[:built_year]}" if cached_image[:built_year].present?
+      alt_lines << "Photo #{index} of #{total_count}"
+
       {
         url: cached_image[:url],  # Use pre-generated URL from cache
-        alt: "Historic home, the \"#{cached_image[:site_name]}\"",
+        alt: alt_lines.join("\n"),
         caption: cached_image[:site_name]
       }
-    end.select { |img| img[:url].present? }
+    end
   end
 
   # Get cached image URL by image ID
