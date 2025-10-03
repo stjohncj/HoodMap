@@ -37,9 +37,9 @@ module ApplicationHelper
 
   # Generate alt text for site images
   def site_image_alt_text(site, photo_number, total_photos)
-    alt_lines = ["Historic home, #{site.historic_name}"]
+    alt_lines = [ "Historic home, #{site.historic_name}" ]
     alt_lines << site.address if site.address.present?
-    alt_lines << "built #{site.built_year}" if site.built_year.present?
+    alt_lines << "const. #{site.built_year}" if site.built_year.present?
     alt_lines << "Photo #{photo_number} of #{total_photos}"
     alt_lines.join("\n")
   end
