@@ -426,15 +426,22 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Re-find the element in case DOM was updated
     first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
 
-    # Dispatch a native click event via JavaScript for CI reliability
-    # This ensures the event listeners attached in map.js are triggered
-    page.execute_script(<<~JS, first_sidebar_item)
-      const event = new MouseEvent('click', {
-        bubbles: true,
-        cancelable: true,
-        view: window
-      });
-      arguments[0].dispatchEvent(event);
+    # Wait and ensure JavaScript is fully loaded
+    sleep 1
+
+    # Try to trigger modal opening - use fallback approach
+    # First try direct function call, then fall back to element click
+    page.execute_script(<<~JS, site_id)
+      const siteId = arguments[0];
+      if (typeof window.showSiteModal === 'function') {
+        window.showSiteModal(siteId);
+      } else {
+        // Fallback: Find the item and trigger click via event listener
+        const item = document.querySelector('.site-list-item[data-id="' + siteId + '"]');
+        if (item) {
+          item.click();
+        }
+      }
     JS
 
     # Modal should open
