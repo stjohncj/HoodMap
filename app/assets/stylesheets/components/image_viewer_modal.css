@@ -115,6 +115,8 @@
 .caption-last-line {
   font-family: 'Controwell Script', cursive;
   font-size: 1.6rem;
+  display: inline-block;
+  margin-top: 0.75rem;
 }
 
 /* Gallery navigation arrows */
