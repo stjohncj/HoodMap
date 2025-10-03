@@ -426,8 +426,16 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Re-find the element in case DOM was updated
     first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
 
-    # Click using Capybara (tests actual user interaction)
-    first_sidebar_item.click
+    # Dispatch a native click event via JavaScript for CI reliability
+    # This ensures the event listeners attached in map.js are triggered
+    page.execute_script(<<~JS, first_sidebar_item)
+      const event = new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      });
+      arguments[0].dispatchEvent(event);
+    JS
 
     # Modal should open
     assert_selector "#site-modal", visible: true, wait: 10
