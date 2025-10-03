@@ -250,6 +250,10 @@ function closeSiteModal() {
   }
 }
 
+// Make modal functions globally available
+window.showSiteModal = showSiteModal;
+window.closeSiteModal = closeSiteModal;
+
 // Highlight sidebar item and scroll it into centered view
 function highlightSidebarItem(siteId) {
   const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
@@ -287,9 +291,6 @@ function unhighlightSidebarItem(siteId) {
 // Make functions globally available immediately
 window.highlightSidebarItem = highlightSidebarItem;
 window.unhighlightSidebarItem = unhighlightSidebarItem;
-
-// Make closeSiteModal globally available
-window.closeSiteModal = closeSiteModal;
 
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {

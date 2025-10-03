@@ -425,11 +425,12 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Test 2: Click sidebar item
     # Re-find the element in case DOM was updated
     first_sidebar_item = find(".site-list-item[data-id='#{site_id}']")
-    # Use JavaScript click for reliability in CI
-    page.execute_script("arguments[0].click()", first_sidebar_item)
+
+    # Click using Capybara (tests actual user interaction)
+    first_sidebar_item.click
 
     # Modal should open
-    assert_selector "#site-modal", visible: true, wait: 5
+    assert_selector "#site-modal", visible: true, wait: 10
 
     # Wait a bit longer for highlighting to apply after modal opens
     sleep 0.5
