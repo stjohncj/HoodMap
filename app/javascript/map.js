@@ -16,7 +16,7 @@ function highlightSidebarItem(siteId) {
   // Add highlight to current item
   sidebarItem.classList.add('highlighted');
 
-  // Scroll to center the item in the sidebar (without scrolling the page)
+  // Scroll to center the item in the sidebar
   const sidebar = document.querySelector('.sites-sidebar ol');
   if (!sidebar) return;
 
@@ -38,10 +38,10 @@ function highlightSidebarItem(siteId) {
   const sidebarHeight = sidebar.clientHeight;
   const itemHeight = sidebarItem.clientHeight;
 
-  // Center the item: scroll to position where item middle aligns with sidebar middle
+  // Center the item
   const targetScrollTop = itemRelativeTop - (sidebarHeight / 2) + (itemHeight / 2);
 
-  // Smooth scroll only the sidebar, not the page
+  // Smooth scroll the sidebar
   sidebar.scrollTo({
     top: targetScrollTop,
     behavior: 'smooth'
@@ -309,10 +309,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Prevent page scrolling when hovering over map container
+  // Prevent page scrolling when cursor is over map container
   const mapContainer = document.querySelector('.map-container');
   if (mapContainer) {
-    // Prevent all scroll-related events on the map container
+    // Block all scroll-related events on the map container to prevent page scrolling
     mapContainer.addEventListener('wheel', (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -323,24 +323,10 @@ document.addEventListener('DOMContentLoaded', () => {
       event.stopPropagation();
     }, { passive: false });
 
-    // Also prevent scroll events
     mapContainer.addEventListener('scroll', (event) => {
       event.preventDefault();
       event.stopPropagation();
     }, { passive: false });
-  }
-
-  // Also prevent scrolling on the sidebar when using smooth scroll
-  const sidebar = document.querySelector('.sites-sidebar ol');
-  if (sidebar) {
-    // Allow sidebar to scroll, but prevent that scroll from bubbling to page
-    sidebar.addEventListener('wheel', (event) => {
-      event.stopPropagation();
-    });
-
-    sidebar.addEventListener('scroll', (event) => {
-      event.stopPropagation();
-    });
   }
 });
 
