@@ -21,9 +21,17 @@ function highlightSidebarItem(siteId) {
   if (!sidebar) return;
 
   // Get the item's position relative to the scrollable container
-  // This prevents page scrolling by using getBoundingClientRect
   const sidebarRect = sidebar.getBoundingClientRect();
   const itemRect = sidebarItem.getBoundingClientRect();
+
+  // Check if item is already fully visible in the sidebar
+  const isFullyVisible = (
+    itemRect.top >= sidebarRect.top &&
+    itemRect.bottom <= sidebarRect.bottom
+  );
+
+  // Only scroll if the item is not fully visible
+  if (isFullyVisible) return;
 
   // Calculate the item's position within the sidebar's scroll area
   const itemRelativeTop = itemRect.top - sidebarRect.top + sidebar.scrollTop;
