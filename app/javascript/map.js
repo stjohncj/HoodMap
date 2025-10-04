@@ -308,6 +308,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   });
+
+  // Prevent page scrolling when hovering over map container
+  const mapContainer = document.querySelector('.map-container');
+  if (mapContainer) {
+    mapContainer.addEventListener('wheel', (event) => {
+      // Prevent page scroll when wheel is used over the map
+      event.preventDefault();
+    }, { passive: false });
+
+    mapContainer.addEventListener('touchmove', (event) => {
+      // Prevent page scroll when touch scrolling over the map
+      event.preventDefault();
+    }, { passive: false });
+  }
 });
 
 // Initialize the map
