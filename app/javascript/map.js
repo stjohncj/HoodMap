@@ -260,50 +260,6 @@ function closeSiteModal() {
 window.showSiteModal = showSiteModal;
 window.closeSiteModal = closeSiteModal;
 
-// Highlight sidebar item and scroll it into centered view
-function highlightSidebarItem(siteId) {
-  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
-  if (!sidebarItem) return;
-
-  // Remove existing highlights
-  document.querySelectorAll('li.site-list-item.highlighted').forEach(item => {
-    item.classList.remove('highlighted');
-  });
-
-  // Add highlight to current item
-  sidebarItem.classList.add('highlighted');
-
-  // Scroll to center the item in the sidebar (without scrolling the page)
-  const sidebar = document.querySelector('.sites-sidebar ol');
-  if (!sidebar) return;
-
-  // Calculate the position to scroll the sidebar to center the item
-  const itemOffsetTop = sidebarItem.offsetTop;
-  const sidebarHeight = sidebar.clientHeight;
-  const itemHeight = sidebarItem.clientHeight;
-
-  // Center the item: scroll to position where item middle aligns with sidebar middle
-  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
-
-  // Smooth scroll only the sidebar, not the page
-  sidebar.scrollTo({
-    top: targetScrollTop,
-    behavior: 'smooth'
-  });
-}
-
-// Remove highlight from sidebar item
-function unhighlightSidebarItem(siteId) {
-  const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
-  if (sidebarItem) {
-    sidebarItem.classList.remove('highlighted');
-  }
-}
-
-// Make functions globally available immediately
-window.highlightSidebarItem = highlightSidebarItem;
-window.unhighlightSidebarItem = unhighlightSidebarItem;
-
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
