@@ -3,7 +3,7 @@
 Rails.application.config.after_initialize do
   next if Rails.env.test? # Skip in test environment
   next if defined?(Rails::Console) # Skip in console
-  next unless defined?(Rails::Server) || ENV['RAILS_ENV'] == 'production' # Only run when server starts
+  next unless defined?(Rails::Server) || ENV["RAILS_ENV"] == "production" # Only run when server starts
 
   # Build cache in background to avoid slowing down server startup
   Thread.new do

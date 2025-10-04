@@ -126,3 +126,19 @@ The application uses Google Maps JavaScript API with:
 - Advanced markers with custom content
 - Hover interactions showing site details
 - Click navigation to individual site pages
+
+## Important Development Workflow Rules
+
+**BEFORE PUSHING TO GITHUB:**
+You MUST run the following commands and ensure they pass with zero errors:
+
+```bash
+bundle exec rails test && bundle exec rubocop -A
+```
+
+This ensures:
+1. All tests pass
+2. Code style is consistent with Rails Omakase guidelines
+3. RuboCop auto-fixes any correctable offenses
+
+If either command fails, fix the issues before pushing.
