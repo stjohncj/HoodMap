@@ -312,15 +312,35 @@ document.addEventListener('DOMContentLoaded', () => {
   // Prevent page scrolling when hovering over map container
   const mapContainer = document.querySelector('.map-container');
   if (mapContainer) {
+    // Prevent all scroll-related events on the map container
     mapContainer.addEventListener('wheel', (event) => {
-      // Prevent page scroll when wheel is used over the map
       event.preventDefault();
+      event.stopPropagation();
     }, { passive: false });
 
     mapContainer.addEventListener('touchmove', (event) => {
-      // Prevent page scroll when touch scrolling over the map
       event.preventDefault();
+      event.stopPropagation();
     }, { passive: false });
+
+    // Also prevent scroll events
+    mapContainer.addEventListener('scroll', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }, { passive: false });
+  }
+
+  // Also prevent scrolling on the sidebar when using smooth scroll
+  const sidebar = document.querySelector('.sites-sidebar ol');
+  if (sidebar) {
+    // Allow sidebar to scroll, but prevent that scroll from bubbling to page
+    sidebar.addEventListener('wheel', (event) => {
+      event.stopPropagation();
+    });
+
+    sidebar.addEventListener('scroll', (event) => {
+      event.stopPropagation();
+    });
   }
 });
 
