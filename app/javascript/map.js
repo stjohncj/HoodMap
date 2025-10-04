@@ -16,16 +16,22 @@ function highlightSidebarItem(siteId) {
   // Add highlight to current item
   sidebarItem.classList.add('highlighted');
 
-  // Scroll to center the item in the sidebar
+  // Scroll to center the item in the sidebar (without scrolling the page)
   const sidebar = document.querySelector('.sites-sidebar ol');
   if (!sidebar) return;
 
-  // Use scrollIntoView with block: 'center' for reliable centering
-  // This ensures the item is always visible and centered in the viewport
-  sidebarItem.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-    inline: 'nearest'
+  // Calculate the position to scroll the sidebar to center the item
+  const itemOffsetTop = sidebarItem.offsetTop;
+  const sidebarHeight = sidebar.clientHeight;
+  const itemHeight = sidebarItem.clientHeight;
+
+  // Center the item: scroll to position where item middle aligns with sidebar middle
+  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
+
+  // Smooth scroll only the sidebar, not the page
+  sidebar.scrollTo({
+    top: targetScrollTop,
+    behavior: 'smooth'
   });
 }
 
@@ -267,16 +273,22 @@ function highlightSidebarItem(siteId) {
   // Add highlight to current item
   sidebarItem.classList.add('highlighted');
 
-  // Scroll to center the item in the sidebar
+  // Scroll to center the item in the sidebar (without scrolling the page)
   const sidebar = document.querySelector('.sites-sidebar ol');
   if (!sidebar) return;
 
-  // Use scrollIntoView with block: 'center' for reliable centering
-  // This ensures the item is always visible and centered in the viewport
-  sidebarItem.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-    inline: 'nearest'
+  // Calculate the position to scroll the sidebar to center the item
+  const itemOffsetTop = sidebarItem.offsetTop;
+  const sidebarHeight = sidebar.clientHeight;
+  const itemHeight = sidebarItem.clientHeight;
+
+  // Center the item: scroll to position where item middle aligns with sidebar middle
+  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
+
+  // Smooth scroll only the sidebar, not the page
+  sidebar.scrollTo({
+    top: targetScrollTop,
+    behavior: 'smooth'
   });
 }
 
