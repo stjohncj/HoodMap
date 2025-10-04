@@ -8,7 +8,15 @@ fi
 
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
-  ./bin/rails db:prepare
+  # Check if HOOD_MAP_REGENERATE_DATA is set to regenerate the database
+  if [ -n "${HOOD_MAP_REGENERATE_DATA}" ]; then
+    echo "HOOD_MAP_REGENERATE_DATA is set - running db:reset..."
+    ./bin/rails db:reset
+    echo "Database reset complete. Unsetting HOOD_MAP_REGENERATE_DATA for next startup..."
+    unset HOOD_MAP_REGENERATE_DATA
+  else
+    ./bin/rails db:prepare
+  fi
 fi
 
 exec "${@}"
