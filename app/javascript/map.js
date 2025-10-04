@@ -20,13 +20,18 @@ function highlightSidebarItem(siteId) {
   const sidebar = document.querySelector('.sites-sidebar ol');
   if (!sidebar) return;
 
-  // Calculate the position to scroll the sidebar to center the item
-  const itemOffsetTop = sidebarItem.offsetTop;
+  // Get the item's position relative to the scrollable container
+  // This prevents page scrolling by using getBoundingClientRect
+  const sidebarRect = sidebar.getBoundingClientRect();
+  const itemRect = sidebarItem.getBoundingClientRect();
+
+  // Calculate the item's position within the sidebar's scroll area
+  const itemRelativeTop = itemRect.top - sidebarRect.top + sidebar.scrollTop;
   const sidebarHeight = sidebar.clientHeight;
   const itemHeight = sidebarItem.clientHeight;
 
   // Center the item: scroll to position where item middle aligns with sidebar middle
-  const targetScrollTop = itemOffsetTop - (sidebarHeight / 2) + (itemHeight / 2);
+  const targetScrollTop = itemRelativeTop - (sidebarHeight / 2) + (itemHeight / 2);
 
   // Smooth scroll only the sidebar, not the page
   sidebar.scrollTo({
