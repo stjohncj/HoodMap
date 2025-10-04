@@ -2,8 +2,9 @@ require "csv"
 
 namespace :db do
   namespace :sites do
-  # Architectural styles to search for in descriptions
-  ARCHITECTURAL_STYLES = [
+    # Architectural styles to search for in descriptions
+    # Use ||= to prevent constant redefinition warnings
+    ARCHITECTURAL_STYLES ||= [
     "Colonial Revival",
     "Prairie School",
     "Prairie Style",
@@ -31,7 +32,7 @@ namespace :db do
   ].freeze
 
   # Architect extraction patterns
-  ARCHITECT_PATTERNS = [
+  ARCHITECT_PATTERNS ||= [
     # Direct mentions with specific context - updated to not stop at periods within names
     /(?:milwaukee\s+)?architect[,\s]+([A-Z][a-zA-Z\s.&-]+?)(?:\s+[A-Z][a-zA-Z]+)?(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
     /designed\s+by\s+(?:architect\s+)?([A-Z][a-zA-Z\s.&-]+?)(?:\.?\s+(?:The|From|In|During|After|Before|When|He|She|It)|$)/i,
@@ -50,7 +51,7 @@ namespace :db do
   ].freeze
 
   # Known Milwaukee/Wisconsin area architects for improved matching
-  KNOWN_ARCHITECTS = [
+  KNOWN_ARCHITECTS ||= [
     "Ferry & Clas",
     "George Bowman Ferry",
     "Alfred C. Clas",
