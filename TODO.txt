@@ -1,0 +1,12 @@
+- On phone, cannot close site modal from map page when clicking the "X" close button
+- *** - MHD Architecture page, should we choose particalur pictures based on the text? Rather than random selection - yes!
+- Picture of my house is too dark
+- Rewrite MHD Architecture page's "While the house has a compact massing, the irregularity of the style is seen in the multi-gable and hipped roofline, the projecting gable sections, the second and third story bay on the north wall, the irregular windows, and the overall asymmetrical plan of the house."
+    - In architecture, compact massing describes a building's three-dimensional form when its various volumes are tightly arranged around a central shape, creating a dense, unified, and often solid-looking structure. This arrangement is chosen to efficiently utilize space and energy, contributing to sustainability by maximizing passive heating and cooling and optimizing natural light, while also influencing the building's aesthetic character and how it interacts with its environment.
+- MHD Architecture - Look into the tone used when describing smaller houses
+    - 1205 Dodge - Anton Kieweg  - "diminutive" "cottage"?
+    - 822 Dodge - "a much smaller house" - why "much"
+    - 1018 Dodge - this is a good example for describing a smaller site
+- Look at the original MHD book to see if it lists the authors
+-
+
