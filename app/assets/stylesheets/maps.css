@@ -502,6 +502,8 @@
   justify-content: center;
   transition: all 0.2s ease;
   z-index: 20;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .modal-close-button:hover {

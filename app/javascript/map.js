@@ -278,9 +278,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
   if (modal) {
     // Close modal when clicking the close button
-    const closeButton = modal.querySelector('.modal-close');
+    const closeButton = modal.querySelector('.modal-close-button');
     if (closeButton) {
-      closeButton.addEventListener('click', closeSiteModal);
+      closeButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSiteModal();
+      });
+      // Add touch support for iOS
+      closeButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSiteModal();
+      });
     }
 
     // Close modal when clicking the backdrop
