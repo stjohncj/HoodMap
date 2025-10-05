@@ -1,4 +1,4 @@
-- On phone, cannot close site modal from map page when clicking the "X" close button
+- On an iPhone, cannot close site modal from map page when clicking the "X" close button
 - *** - MHD Architecture page, should we choose particalur pictures based on the text? Rather than random selection - yes!
 - Picture of my house is too dark
 - Rewrite MHD Architecture page's "While the house has a compact massing, the irregularity of the style is seen in the multi-gable and hipped roofline, the projecting gable sections, the second and third story bay on the north wall, the irregular windows, and the overall asymmetrical plan of the house."
@@ -8,5 +8,8 @@
     - 822 Dodge - "a much smaller house" - why "much"
     - 1018 Dodge - this is a good example for describing a smaller site
 - Look at the original MHD book to see if it lists the authors
--
+- "About the Marquette Historic District" blurb should give a little more history on the school.
+- DISTICT BACKGROUND
+     - "Beginning with prominent merchant and pioneer Joseph Duvall, who built the first large house, an Italianate mansion, in the district; and lumber magnate and State Senator George Grimmer, who followed with a Queen Anne house that set the tone for homes soon to follow in the district, many prominent families quickly built showplace homes along Dodge and Milwaukee Streets."
+     -
 
