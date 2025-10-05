@@ -16,7 +16,7 @@
               <%
                 alt_lines = ["Historic home, #{site.historic_name}"]
                 alt_lines << site.address if site.address.present?
-                alt_lines << "built #{site.built_year}" if site.built_year.present?
+                alt_lines << "const. #{site.built_year}" if site.built_year.present?
                 alt_lines << "Photo #{index + 1} of #{site.images.count}"
                 alt_text = alt_lines.join("\n")
               %>

@@ -247,7 +247,7 @@ class SiteImageCacheTest < ActiveSupport::TestCase
     # So we just verify the format is correct when it exists
     if images_with_built_year.any?
       images_with_built_year.each do |image|
-        assert_match %r{built \d{4}}, image[:alt], "Alt text should include 'built <year>' when site has built_year"
+        assert_match %r{const\. \d{4}}, image[:alt], "Alt text should include 'const. <year>' when site has built_year"
       end
     end
   ensure

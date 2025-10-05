@@ -80,10 +80,10 @@ class SiteImageCache
     total_count = sampled_images.length
 
     sampled_images.map.with_index(1) do |cached_image, index|
-      # Format: Historic home, <House Name>\n<Street Address>\nbuilt <year>\nPhoto <i> of <n>
+      # Format: Historic home, <House Name>\n<Street Address>\nconst. <year>\nPhoto <i> of <n>
       alt_lines = [ "Historic home, #{cached_image[:site_name]}" ]
       alt_lines << cached_image[:site_address] if cached_image[:site_address].present?
-      alt_lines << "built #{cached_image[:built_year]}" if cached_image[:built_year].present?
+      alt_lines << "const. #{cached_image[:built_year]}" if cached_image[:built_year].present?
       alt_lines << "Photo #{index} of #{total_count}"
 
       {
