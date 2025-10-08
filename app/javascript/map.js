@@ -276,7 +276,10 @@ window.closeSiteModal = closeSiteModal;
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
-  if (modal) {
+  if (modal && !modal.dataset.eventListenersAdded) {
+    // Mark that we've added event listeners to prevent duplicates
+    modal.dataset.eventListenersAdded = 'true';
+
     // Shared handler for close button clicks (used by both click and touch events)
     const handleCloseButtonEvent = (e) => {
       // Check if the clicked element is the close button or inside it
