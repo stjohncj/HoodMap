@@ -282,8 +282,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Shared handler for close button clicks (used by both click and touch events)
     const handleCloseButtonEvent = (e) => {
-      // Check if the clicked element is the close button or inside it
-      const closeButton = e.target.closest('.modal-close-button');
+      // Check if clicked on .modal-close (static button) or .modal-close-button (dynamic button)
+      const closeButton = e.target.closest('.modal-close') || e.target.closest('.modal-close-button');
       if (closeButton) {
         e.preventDefault();
         e.stopPropagation();
