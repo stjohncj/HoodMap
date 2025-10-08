@@ -277,15 +277,22 @@ window.closeSiteModal = closeSiteModal;
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
   if (modal) {
-    // Use event delegation for close button (since it's loaded dynamically via fetch)
-    modal.addEventListener('click', (e) => {
+    // Shared handler for close button clicks (used by both click and touch events)
+    const handleCloseButtonEvent = (e) => {
       // Check if the clicked element is the close button or inside it
       const closeButton = e.target.closest('.modal-close-button');
       if (closeButton) {
         e.preventDefault();
         e.stopPropagation();
         closeSiteModal();
+        return true;
       }
+      return false;
+    };
+
+    // Use event delegation for close button (since it's loaded dynamically via fetch)
+    modal.addEventListener('click', (e) => {
+      if (handleCloseButtonEvent(e)) return;
 
       // Check if clicked on backdrop
       if (e.target.classList.contains('modal-backdrop-map')) {
@@ -294,14 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add touch support for iOS (event delegation)
-    modal.addEventListener('touchend', (e) => {
-      const closeButton = e.target.closest('.modal-close-button');
-      if (closeButton) {
-        e.preventDefault();
-        e.stopPropagation();
-        closeSiteModal();
-      }
-    });
+    modal.addEventListener('touchend', handleCloseButtonEvent);
 
     // Close modal with Escape key
     document.addEventListener('keydown', (event) => {
