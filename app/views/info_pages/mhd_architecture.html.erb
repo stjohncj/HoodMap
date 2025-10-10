@@ -1,13 +1,5 @@
-<%
-# Convert @random_site_images to format expected by street_gallery
-gallery_images = if @random_site_images.present?
-  @random_site_images.map { |img| { src: img[:url], alt: img[:alt] } }
-else
-  []
-end
-%>
-
 <%= render 'info_pages/layout',
     page_title: @page_title,
     content: @content,
-    images: gallery_images %>
+    images: @images,
+    content_images: @content_images %>

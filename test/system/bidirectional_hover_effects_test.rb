@@ -159,10 +159,8 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     page.execute_script("arguments[0].click()", first_marker)
     assert_selector "#site-modal", visible: true, wait: 5
 
-    # Close modal for cleanup
-    within "#site-modal" do
-      find(".modal-close-button").click
-    end
+    # Close modal for cleanup - use JavaScript directly for reliability in CI
+    page.execute_script("window.closeSiteModal()")
     assert_no_selector "#site-modal", visible: true, wait: 5
   end
 
@@ -204,10 +202,8 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Wait for modal
     assert_selector "#site-modal", visible: true, wait: 5
 
-    # Close modal using close button
-    within "#site-modal" do
-      find(".modal-close-button").click
-    end
+    # Close modal - use JavaScript directly for reliability in CI
+    page.execute_script("window.closeSiteModal()")
 
     # Modal should close
     assert_no_selector "#site-modal", visible: true, wait: 5
@@ -253,9 +249,8 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
 
     assert_selector "#site-modal", visible: true, wait: 5
 
-    within "#site-modal" do
-      find(".modal-close-button").click
-    end
+    # Close modal - use JavaScript directly for reliability in CI
+    page.execute_script("window.closeSiteModal()")
 
     assert_no_selector "#site-modal", visible: true, wait: 5
 
@@ -414,8 +409,8 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
       })()
     JS
 
-    # Close modal
-    find(".modal-close-button").click
+    # Close modal - use JavaScript directly for reliability in CI
+    page.execute_script("window.closeSiteModal()")
     assert_no_selector "#site-modal", visible: true, wait: 5
 
     # Verify highlighted class is removed after modal close

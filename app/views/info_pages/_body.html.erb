@@ -2,108 +2,108 @@
   <h1 class="page-title"><%= page_title %></h1>
   <div class="text-content">
     <% if page_title == "Kewaunee History" %>
-      <%= render 'shared/content_with_image', 
+      <%= render 'shared/content_with_image',
                  content: content,
                  insert_images: [
                    {
-                     image: { 
-                       src: "Gravestone_Jacques_Vieau.jpg", 
+                     image: {
+                       src: "Gravestone_Jacques_Vieau.jpg",
                        alt: "Gravestone of Jacques Vieau
 
 Born 29 Apr 1770
 Died 7 Jul 1852 (aged 82)
 
 Allouez Catholic Cemetery
-Green Bay, Brown County, Wisconsin, USA" 
+Green Bay, Brown County, Wisconsin, USA"
                      },
                      position: 2
                    },
                    {
-                     image: { 
-                       src: "Chief Simon.png", 
+                     image: {
+                       src: "Chief Simon.png",
                        alt: "Chief Simon",
                        class: "half-size"
                      },
                      position: 4
                    },
                    {
-                     image: { 
-                       src: "old-lighthouse.avif", 
-                       alt: "Old Kewaunee Lighthouse" 
+                     image: {
+                       src: "old-lighthouse.avif",
+                       alt: "Old Kewaunee Lighthouse"
                      },
                      position: 7
                    },
                    {
-                     image: { 
-                       src: "Joseph_Duvall.png", 
-                       alt: "Joseph Duvall" 
+                     image: {
+                       src: "Joseph_Duvall.png",
+                       alt: "Joseph Duvall"
                      },
                      position: 8
                    },
                    {
-                     image: { 
-                       src: "George_Grimmer.png", 
-                       alt: "George Grimmer" 
+                     image: {
+                       src: "George_Grimmer.png",
+                       alt: "George Grimmer"
                      },
                      position: 8
                    },
                    {
-                     image: { 
-                       src: "Bach_Kieweg_and_Poser_Company.png", 
-                       alt: "Bach, Kieweg and Poser Company" 
+                     image: {
+                       src: "Bach_Kieweg_and_Poser_Company.png",
+                       alt: "Bach, Kieweg and Poser Company"
                      },
                      position: 9
                    },
                    {
-                     image: { 
-                       src: "J_F_C_Kuehl.png", 
-                       alt: "J F C Kuehl" 
+                     image: {
+                       src: "J_F_C_Kuehl.png",
+                       alt: "J F C Kuehl"
                      },
                      position: 10
                    },
                    {
-                     image: { 
-                       src: "J_F_C_Kuehl_Furniture_Coffins.png", 
-                       alt: "J F C Kuehl Furniture & Coffins" 
+                     image: {
+                       src: "J_F_C_Kuehl_Furniture_Coffins.png",
+                       alt: "J F C Kuehl Furniture & Coffins"
                      },
                      position: 10
                    },
                    {
-                     image: { 
-                       src: "Bach_Kieweg_Poser_Store.png", 
-                       alt: "Bach, Kieweg, Poser Store" 
+                     image: {
+                       src: "Bach_Kieweg_Poser_Store.png",
+                       alt: "Bach, Kieweg, Poser Store"
                      },
                      position: 11
                    },
                    {
-                     image: { 
-                       src: "kewaunee-birds-eye-view-W.F.Glandt-c1909.png", 
-                       alt: "Bird's Eye View of Kewaunee by W.F. Glandt, c. 1909" 
+                     image: {
+                       src: "kewaunee-birds-eye-view-W.F.Glandt-c1909.png",
+                       alt: "Bird's Eye View of Kewaunee by W.F. Glandt, c. 1909"
                      },
                      position: 12
                    }
                  ] %>
     <% elsif page_title == "Marquette Historic District Background" %>
-      <%= render 'shared/content_with_image', 
+      <%= render 'shared/content_with_image',
                  content: content,
-                 insert_image: { 
-                   src: "MHD-map.png", 
-                   alt: "Map of the Marquette Historic District" 
+                 insert_image: {
+                   src: "MHD-map.png",
+                   alt: "Map of the Marquette Historic District"
                  },
                  after_paragraph: 2 %>
     <% elsif page_title == "Marquette Historic District Architecture" %>
-      <% if @content_images.present? %>
-        <% insert_images_array = @content_images.map.with_index do |image_data, index|
+      <% if content_images.present? %>
+        <% insert_images_array = content_images.map do |image_data|
              {
-               image: { 
-                 src: image_data[:url], 
+               image: {
+                 src: image_data[:url],
                  alt: image_data[:alt],
                  caption: image_data[:caption]
                },
-               position: (index + 1) * 2  # After every 2nd paragraph
+               position: image_data[:position]
              }
            end %>
-        <%= render 'shared/content_with_image', 
+        <%= render 'shared/content_with_image',
                    content: content,
                    insert_images: insert_images_array %>
       <% else %>
@@ -113,14 +113,14 @@ Green Bay, Brown County, Wisconsin, USA"
       <%= simple_format(content) %>
     <% end %>
   </div>
-  
+
   <% if page_title == "Marquette Historic District Background" %>
     <div class="info-links">
       <hr class="info-links-divider">
       <h2>Additional Resources</h2>
       <div class="link-cards">
-        <%= link_to "https://semspub.epa.gov/work/05/926939.pdf", 
-                    target: "_blank", 
+        <%= link_to "https://semspub.epa.gov/work/05/926939.pdf",
+                    target: "_blank",
                     rel: "noopener noreferrer",
                     class: "link-card" do %>
           <i class="fas fa-file-pdf"></i>
@@ -130,9 +130,9 @@ Green Bay, Brown County, Wisconsin, USA"
           </div>
           <i class="fas fa-external-link-alt external-link-icon"></i>
         <% end %>
-        
-        <%= link_to "https://sah-archipedia.org/buildings/WI-01-KE3", 
-                    target: "_blank", 
+
+        <%= link_to "https://sah-archipedia.org/buildings/WI-01-KE3",
+                    target: "_blank",
                     rel: "noopener noreferrer",
                     class: "link-card" do %>
           <i class="fas fa-university"></i>
@@ -145,7 +145,7 @@ Green Bay, Brown County, Wisconsin, USA"
       </div>
     </div>
   <% end %>
-  
+
   <%= render 'info_pages/footer' %>
 </div>
 
