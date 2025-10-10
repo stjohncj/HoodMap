@@ -4,6 +4,6 @@
   <% if defined?(images) && images %>
     <%= render 'shared/street_gallery', images: images %>
   <% end %>
-  <%= render 'info_pages/body', page_title: page_title, content: content %>
+  <%= render 'info_pages/body', page_title: page_title, content: content, content_images: defined?(content_images) ? content_images : nil %>
 </div>
 
