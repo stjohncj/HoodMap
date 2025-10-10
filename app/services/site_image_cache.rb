@@ -113,6 +113,31 @@ class SiteImageCache
     site_cache.dig(site_id, :image_ids) || []
   end
 
+  # Find cached image data by site address
+  def self.find_by_address(address)
+    cache = Rails.cache.read(CACHE_KEY) || {}
+    site_cache = cache[:sites] || {}
+    image_cache = cache[:images] || {}
+
+    # Find the site with matching address
+    site_data = site_cache.values.find { |site| site[:site_address] == address }
+    return nil unless site_data
+
+    # Get the first image ID for this site
+    image_id = site_data[:image_ids]&.first
+    return nil unless image_id
+
+    # Return the cached image data with alt and caption
+    cached_image = image_cache[image_id]
+    return nil unless cached_image
+
+    {
+      url: cached_image[:url],
+      alt: "Historic home, #{cached_image[:site_name]}\n#{cached_image[:site_address]}",
+      caption: cached_image[:site_name]
+    }
+  end
+
   # Get random images for a specific site
   def self.random_site_images(site_id, count = 3)
     image_ids = site_image_ids(site_id).sample(count)

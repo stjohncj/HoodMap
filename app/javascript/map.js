@@ -276,28 +276,35 @@ window.closeSiteModal = closeSiteModal;
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
-  if (modal) {
-    // Close modal when clicking the close button
-    const closeButton = modal.querySelector('.modal-close-button');
-    if (closeButton) {
-      closeButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeSiteModal();
-      });
-      // Add touch support for iOS
-      closeButton.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        closeSiteModal();
-      });
-    }
+  if (modal && !modal.dataset.eventListenersAdded) {
+    // Mark that we've added event listeners to prevent duplicates
+    modal.dataset.eventListenersAdded = 'true';
 
-    // Close modal when clicking the backdrop
-    const backdrop = modal.querySelector('.modal-backdrop-map');
-    if (backdrop) {
-      backdrop.addEventListener('click', closeSiteModal);
-    }
+    // Shared handler for close button clicks (used by both click and touch events)
+    const handleCloseButtonEvent = (e) => {
+      // Check if clicked on .modal-close (static button) or .modal-close-button (dynamic button)
+      const closeButton = e.target.closest('.modal-close') || e.target.closest('.modal-close-button');
+      if (closeButton) {
+        e.preventDefault();
+        e.stopPropagation();
+        closeSiteModal();
+        return true;
+      }
+      return false;
+    };
+
+    // Use event delegation for close button (since it's loaded dynamically via fetch)
+    modal.addEventListener('click', (e) => {
+      if (handleCloseButtonEvent(e)) return;
+
+      // Check if clicked on backdrop
+      if (e.target.classList.contains('modal-backdrop-map')) {
+        closeSiteModal();
+      }
+    });
+
+    // Add touch support for iOS (event delegation)
+    modal.addEventListener('touchend', handleCloseButtonEvent);
 
     // Close modal with Escape key
     document.addEventListener('keydown', (event) => {

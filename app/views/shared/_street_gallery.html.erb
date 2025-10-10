@@ -2,20 +2,20 @@
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
 # Map the images to extract only src and alt properties needed for the JavaScript gallery
 # Handle both Active Storage URLs (start with '/' or 'http') and asset pipeline files
-complete_gallery_images = images.map do |img|
+complete_gallery_images = images.select { |img| img[:src].present? }.map do |img|
   src = (img[:src].start_with?('/') || img[:src].start_with?('http')) ? img[:src] : asset_path(img[:src])
   { src: src, alt: img[:alt] }
 end
 %>
 <div class="image-gallery">
-  <% images.each_with_index do |image_info, index| %>
+  <% images.select { |img| img[:src].present? }.each_with_index do |image_info, index| %>
     <% gallery_data = {
       images: complete_gallery_images,
       currentIndex: index
     }.to_json %>
-    <a href="#" 
+    <a href="#"
        data-gallery-data="<%= html_escape(gallery_data) %>"
-       onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;" 
+       onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
        class="gallery-image-link">
       <%= image_tag image_info[:src], alt: image_info[:alt], class: "gallery-image" %>
     </a>
