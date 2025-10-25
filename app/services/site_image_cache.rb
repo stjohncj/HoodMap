@@ -89,7 +89,8 @@ class SiteImageCache
       {
         url: cached_image[:url],  # Use pre-generated URL from cache
         alt: alt_lines.join("\n"),
-        caption: cached_image[:site_name]
+        caption: cached_image[:site_name],
+        site_id: cached_image[:site_id]
       }
     end
   end
@@ -134,7 +135,8 @@ class SiteImageCache
     {
       url: cached_image[:url],
       alt: "Historic home, #{cached_image[:site_name]}\n#{cached_image[:site_address]}",
-      caption: cached_image[:site_name]
+      caption: cached_image[:site_name],
+      site_id: cached_image[:site_id]
     }
   end
 
