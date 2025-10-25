@@ -1,6 +1,7 @@
-<script>
-// Map script - handles Google Maps initialization and site modal functionality
-(function() {
+// Map initialization module
+// This file handles Google Maps initialization and site modal functionality
+
+console.log("map_init.js module loaded");
 
 // Map configuration constants
 const MAP_ZOOM_INITIAL = 17;
@@ -48,17 +49,42 @@ window.highlightSidebarItem = highlightSidebarItem;
 window.unhighlightSidebarItem = unhighlightSidebarItem;
 
 async function initMap() {
+  console.log("initMap called, DOM ready state:", document.readyState);
+
+  // Wait for urlState to be available
+  if (!window.urlState) {
+    console.log("urlState not available yet, waiting...");
+    await new Promise(resolve => {
+      const checkUrlState = () => {
+        if (window.urlState) {
+          resolve();
+        } else {
+          setTimeout(checkUrlState, 10);
+        }
+      };
+      checkUrlState();
+    });
+  }
+
   // Check if map container exists (only initialize on map page)
   const coords = document.getElementById("sites");
+  console.log("Found #sites element:", coords);
   if (!coords) {
+    console.log("No #sites element found, skipping map initialization");
     return;
   }
 
+  // Check current initialization state
+  console.log("Current mapInitialized value:", coords.dataset.mapInitialized);
+
   // Check if map is already initialized for this container
   if (coords.dataset.mapInitialized === 'true') {
+    console.log("Map already initialized for this container, skipping");
     // Even if map is initialized, check for site parameter and open modal
     const siteIdFromUrl = window.urlState.get('site');
+    console.log("Checking for site parameter:", siteIdFromUrl);
     if (siteIdFromUrl) {
+      console.log('Map already initialized but site parameter found:', siteIdFromUrl);
       setTimeout(() => {
         showSiteModal(siteIdFromUrl);
       }, 100);
@@ -66,6 +92,7 @@ async function initMap() {
     return;
   }
 
+  console.log("Setting mapInitialized to true and proceeding with initialization");
   coords.dataset.mapInitialized = 'true';
 
   try {
@@ -87,9 +114,13 @@ async function initMap() {
     };
 
     const mapElement = document.getElementById("map");
+    console.log("Looking for #map element:", mapElement);
+    console.log("All elements with id 'map':", document.querySelectorAll("#map"));
+    console.log("All elements with class containing 'map':", document.querySelectorAll("[class*='map']"));
 
     if (!mapElement) {
-      console.error("Map element not found");
+      console.error("Map element not found - check if #map exists in DOM");
+      console.log("Available elements:", document.querySelectorAll("*"));
       return;
     }
 
@@ -259,6 +290,9 @@ async function initMap() {
       // Add hover effects to sidebar items
       site.addEventListener("mouseenter", () => {
         try {
+          console.log('Sidebar hover for site:', siteId);
+          console.log('Marker content:', markerContent);
+
           // Highlight the corresponding marker
           markerContent.style.transform = 'scale(1.2)';
           markerContent.style.transition = 'transform 0.2s ease-in-out';
@@ -422,21 +456,37 @@ window.closeSiteModal = closeSiteModal;
 
 // Event listeners for modal and map initialization
 function initializeMap() {
+  console.log("initializeMap called");
   initMap().catch(console.error);
 }
 
 
 // Handle Turbo before-cache event to clean up before page is cached
 document.addEventListener('turbo:before-cache', () => {
+  console.log("turbo:before-cache fired - cleaning up map state");
   const coords = document.getElementById("sites");
   if (coords) {
     // Remove initialization flag so map can be re-initialized when returning to page
     delete coords.dataset.mapInitialized;
+    console.log("Removed mapInitialized flag from #sites element");
   }
 });
 
 // Handle Turbo events for proper initialization
 document.addEventListener('turbo:load', () => {
+  console.log("turbo:load fired");
+  console.log("Current URL:", window.location.href);
+  console.log("URL search params:", window.location.search);
+
+  // Check if we're on the map page
+  const coords = document.getElementById("sites");
+  const mapElement = document.getElementById("map");
+  console.log("Page has #sites element:", !!coords);
+  console.log("Page has #map element:", !!mapElement);
+  if (coords) {
+    console.log("#sites data-map-initialized:", coords.dataset.mapInitialized);
+  }
+
   // Setup modal event handlers
   const modal = document.getElementById('site-modal');
   if (modal && !modal.dataset.eventListenersAdded) {
@@ -494,9 +544,12 @@ document.addEventListener('turbo:load', () => {
 
   // Check URL parameters and restore state
   const siteIdFromUrl = window.urlState.get('site');
+  console.log('Site ID from URL:', siteIdFromUrl);
+  console.log('Full URL:', window.location.href);
   if (siteIdFromUrl) {
     // Wait a bit for map to initialize before opening modal
     setTimeout(() => {
+      console.log('Opening modal for site:', siteIdFromUrl);
       showSiteModal(siteIdFromUrl);
     }, 500);
   }
@@ -504,10 +557,12 @@ document.addEventListener('turbo:load', () => {
 
 // Fallback for non-Turbo environments
 document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOMContentLoaded fired");
   // Only initialize if container hasn't been initialized yet
   setTimeout(() => {
     const coords = document.getElementById("sites");
     if (coords && coords.dataset.mapInitialized !== 'true') {
+      console.log("DOMContentLoaded fallback - initializing map");
       initializeMap();
     }
   }, 100);
@@ -529,6 +584,3 @@ window.addEventListener('urlStateChanged', (event) => {
     });
   }
 });
-
-})(); // End of IIFE
-</script>

@@ -7,6 +7,9 @@
  * depending on specificity.
  *
  * Consider organizing styles into separate files for maintainability.
+ *
+ * Note: Component and page-specific CSS files are automatically loaded by Propshaft.
+ * See app/assets/stylesheets/components/* and app/assets/stylesheets/pages/*
  */
 
 /* KHS Color Constants */
@@ -238,21 +241,3 @@ input[type="button"] .btn-text {
   margin-bottom: 2rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-
-/* Import organized stylesheets */
-
-/* Base styles */
-@import "base/info_pages.css";
-
-/* Component styles */
-@import "components/breadcrumb.css";
-@import "components/content_with_image.css";
-@import "components/gallery.css";
-@import "components/image_viewer_modal.css";
-@import "components/info_pages.css";
-@import "components/link_cards.css";
-@import "components/site_footer.css";
-@import "components/site_menu.css";
-
-/* Page-specific styles */
-@import "pages/site_detail.css";
