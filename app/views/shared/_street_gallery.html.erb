@@ -25,8 +25,7 @@ end
       </a>
       <% if image_info[:site_id] %>
         <%= link_to "View on Map →", historic_district_map_path(site: image_info[:site_id]),
-                   class: "site-map-link",
-                   style: "display: inline-block; margin-top: 8px; font-size: 0.9em; color: #4f317d; text-decoration: none;" %>
+                   class: "site-map-link" %>
       <% end %>
     </div>
   <% end %>

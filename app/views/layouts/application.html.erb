@@ -322,8 +322,6 @@
         if (window.urlState && window.urlState.get('image')) {
           const imageIndex = parseInt(window.urlState.get('image'), 10);
           const siteParam = window.urlState.get('site');
-          console.log('Gallery opening on page load - image:', imageIndex, 'site:', siteParam);
-          console.log('Full URL:', window.location.href);
 
           // Function to try opening gallery
           const tryOpenGallery = function() {
@@ -331,22 +329,16 @@
             const siteModal = document.getElementById('site-modal');
             let galleryElement;
 
-            console.log('Site modal exists:', !!siteModal, 'visible:', siteModal && siteModal.style.display);
-
             if (siteModal && siteModal.style.display === 'block') {
               // Look for gallery within the modal
               galleryElement = siteModal.querySelector('[data-gallery-data]');
-              console.log('Looking for gallery in modal, found:', !!galleryElement);
             } else {
               // No modal, look for first gallery on page
               galleryElement = document.querySelector('[data-gallery-data]');
-              console.log('Looking for gallery on page, found:', !!galleryElement);
             }
 
             if (galleryElement) {
               const galleryData = JSON.parse(galleryElement.getAttribute('data-gallery-data'));
-              console.log('Gallery has', galleryData.images.length, 'images');
-              console.log('First image src:', galleryData.images[0]?.src);
               // Update the current index to the one from URL
               galleryData.currentIndex = imageIndex;
               window.openImageGallery(galleryData);

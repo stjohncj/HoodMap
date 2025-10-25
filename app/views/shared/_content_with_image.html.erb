@@ -75,8 +75,7 @@
         # Add map link if site_id is present
         if img_config[:image][:site_id]
           map_link = link_to("View on Map →", historic_district_map_path(site: img_config[:image][:site_id]),
-                            class: "site-map-link",
-                            style: "display: inline-block; margin-top: 8px; font-size: 0.9em; color: #4f317d; text-decoration: none;")
+                            class: "site-map-link")
           combined_html = safe_join([image_html, map_link])
           output_html << content_tag(:div, combined_html, class: "embedded-image-container")
         else

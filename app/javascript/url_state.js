@@ -91,7 +91,4 @@ class URLStateManager {
   }
 }
 
-// Create a global singleton instance
-window.urlState = new URLStateManager();
-
 export default URLStateManager;
