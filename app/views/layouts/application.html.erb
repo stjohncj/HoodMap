@@ -32,6 +32,7 @@
   });
 </script>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+    <%= render 'shared/map_script' %>
   </head>
 
   <body>
@@ -66,6 +67,17 @@
       </div>
     </div>
 
+
+    <script type="module">
+      // Import and initialize URL state manager globally
+      import URLStateManager from 'url_state';
+      if (!window.urlState) {
+        window.urlState = new URLStateManager();
+      } else {
+        // If instance exists, refresh params to pick up current URL
+        window.urlState.refreshParams();
+      }
+    </script>
 
     <script>
       // Initialize global variables only once
@@ -123,11 +135,45 @@
       }
 
       window.openImageGallery = function(galleryData) {
+        // Validate gallery data
+        if (!galleryData || !galleryData.images || galleryData.images.length === 0) {
+          console.error('Invalid gallery data:', galleryData);
+          return;
+        }
+
         window.imageViewerGlobals.galleryImages = galleryData.images;
-        window.imageViewerGlobals.currentImageIndex = galleryData.currentIndex;
+
+        // Ensure currentIndex is within bounds
+        let currentIndex = galleryData.currentIndex || 0;
+        if (currentIndex < 0 || currentIndex >= galleryData.images.length) {
+          console.warn('Invalid image index', currentIndex, 'resetting to 0');
+          currentIndex = 0;
+        }
+        window.imageViewerGlobals.currentImageIndex = currentIndex;
+
+        // Update URL with image index and site_id if available
+        if (window.urlState) {
+          const hasSiteModal = !!document.getElementById('site-modal');
+          const currentImage = window.imageViewerGlobals.galleryImages[currentIndex];
+
+          if (currentImage && currentImage.site_id) {
+            // Image has a site_id - include it in URL
+            window.urlState.set('site', currentImage.site_id);
+          } else if (!hasSiteModal) {
+            // No site_id and no modal - remove site parameter
+            window.urlState.remove('site');
+          }
+
+          window.urlState.set('image', currentIndex);
+        }
 
         // Open with the selected image (in gallery mode)
         const currentImage = window.imageViewerGlobals.galleryImages[window.imageViewerGlobals.currentImageIndex];
+        if (!currentImage || !currentImage.src) {
+          console.error('Invalid current image:', currentImage);
+          return;
+        }
+
         window.openImageViewer(currentImage.src, currentImage.alt, true);
 
         // Show navigation arrows if there are multiple images
@@ -146,6 +192,22 @@
           window.imageViewerGlobals.currentImageIndex = 0;
         } else if (window.imageViewerGlobals.currentImageIndex < 0) {
           window.imageViewerGlobals.currentImageIndex = window.imageViewerGlobals.galleryImages.length - 1;
+        }
+
+        // Update URL with new image index and site_id if available
+        if (window.urlState) {
+          const hasSiteModal = !!document.getElementById('site-modal');
+          const currentImage = window.imageViewerGlobals.galleryImages[window.imageViewerGlobals.currentImageIndex];
+
+          if (currentImage && currentImage.site_id) {
+            // Image has a site_id - include it in URL
+            window.urlState.set('site', currentImage.site_id);
+          } else if (!hasSiteModal) {
+            // No site_id and no modal - remove site parameter
+            window.urlState.remove('site');
+          }
+
+          window.urlState.set('image', window.imageViewerGlobals.currentImageIndex);
         }
 
         // Update the displayed image
@@ -233,6 +295,11 @@
         const modal = document.getElementById('imageViewerModal');
         modal.style.display = 'none';
 
+        // Remove image parameter from URL
+        if (window.urlState) {
+          window.urlState.remove('image');
+        }
+
         // Restore body scroll
         document.body.style.overflow = 'auto';
       }
@@ -247,6 +314,103 @@
           } else if (e.key === 'ArrowRight') {
             window.navigateGallery(1);
           }
+        }
+      });
+
+      // Check URL on page load and open gallery if image parameter exists
+      document.addEventListener('DOMContentLoaded', function() {
+        if (window.urlState && window.urlState.get('image')) {
+          const imageIndex = parseInt(window.urlState.get('image'), 10);
+          const siteParam = window.urlState.get('site');
+
+          // Function to try opening gallery
+          const tryOpenGallery = function() {
+            // If there's a site modal open, look for gallery within the modal
+            const siteModal = document.getElementById('site-modal');
+            let galleryElement;
+
+            if (siteModal && siteModal.style.display === 'block') {
+              // Look for gallery within the modal
+              galleryElement = siteModal.querySelector('[data-gallery-data]');
+            } else {
+              // No modal, look for first gallery on page
+              galleryElement = document.querySelector('[data-gallery-data]');
+            }
+
+            if (galleryElement) {
+              const galleryData = JSON.parse(galleryElement.getAttribute('data-gallery-data'));
+              // Update the current index to the one from URL
+              galleryData.currentIndex = imageIndex;
+              window.openImageGallery(galleryData);
+            }
+          };
+
+          // If there's also a site parameter AND a site modal exists, wait for the modal to load
+          const hasSiteModal = !!document.getElementById('site-modal');
+          if (window.urlState.get('site') && hasSiteModal) {
+            // Wait for modal content to load (it's loaded via fetch in showSiteModal)
+            // We'll try multiple times with increasing delays
+            let attempts = 0;
+            const maxAttempts = 10;
+            const checkInterval = setInterval(function() {
+              attempts++;
+              const siteModal = document.getElementById('site-modal');
+              const galleryExists = siteModal && siteModal.querySelector('[data-gallery-data]');
+              if (galleryExists || attempts >= maxAttempts) {
+                clearInterval(checkInterval);
+                if (galleryExists) {
+                  tryOpenGallery();
+                } else {
+                  // Modal didn't load, try page gallery as fallback
+                  const pageGallery = document.querySelector('[data-gallery-data]');
+                  if (pageGallery) {
+                    const galleryData = JSON.parse(pageGallery.getAttribute('data-gallery-data'));
+                    galleryData.currentIndex = imageIndex;
+                    window.openImageGallery(galleryData);
+                  }
+                }
+              }
+            }, 200);
+          } else {
+            // No site parameter or no modal element, gallery should be immediately available
+            tryOpenGallery();
+          }
+        }
+      });
+
+      // Handle browser back/forward for gallery
+      window.addEventListener('urlStateChanged', function() {
+        const imageIndex = window.urlState.get('image');
+        const galleryModal = document.getElementById('imageViewerModal');
+
+        if (imageIndex !== null) {
+          // URL has image parameter - ensure gallery is open at that index
+          if (galleryModal.style.display !== 'block') {
+            // Gallery not open - find and open it
+            // Check if site modal is open to find the right gallery
+            const siteModal = document.getElementById('site-modal');
+            let galleryElement;
+
+            if (siteModal && siteModal.style.display === 'block') {
+              galleryElement = siteModal.querySelector('[data-gallery-data]');
+            } else {
+              galleryElement = document.querySelector('[data-gallery-data]');
+            }
+
+            if (galleryElement) {
+              const galleryData = JSON.parse(galleryElement.getAttribute('data-gallery-data'));
+              galleryData.currentIndex = parseInt(imageIndex, 10);
+              window.openImageGallery(galleryData);
+            }
+          } else if (window.imageViewerGlobals.currentImageIndex !== parseInt(imageIndex, 10)) {
+            // Gallery is open but at wrong index - navigate to correct image
+            const targetIndex = parseInt(imageIndex, 10);
+            const diff = targetIndex - window.imageViewerGlobals.currentImageIndex;
+            window.navigateGallery(diff);
+          }
+        } else if (galleryModal.style.display === 'block') {
+          // No image parameter but gallery is open - close it
+          window.closeImageViewer();
         }
       });
     </script>

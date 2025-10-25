@@ -46,3 +46,11 @@
   object-fit: cover;
   display: block;
 }
+
+.site-map-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: var(--site-primary-b);
+  text-decoration: none;
+}
