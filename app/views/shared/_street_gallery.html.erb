@@ -1,12 +1,12 @@
 <%
 # Pre-calculate the complete gallery data once to avoid recalculating for each image
-# Map the images to extract only src and alt properties needed for the JavaScript gallery
+# Map the images to extract src, alt, and site_id properties needed for the JavaScript gallery
 # Handle both Active Storage URLs (start with '/' or 'http') and asset pipeline files
 # Support both :src and :url keys for compatibility
 complete_gallery_images = images.select { |img| (img[:src] || img[:url]).present? }.map do |img|
   image_url = img[:src] || img[:url]
   src = (image_url.start_with?('/') || image_url.start_with?('http')) ? image_url : asset_path(image_url)
-  { src: src, alt: img[:alt] }
+  { src: src, alt: img[:alt], site_id: img[:site_id] }
 end
 %>
 <div class="image-gallery">
@@ -16,11 +16,17 @@ end
       currentIndex: index
     }.to_json %>
     <% image_url = image_info[:src] || image_info[:url] %>
-    <a href="#"
-       data-gallery-data="<%= html_escape(gallery_data) %>"
-       onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
-       class="gallery-image-link">
-      <%= image_tag image_url, alt: image_info[:alt], class: "gallery-image" %>
-    </a>
+    <div class="gallery-item">
+      <a href="#"
+         data-gallery-data="<%= html_escape(gallery_data) %>"
+         onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
+         class="gallery-image-link">
+        <%= image_tag image_url, alt: image_info[:alt], class: "gallery-image" %>
+      </a>
+      <% if image_info[:site_id] %>
+        <%= link_to "View on Map →", historic_district_map_path(site: image_info[:site_id]),
+                   class: "site-map-link" %>
+      <% end %>
+    </div>
   <% end %>
 </div>

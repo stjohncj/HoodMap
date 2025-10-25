@@ -64,14 +64,23 @@
         current_index = all_page_images.find_index { |img| img[:src] == image_path(img_config[:image][:src]) }
         gallery_with_index = { images: all_page_images, currentIndex: current_index }.to_json
         
-        image_html = image_tag(img_config[:image][:src], 
-                              alt: img_config[:image][:alt], 
+        image_html = image_tag(img_config[:image][:src],
+                              alt: img_config[:image][:alt],
                               class: image_classes,
                               loading: "lazy",
                               data: { gallery_data: html_escape(gallery_with_index) },
                               onclick: "window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;",
                               style: "cursor: pointer;")
-        output_html << content_tag(:div, image_html, class: "embedded-image-container")
+
+        # Add map link if site_id is present
+        if img_config[:image][:site_id]
+          map_link = link_to("View on Map →", historic_district_map_path(site: img_config[:image][:site_id]),
+                            class: "site-map-link")
+          combined_html = safe_join([image_html, map_link])
+          output_html << content_tag(:div, combined_html, class: "embedded-image-container")
+        else
+          output_html << content_tag(:div, image_html, class: "embedded-image-container")
+        end
       end
     end
   end
