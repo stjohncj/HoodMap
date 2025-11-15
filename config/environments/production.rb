@@ -59,6 +59,7 @@ Rails.application.configure do
   # Use in-memory cache store for fast access
   # Our cache is tiny (~14 KB) so memory usage is negligible
   # Cache is rebuilt on startup via initializer
+  # Note: SolidCache is used for Active Job/Cable, this is for application cache
   config.cache_store = :memory_store
 
   # Replace the default in-process and non-durable queuing backend for Active Job.

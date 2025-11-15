@@ -35,14 +35,14 @@ production:
     url: <%= ENV["DATABASE_URL"] %>
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cache:
-    url: <%= ENV["CACHE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/cache_migrate
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   queue:
-    url: <%= ENV["QUEUE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/queue_migrate
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   cable:
-    url: <%= ENV["CABLE_DATABASE_URL"] || ENV["DATABASE_URL"] %>
+    url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/cable_migrate
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
