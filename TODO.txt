@@ -17,21 +17,6 @@
     - 1018 Dodge - this is a good example for describing a smaller site
   - Look at the original MHD book to see if it lists the authors
 
-- "About the Marquette Historic District" blurb should give a little more history on the school within the text, after it mentions the school. Operating dates, name changes, vacancies, etc.
-
-- DISTRICT BACKGROUND
-     - "Beginning with prominent merchant and pioneer Joseph Duvall, who built the first large house, an Italianate mansion, in the district; and lumber magnate and State Senator George Grimmer, who followed with a Queen Anne house that set the tone for homes soon to follow in the district, many prominent families quickly built showplace homes along Dodge and Milwaukee Streets."
-     -
-
-
-
-- Can we should we link the pictures within MHD Architecture page to a site detail (modal or otherwise?)
-  - Could potentially link to the map page with the house selected?
-  - We should make all selection states within the map and gallery pages linkable
-    - need to save state for selections or is it already available acceptably from DOM traversal etc?
-    - gallery, site modal, and anywhere else?
-
-
 
 
 
