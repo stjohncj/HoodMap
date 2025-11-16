@@ -6,8 +6,11 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# If running the rails server then create or migrate existing database
-if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+# If running the rails server (either directly or via docker-start wrapper)
+# then create or migrate existing database
+if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" == "./bin/docker-start" ]]; then
+  echo "Setting up database..."
+
   # Check if HOOD_MAP_REGENERATE_DATA is set to regenerate the database
   if [ -n "${HOOD_MAP_REGENERATE_DATA}" ]; then
     echo "HOOD_MAP_REGENERATE_DATA is set - running db:reset..."
@@ -17,6 +20,8 @@ if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   else
     ./bin/rails db:prepare
   fi
+
+  echo "Database setup complete"
 fi
 
 exec "${@}"
