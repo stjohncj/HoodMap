@@ -2,7 +2,6 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "HTTP_PORT=$PORT ./bin/thrust ./bin/rails server"
 healthcheckPath = "/up"
 
 [environments.production]

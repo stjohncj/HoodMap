@@ -1,7 +1,6 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "deploy": {
-    "startCommand": "HTTP_PORT=$PORT ./bin/thrust ./bin/rails server",
     "healthcheckPath": "/up"
   }
 }
