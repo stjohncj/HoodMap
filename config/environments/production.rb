@@ -24,24 +24,9 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Assume all access to the app is happening through a SSL-terminating reverse proxy.
-  config.assume_ssl = true
-
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
-
-  # Enhanced SSL configuration with stronger HSTS
-  config.ssl_options = {
-    hsts: {
-      expires: 1.year,
-      subdomains: true,
-      preload: true
-    },
-    secure_cookies: true,
-    redirect: {
-      exclude: ->(request) { request.path == "/up" }
-    }
-  }
+  # Railway handles SSL termination, so don't force SSL at the app level
+  # This prevents issues with internal healthchecks
+  config.force_ssl = false
 
   # Log to STDOUT with the current request id as a default log tag.
   config.log_tags = [ :request_id ]
