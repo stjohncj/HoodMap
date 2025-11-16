@@ -68,10 +68,8 @@ USER 1000:1000
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime
-# Thruster uses HTTP_PORT env var, defaults to 80
-# Railway and other platforms set PORT, so we expose that
+# Thruster uses HTTP_PORT env var, Railway sets PORT dynamically
 EXPOSE 80
-ENV HTTP_PORT=80
 
-# Use a wrapper script to set HTTP_PORT from PORT if available
-CMD ["sh", "-c", "HTTP_PORT=${PORT:-80} ./bin/thrust ./bin/rails server"]
+# Use wrapper script to set HTTP_PORT from PORT if available
+CMD ["./bin/docker-start"]
