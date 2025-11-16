@@ -20,7 +20,7 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
     DB_HOST=$(echo $DATABASE_URL | sed -e 's|.*@\(.*\):.*|\1|')
     DB_PORT=$(echo $DATABASE_URL | sed -e 's|.*:\([0-9]*\)/.*|\1|')
 
-    MAX_RETRIES=30
+    MAX_RETRIES=15
     RETRY_COUNT=0
 
     # Use pg_isready for fast, lightweight database checks
@@ -38,7 +38,7 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
   fi
 
   if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-    echo "ERROR: Could not connect to database after $MAX_RETRIES attempts"
+    echo "ERROR: Could not connect to database after $RETRY_COUNT attempts"
     exit 1
   fi
 
