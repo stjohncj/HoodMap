@@ -13,17 +13,29 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
 
   # Wait for database to be ready (Railway private networking takes a moment)
   echo "Waiting for database connection..."
-  MAX_RETRIES=30
-  RETRY_COUNT=0
 
-  until ./bin/rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" >/dev/null 2>&1 || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
-    RETRY_COUNT=$((RETRY_COUNT+1))
-    # Only log every 5th attempt to avoid Railway rate limit
-    if [ $((RETRY_COUNT % 5)) -eq 0 ]; then
-      echo "Database not ready yet (attempt $RETRY_COUNT/$MAX_RETRIES), waiting..."
-    fi
-    sleep 2
-  done
+  # Extract database connection details from DATABASE_URL
+  # Format: postgresql://user:pass@host:port/database
+  if [ -n "$DATABASE_URL" ]; then
+    DB_HOST=$(echo $DATABASE_URL | sed -e 's|.*@\(.*\):.*|\1|')
+    DB_PORT=$(echo $DATABASE_URL | sed -e 's|.*:\([0-9]*\)/.*|\1|')
+
+    MAX_RETRIES=30
+    RETRY_COUNT=0
+
+    # Use pg_isready for fast, lightweight database checks
+    until pg_isready -h "$DB_HOST" -p "$DB_PORT" -q || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
+      RETRY_COUNT=$((RETRY_COUNT+1))
+      # Only log every 5th attempt to avoid Railway rate limit
+      if [ $((RETRY_COUNT % 5)) -eq 0 ]; then
+        echo "Database not ready yet (attempt $RETRY_COUNT/$MAX_RETRIES), waiting..."
+      fi
+      sleep 2
+    done
+  else
+    echo "WARNING: DATABASE_URL not set, skipping connection check"
+    RETRY_COUNT=0
+  fi
 
   if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
     echo "ERROR: Could not connect to database after $MAX_RETRIES attempts"
