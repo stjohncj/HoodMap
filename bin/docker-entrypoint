@@ -11,6 +11,24 @@ fi
 if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" == "./bin/docker-start" ]]; then
   echo "Setting up database..."
 
+  # Wait for database to be ready (Railway private networking takes a moment)
+  echo "Waiting for database connection..."
+  MAX_RETRIES=30
+  RETRY_COUNT=0
+
+  until ./bin/rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" 2>/dev/null || [ $RETRY_COUNT -eq $MAX_RETRIES ]; do
+    RETRY_COUNT=$((RETRY_COUNT+1))
+    echo "Database not ready yet (attempt $RETRY_COUNT/$MAX_RETRIES), waiting..."
+    sleep 2
+  done
+
+  if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+    echo "ERROR: Could not connect to database after $MAX_RETRIES attempts"
+    exit 1
+  fi
+
+  echo "Database connection established!"
+
   # Check if HOOD_MAP_REGENERATE_DATA is set to regenerate the database
   if [ -n "${HOOD_MAP_REGENERATE_DATA}" ]; then
     echo "HOOD_MAP_REGENERATE_DATA is set - running db:reset..."
