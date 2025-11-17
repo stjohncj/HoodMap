@@ -1,0 +1,212 @@
+/* Image Lazy Loading Enhancements
+ * Visual improvements for lazy-loaded images
+ */
+
+/* Base styles for all gallery images */
+.gallery-image,
+.embedded-image,
+.modal-gallery-image {
+  /* Smooth fade-in when image loads */
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+/* Show image once it's loaded */
+.gallery-image[src]:not([src=""]),
+.embedded-image[src]:not([src=""]),
+.modal-gallery-image[src]:not([src=""]) {
+  opacity: 1;
+}
+
+/* Loading state with shimmer animation */
+.gallery-image[loading="lazy"]:not([data-loaded]),
+.embedded-image[loading="lazy"]:not([data-loaded]),
+.modal-gallery-image[loading="lazy"]:not([data-loaded]) {
+  background: linear-gradient(
+    90deg,
+    var(--color-background) 0%,
+    var(--color-background-secondary) 50%,
+    var(--color-background) 100%
+  );
+  background-size: 200% 100%;
+  animation: imageShimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes imageShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Placeholder background color while loading */
+.gallery-item {
+  background: var(--color-background);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* Aspect ratio preservation to prevent layout shift */
+.gallery-image {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+.gallery-item.featured .gallery-image {
+  aspect-ratio: 21 / 9;
+}
+
+/* Modal images maintain their container height */
+.modal-gallery-image {
+  min-height: 200px;
+}
+
+/* Embedded images in content */
+.embedded-image {
+  min-height: 300px;
+  background: var(--color-background);
+}
+
+/* Side-by-side images */
+.side-by-side-image .embedded-image {
+  min-height: 250px;
+}
+
+/* Progressive image loading enhancement */
+/* Blur-up effect for lazy-loaded images */
+.gallery-image[loading="lazy"],
+.embedded-image[loading="lazy"] {
+  /* Apply a subtle blur that will be removed when loaded */
+  filter: blur(5px);
+  transform: scale(1.05);
+  transition: filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+}
+
+.gallery-image.loaded,
+.embedded-image.loaded {
+  filter: blur(0);
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Alternative: Use a simple fade-in without blur */
+.gallery-image[loading="eager"] {
+  /* Eager-loaded images (first image) don't get blur effect */
+  filter: none;
+  transform: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Loading skeleton for image containers */
+.image-gallery-item.loading::before {
+  content: '';
+  display: block;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  background: linear-gradient(
+    90deg,
+    var(--color-background) 25%,
+    var(--color-background-secondary) 50%,
+    var(--color-background) 75%
+  );
+  background-size: 200% 100%;
+  animation: imageShimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-lg);
+}
+
+/* Intersection Observer enhancement styles */
+/* For images that haven't entered viewport yet */
+.gallery-image:not([data-src-loaded]) {
+  background: var(--color-background);
+}
+
+/* Low-quality image placeholder (LQIP) support */
+.gallery-image[data-lqip] {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Responsive loading priorities */
+@media (max-width: 768px) {
+  /* On mobile, reduce initial blur and transition time for better perceived performance */
+  .gallery-image[loading="lazy"],
+  .embedded-image[loading="lazy"] {
+    filter: blur(3px);
+    transition: filter 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  }
+}
+
+/* Accessibility: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .gallery-image,
+  .embedded-image,
+  .modal-gallery-image {
+    transition: opacity 0.01ms;
+    animation: none;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .gallery-image[loading="lazy"]:not([data-loaded]),
+  .embedded-image[loading="lazy"]:not([data-loaded]) {
+    animation: none;
+    background: var(--color-background);
+  }
+
+  .image-gallery-item.loading::before {
+    animation: none;
+  }
+}
+
+/* Print styles - ensure all images load */
+@media print {
+  .gallery-image,
+  .embedded-image,
+  .modal-gallery-image {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}
+
+/* Noscript fallback styling */
+noscript .gallery-image,
+noscript .embedded-image {
+  opacity: 1;
+  filter: none;
+  transform: none;
+}
+
+/* Connection-aware loading (future enhancement) */
+/* Slower connections get simpler loading states */
+@media (prefers-reduced-data: reduce) {
+  .gallery-image[loading="lazy"],
+  .embedded-image[loading="lazy"] {
+    /* Skip blur effect on slow connections */
+    filter: none;
+    transform: none;
+  }
+}
+
+/* Error state for failed image loads */
+.gallery-image[data-load-error],
+.embedded-image[data-load-error] {
+  background: var(--color-background);
+  position: relative;
+}
+
+.gallery-image[data-load-error]::after,
+.embedded-image[data-load-error]::after {
+  content: '📷 Image unavailable';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+}

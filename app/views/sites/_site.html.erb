@@ -21,7 +21,7 @@
                 alt_text = alt_lines.join("\n")
               %>
               <div class="gallery-item <%= 'featured' if index == 0 %>">
-                <%= image_tag(image, alt: alt_text, class: "gallery-image") %>
+                <%= image_tag(image, alt: alt_text, class: "gallery-image", loading: index == 0 ? "eager" : "lazy") %>
               </div>
             <% end %>
           </div>
