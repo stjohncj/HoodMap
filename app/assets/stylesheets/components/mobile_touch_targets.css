@@ -1,0 +1,169 @@
+/* Mobile Touch Target Improvements
+ * Ensures all interactive elements meet the minimum 44x44px touch target size
+ * recommended by WCAG 2.1 Level AAA and iOS Human Interface Guidelines
+ */
+
+@media (max-width: 768px) {
+  /* Ensure minimum touch target size for all interactive elements */
+  a, button, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"]) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Site menu cards - increase padding for better touch targets */
+  .site-menu-card {
+    padding: 1rem 1.5rem;
+    min-height: 60px;
+  }
+
+  .site-menu-card i {
+    font-size: 2.2rem; /* Slightly larger icons */
+  }
+
+  .site-menu-card h5 {
+    font-size: 1.4rem;
+  }
+
+  /* Navigation menu cards - more spacing between cards */
+  .site-menu-cards {
+    gap: 1rem;
+  }
+
+  /* Modal close buttons - ensure they're easily tappable */
+  .modal-close,
+  .modal-close-button {
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+  }
+
+  /* Gallery navigation buttons */
+  .gallery-nav {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+  }
+
+  /* Image viewer controls */
+  .image-viewer-zoom {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+  }
+
+  .image-viewer-close {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 2rem;
+  }
+
+  /* Site list items in sidebar */
+  .site-list-item {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    min-height: 80px; /* Comfortable touch target with content */
+  }
+
+  .site-list-item h4 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .site-list-item p {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Header stat items - more padding for touch */
+  .page-header .stat-item {
+    padding: 0.75rem 1.25rem;
+    min-height: 48px;
+  }
+
+  /* Buttons - ensure minimum size */
+  .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.5rem;
+    min-height: 48px;
+  }
+
+  /* Link cards */
+  .link-card {
+    padding: 1.5rem;
+    min-height: 80px;
+  }
+
+  /* Gallery items - easier to tap */
+  .gallery-image-link {
+    min-height: 200px;
+  }
+
+  /* Site map link below gallery items */
+  .site-map-link {
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+    min-height: 44px;
+    line-height: 1.2;
+  }
+
+  /* Ensure adequate spacing between touch targets */
+  .site-menu-card + .site-menu-card {
+    margin-top: 0;
+  }
+
+  /* Map marker labels - bigger for touch */
+  .marker-tag {
+    font-size: 14px;
+    padding: 10px 14px;
+    min-height: 44px;
+    min-width: 60px;
+  }
+
+  /* Custom markers - larger tap area */
+  .custom-marker {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Breadcrumb navigation */
+  .breadcrumb a,
+  .breadcrumb span {
+    padding: 0.5rem 0.75rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+/* Extra small devices (phones in portrait mode) */
+@media (max-width: 480px) {
+  /* Even larger touch targets for very small screens */
+  .modal-close,
+  .modal-close-button {
+    width: 56px;
+    height: 56px;
+    font-size: 1.75rem;
+  }
+
+  /* Site menu cards - full width on very small screens */
+  .site-menu-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .site-menu-card {
+    padding: 1.25rem 1.5rem;
+    min-height: 70px;
+  }
+
+  /* Stat badges - larger text */
+  .page-header .stat-number {
+    font-size: 1.1rem;
+  }
+
+  .page-header .stat-label {
+    font-size: 0.85rem;
+  }
+}
