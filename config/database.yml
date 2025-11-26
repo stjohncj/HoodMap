@@ -31,5 +31,26 @@ test:
 # Production configuration for Railway and other cloud providers
 # Uses DATABASE_URL environment variable which Railway provides automatically
 production:
-  <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  primary:
+    url: <%= ENV["DATABASE_URL"] %>
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    connect_timeout: 30
+    checkout_timeout: 30
+  cache:
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/cache_migrate
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    connect_timeout: 30
+    checkout_timeout: 30
+  queue:
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/queue_migrate
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    connect_timeout: 30
+    checkout_timeout: 30
+  cable:
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/cable_migrate
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    connect_timeout: 30
+    checkout_timeout: 30
