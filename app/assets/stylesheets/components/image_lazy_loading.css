@@ -76,29 +76,12 @@
   min-height: 250px;
 }
 
-/* Progressive image loading enhancement */
-/* Blur-up effect for lazy-loaded images */
-.gallery-image[loading="lazy"],
-.embedded-image[loading="lazy"] {
-  /* Apply a subtle blur that will be removed when loaded */
-  filter: blur(5px);
-  transform: scale(1.05);
-  transition: filter 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
-}
-
-.gallery-image.loaded,
-.embedded-image.loaded {
-  filter: blur(0);
-  transform: scale(1);
-  opacity: 1;
-}
-
-/* Alternative: Use a simple fade-in without blur */
-.gallery-image[loading="eager"] {
-  /* Eager-loaded images (first image) don't get blur effect */
+/* Simple fade-in for all images - no blur effect */
+.gallery-image,
+.embedded-image {
   filter: none;
   transform: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.3s ease;
 }
 
 /* Loading skeleton for image containers */
@@ -132,11 +115,10 @@
 
 /* Responsive loading priorities */
 @media (max-width: 768px) {
-  /* On mobile, reduce initial blur and transition time for better perceived performance */
-  .gallery-image[loading="lazy"],
-  .embedded-image[loading="lazy"] {
-    filter: blur(3px);
-    transition: filter 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  /* On mobile, use faster transitions for better perceived performance */
+  .gallery-image,
+  .embedded-image {
+    transition: opacity 0.2s ease;
   }
 }
 
@@ -147,8 +129,6 @@
   .modal-gallery-image {
     transition: opacity 0.01ms;
     animation: none;
-    filter: none !important;
-    transform: none !important;
   }
 
   .gallery-image[loading="lazy"]:not([data-loaded]),
@@ -168,8 +148,6 @@
   .embedded-image,
   .modal-gallery-image {
     opacity: 1 !important;
-    filter: none !important;
-    transform: none !important;
   }
 }
 
@@ -177,20 +155,8 @@
 noscript .gallery-image,
 noscript .embedded-image {
   opacity: 1;
-  filter: none;
-  transform: none;
 }
 
-/* Connection-aware loading (future enhancement) */
-/* Slower connections get simpler loading states */
-@media (prefers-reduced-data: reduce) {
-  .gallery-image[loading="lazy"],
-  .embedded-image[loading="lazy"] {
-    /* Skip blur effect on slow connections */
-    filter: none;
-    transform: none;
-  }
-}
 
 /* Error state for failed image loads */
 .gallery-image[data-load-error],
