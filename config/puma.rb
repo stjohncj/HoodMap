@@ -27,9 +27,8 @@
 threads_count = ENV.fetch("RAILS_MAX_THREADS", 3)
 threads threads_count, threads_count
 
-# Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 # Bind to 0.0.0.0 to allow connections from outside the container
-port ENV.fetch("PORT", 3000)
+# Use PORT env var (Railway sets this dynamically), default to 3000
 bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
 
 # Allow puma to be restarted by `bin/rails restart` command.
