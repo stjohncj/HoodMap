@@ -277,7 +277,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.15.1)
+    rdoc (6.16.0)
       erb
       psych (>= 4.0.0)
       tsort
@@ -410,7 +410,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.1.0)
   rails-controller-testing
-  rdoc (~> 6.15.0)
+  rdoc (~> 6.16.0)
   rubocop-rails-omakase
   selenium-webdriver
   solid_cable
