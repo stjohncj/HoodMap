@@ -1,42 +1,83 @@
+/* Gallery Improvements */
 .image-gallery {
   display: flex;
-  gap: 0;
+  gap: var(--space-1);
   width: 100%;
-  height: 200px;
+  height: 250px;
   overflow: hidden;
   background: #f3f4f6;
-  margin-bottom: .3rem;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Gallery item container */
+.gallery-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .gallery-image-link {
   flex: 1;
-  height: 100%;
   display: flex;
   align-items: stretch;
   position: relative;
   text-decoration: none;
-  transition: transform 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
 }
 
 .gallery-image-link:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  z-index: 10;
+  box-shadow: var(--shadow-lg);
 }
 
+/* Enhanced hover indicator with icon */
 .gallery-image-link::after {
-  content: "🔗";
+  content: "\f002"; /* FontAwesome magnifying glass */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  top: var(--space-2);
+  right: var(--space-2);
+  background: rgba(0, 0, 0, 0.75);
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.8rem;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform: scale(0.8);
+  box-shadow: var(--shadow-md);
 }
 
 .gallery-image-link:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Image overlay on hover */
+.gallery-image-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.3) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.gallery-image-link:hover::before {
   opacity: 1;
 }
 
@@ -45,12 +86,55 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.3s ease;
 }
 
+.gallery-image-link:hover .gallery-image {
+  transform: scale(1.05);
+}
+
+/* Enhanced "View on Map" link */
 .site-map-link {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 0.9em;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--site-primary-b);
+  background: var(--site-highlight-background);
+  border: 1px solid var(--site-primary-a);
+  border-radius: var(--radius-md);
   text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.site-map-link:hover {
+  background: var(--site-primary-b);
+  color: white;
+  border-color: var(--site-primary-b);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.site-map-link::before {
+  content: "\f3c5"; /* FontAwesome map-marker-alt */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .image-gallery {
+    height: 180px;
+    gap: 2px;
+  }
+
+  .gallery-image-link::after {
+    width: 32px;
+    height: 32px;
+    font-size: 0.75rem;
+  }
 }

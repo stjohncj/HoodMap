@@ -21,7 +21,7 @@ end
          data-gallery-data="<%= html_escape(gallery_data) %>"
          onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
          class="gallery-image-link">
-        <%= image_tag image_url, alt: image_info[:alt], class: "gallery-image" %>
+        <%= image_tag image_url, alt: image_info[:alt], class: "gallery-image", loading: index < 4 ? "eager" : "lazy" %>
       </a>
       <% if image_info[:site_id] %>
         <%= link_to "View on Map →", historic_district_map_path(site: image_info[:site_id]),

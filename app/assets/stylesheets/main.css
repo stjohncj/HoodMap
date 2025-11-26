@@ -10,7 +10,7 @@
   margin-bottom: 0;
   position: relative;
   overflow: hidden;
-  animation: backgroundShift 20s ease-in-out infinite;
+  animation: backgroundShift 30s ease-in-out infinite;
 }
 
 .page-header::before {
@@ -24,7 +24,7 @@
     radial-gradient(circle at 70% 30%, rgba(255, 185, 32, 0.2) 0%, transparent 70%),
     radial-gradient(circle at 90% 80%, rgba(79, 49, 125, 0.15) 0%, transparent 60%);
   pointer-events: none;
-  animation: gradientFloat 15s ease-in-out infinite alternate;
+  animation: gradientFloat 20s ease-in-out infinite alternate;
 }
 
 .page-header::after {
@@ -52,14 +52,19 @@
   font-family: 'Controwell Script', cursive;
   font-size: 4.5rem;
   font-weight: normal;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 185, 32, 0.4);
+  /* Improved text shadow for better readability */
+  text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.6),
+               0 0 30px rgba(0, 0, 0, 0.3),
+               1px 1px 4px rgba(0, 0, 0, 0.8);
   letter-spacing: -0.01em;
-  background: linear-gradient(45deg, var(--site-primary-a) 0%, #ffffff 50%, var(--site-primary-a) 100%);
+  /* Simplified gradient with better contrast - more white, less transparency */
+  background: linear-gradient(45deg, #f5e6d3 0%, #ffffff 40%, #f5e6d3 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: titleShimmer 8s ease-in-out infinite, titleFloat 6s ease-in-out infinite;
+  /* Reduced animation frequency for less distraction */
+  animation: titleShimmer 12s ease-in-out infinite, titleFloat 8s ease-in-out infinite;
   position: relative;
   transform-origin: center;
 }
@@ -67,6 +72,13 @@
 @media (max-width: 768px) {
   .page-header h1 {
     font-size: 2.5rem;
+    /* Solid color on mobile for maximum readability */
+    background: none;
+    -webkit-text-fill-color: #ffffff;
+    color: #ffffff;
+    /* Enhanced shadow for depth */
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7),
+                 0 0 20px rgba(0, 0, 0, 0.4);
   }
 }
 

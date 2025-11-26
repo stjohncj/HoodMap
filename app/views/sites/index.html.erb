@@ -35,7 +35,7 @@
         <td><%= site.historic_name %></td>
         <td><%= site.architect %></td>
         <td><%= site.architectural_style %></td>
-        <td><%= image_tag(site.images.first.variant(resize_to_fill: [100,100])) if site.images.attached? %></td>
+        <td><%= image_tag(site.images.first.variant(resize_to_fill: [100,100]), loading: "lazy") if site.images.attached? %></td>
         <td><%= link_to 'Show', site %></td>
         <td><%= link_to 'Edit', edit_site_path(site) %></td>
         <td><%= link_to 'Destroy', site, method: :delete, data: { confirm: 'Are you sure?' } %></td>

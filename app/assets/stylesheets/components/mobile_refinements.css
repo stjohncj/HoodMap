@@ -1,0 +1,242 @@
+/* Mobile Responsiveness Refinements
+ * Additional improvements beyond the touch targets
+ */
+
+/* Tablet breakpoint (768px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Header adjustments for tablets */
+  .page-header h1 {
+    font-size: 3.5rem;
+  }
+
+  .page-header .stats {
+    gap: var(--space-3);
+  }
+}
+
+/* Mobile breakpoint (< 768px) */
+@media (max-width: 768px) {
+  /* Header size reduction */
+  .page-header {
+    padding: var(--space-3) 0;
+  }
+
+  .page-header h1 {
+    font-size: 2.25rem;
+    margin-bottom: var(--space-2);
+  }
+
+  .page-header .subtitle p {
+    font-size: 1rem;
+  }
+
+  /* Stack stat badges in 2x2 grid on mobile */
+  .page-header .stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .page-header .stat-item {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  /* Site menu improvements */
+  .site-menu {
+    padding: 0 var(--space-4);
+  }
+
+  /* Map adjustments */
+  #map {
+    height: 400px;
+    border-radius: var(--radius-lg);
+  }
+
+  .sites-sidebar {
+    height: 350px;
+  }
+
+  /* Modal responsiveness */
+  .modal-site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-4) var(--space-6) var(--space-4) var(--space-12);
+    gap: var(--space-2);
+  }
+
+  .modal-site-header-left {
+    width: 100%;
+  }
+
+  .modal-site-header-details {
+    width: 100%;
+    text-align: left;
+  }
+
+  .modal-site-content {
+    padding: var(--space-6);
+  }
+
+  .modal-content-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  /* Site detail page adjustments */
+  .site-detail {
+    padding: var(--space-6);
+    margin: var(--space-4) 0;
+  }
+
+  .site-header {
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+  }
+
+  .site-content {
+    gap: var(--space-6);
+  }
+
+  /* Gallery adjustments for mobile */
+  .image-gallery {
+    height: 180px;
+    margin-bottom: var(--space-4);
+  }
+
+  .gallery-item.featured .gallery-image {
+    height: 250px;
+  }
+
+  /* Info page content */
+  .info-page-content {
+    padding: var(--space-4);
+  }
+
+  .container {
+    padding: 0 var(--space-3);
+  }
+
+  /* Text readability improvements */
+  body {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  p {
+    margin-bottom: var(--space-4);
+  }
+
+  h2 {
+    font-size: 2rem;
+    margin-bottom: var(--space-3);
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-2);
+  }
+}
+
+/* Small mobile (< 480px) */
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .page-header .subtitle p {
+    font-size: 0.875rem;
+  }
+
+  /* Full-width stat badges on very small screens */
+  .page-header .stats {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce padding on small screens */
+  .container {
+    padding: 0 var(--space-2);
+  }
+
+  .site-detail {
+    padding: var(--space-4);
+  }
+
+  .modal-site-content {
+    padding: var(--space-4);
+  }
+
+  /* Map even smaller */
+  #map {
+    height: 350px;
+  }
+
+  .sites-sidebar {
+    height: 300px;
+  }
+
+  /* Smaller text sizes for very small screens */
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  h3 {
+    font-size: 1.35rem;
+  }
+
+  .btn {
+    font-size: 1.2rem;
+    padding: var(--space-3) var(--space-4);
+  }
+}
+
+/* Landscape mobile (height < 500px) */
+@media (max-height: 500px) and (orientation: landscape) {
+  .page-header {
+    padding: var(--space-2) 0;
+  }
+
+  .page-header h1 {
+    font-size: 2rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .page-header .stats {
+    margin-top: var(--space-2);
+  }
+
+  #map {
+    height: 300px;
+  }
+
+  .sites-sidebar {
+    height: 300px;
+  }
+}
+
+/* Tablet landscape optimization (1024px - 1366px) */
+@media (min-width: 1025px) and (max-width: 1366px) {
+  .map-container {
+    grid-template-columns: 1fr 300px;
+  }
+
+  .sites-sidebar {
+    padding: var(--space-5);
+  }
+}
+
+/* High DPI displays - enhance visual quality */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Slightly thinner borders for retina displays */
+  .modal-close,
+  .modal-close-button {
+    border-width: 1px;
+  }
+
+  /* Sharper shadows */
+  .btn,
+  .site-menu-card,
+  .content-section {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+}
