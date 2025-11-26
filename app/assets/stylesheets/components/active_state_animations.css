@@ -1,0 +1,325 @@
+/* Subtle Active State Animations
+ * Micro-interactions that provide feedback without being distracting
+ * All animations respect prefers-reduced-motion
+ */
+
+/* Button active state animations */
+.btn:active {
+  transform: scale(0.98);
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease-out, height 0.6s ease-out, opacity 0.6s ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active::after {
+  width: 300px;
+  height: 300px;
+  opacity: 0.3;
+  transition: width 0s, height 0s, opacity 0.6s;
+}
+
+/* Site menu card ripple effect on click */
+.site-menu-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.site-menu-card::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: var(--radius-full);
+  background: radial-gradient(circle, var(--color-accent-200) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease-out, height 0.5s ease-out, opacity 0.5s ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-menu-card:active::before {
+  width: 400px;
+  height: 400px;
+  opacity: 0.4;
+  transition: width 0s, height 0s, opacity 0.5s;
+}
+
+/* Site list item pulse on click */
+.site-list-item {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.site-list-item:active {
+  transform: scale(0.99);
+  background-color: var(--color-accent-100);
+}
+
+/* Modal close button rotation on hover (enhanced) */
+.modal-close {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.modal-close:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+/* Gallery image subtle zoom on active */
+.gallery-image {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s ease;
+}
+
+.gallery-image:active {
+  transform: scale(0.98);
+}
+
+/* Stat item subtle bounce on click */
+.stat-item {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.stat-item:active {
+  transform: scale(0.97);
+}
+
+/* Navigation link underline slide animation */
+.nav-link {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--site-primary-a);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link:active::after {
+  width: 100%;
+  background: var(--site-primary-b);
+}
+
+/* View on Map button active state */
+.view-on-map-btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.view-on-map-btn:active i {
+  transform: scale(1.05);
+}
+
+/* Map marker pulse animation (subtle) */
+@keyframes markerPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.map-marker.active {
+  animation: markerPulse 0.6s ease-in-out;
+}
+
+/* Highlighted state pulse for sidebar items */
+@keyframes highlightPulse {
+  0% {
+    background-color: var(--site-highlight-background);
+  }
+  50% {
+    background-color: var(--color-accent-200);
+  }
+  100% {
+    background-color: var(--site-highlight-background);
+  }
+}
+
+.site-list-item.highlighted.just-clicked {
+  animation: highlightPulse 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth color transitions for interactive elements */
+.site-menu-card,
+.btn,
+.btn-secondary,
+.site-list-item,
+.gallery-image-link,
+a {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading state shimmer (for future use with lazy loading) */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.loading-shimmer {
+  animation: shimmer 1.2s ease-in-out infinite;
+  background: linear-gradient(
+    to right,
+    var(--color-background) 0%,
+    var(--color-background-secondary) 20%,
+    var(--color-background) 40%,
+    var(--color-background) 100%
+  );
+  background-size: 800px 104px;
+}
+
+/* Focus ring pulse animation for accessibility */
+@keyframes focusRingPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 2px var(--site-primary-a);
+  }
+  50% {
+    box-shadow: 0 0 0 4px var(--site-primary-a);
+  }
+}
+
+*:focus-visible {
+  animation: focusRingPulse 2s ease-in-out infinite;
+}
+
+/* Checkbox/radio toggle animations */
+input[type="checkbox"],
+input[type="radio"] {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+input[type="checkbox"]:active,
+input[type="radio"]:active {
+  transform: scale(0.9);
+}
+
+/* Form input focus glow */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="search"]:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 3px var(--color-accent-100),
+              0 0 8px var(--color-accent-300);
+  transition: box-shadow 0.2s ease;
+}
+
+/* Link tap feedback */
+a:active {
+  opacity: 0.8;
+  transition: opacity 0.1s ease;
+}
+
+/* Icon rotation on link hover */
+.site-menu-card:hover i,
+.view-on-map-btn:hover i {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Subtle scale-up on card hover */
+.site-menu-card:hover,
+.content-section:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s ease;
+}
+
+/* Modal entrance animation */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.site-modal-map-overlay[style*="display: block"] .modal-content-map {
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Backdrop fade in */
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-backdrop-map {
+  animation: backdropFadeIn 0.2s ease-out;
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  /* Override all the animations above */
+  .btn::after,
+  .site-menu-card::before,
+  .nav-link::after,
+  .loading-shimmer,
+  .map-marker.active,
+  .site-list-item.highlighted.just-clicked,
+  .site-modal-map-overlay[style*="display: block"] .modal-content-map,
+  .modal-backdrop-map,
+  *:focus-visible {
+    animation: none !important;
+  }
+
+  /* Keep only transform feedback for active states */
+  .btn:active,
+  .site-list-item:active,
+  .gallery-image:active,
+  .stat-item:active,
+  input[type="checkbox"]:active,
+  input[type="radio"]:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+}

@@ -35,7 +35,7 @@
              data-gallery-data="<%= html_escape(gallery_data) %>"
              onclick="window.openImageGallery(JSON.parse(this.getAttribute('data-gallery-data'))); return false;"
              class="gallery-image-link">
-            <%= image_tag(image, alt: site_image_alt_text(site, index + 1, site.images.count), class: "gallery-image") %>
+            <%= image_tag(image, alt: site_image_alt_text(site, index + 1, site.images.count), class: "gallery-image", loading: index == 0 ? "eager" : "lazy") %>
           </a>
         <% end %>
       </div>

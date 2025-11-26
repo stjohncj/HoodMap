@@ -1,28 +1,36 @@
 <div class="map-container">
-  <div id="sites" data-latitude=<%= mhd_center_lat %> data-longitude=<%= mhd_center_lng %>>
-    <div id="map"></div>
-    
+  <div id="sites" data-latitude=<%= mhd_center_lat %> data-longitude=<%= mhd_center_lng %> role="region" aria-label="Interactive map of historic district">
+    <div id="map" role="application" aria-label="Google Maps showing Marquette Historic District locations"></div>
+
     <!-- Modal overlay for site details - positioned within map area -->
-    <div id="site-modal" class="site-modal-map-overlay" style="display: none;">
-      <div class="modal-backdrop-map"></div>
+    <div id="site-modal" class="site-modal-map-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-site-title">
+      <div class="modal-backdrop-map" aria-hidden="true"></div>
       <div class="modal-content-map">
         <div class="modal-header">
-          <button class="modal-close">
-            <i class="fas fa-times"></i>
+          <button class="modal-close" aria-label="Close site details">
+            <i class="fas fa-times" aria-hidden="true"></i>
           </button>
         </div>
-        <div class="modal-body" id="modal-site-content">
+        <div class="modal-body" id="modal-site-content" role="document">
           <!-- Site content will be loaded here -->
         </div>
       </div>
     </div>
   </div>
 
-  <div class="sites-sidebar">
+  <aside class="sites-sidebar" role="complementary" aria-label="List of historic sites">
     <h2>Historic Sites</h2>
-    <ol>
+    <ol role="list">
       <% sites.each_with_index do |site, index| %>
+        <%
+          aria_label = "#{site.historic_name}, #{site.address}"
+          aria_label += ", #{site.architectural_style} style" if site.architectural_style.present?
+          aria_label += ", built #{site.built_year}" if site.built_year
+        %>
         <li class="site-list-item"
+          role="button"
+          tabindex="0"
+          aria-label="<%= aria_label %>"
           data-latitude=<%=site.latitude %>
           data-longitude=<%= site.longitude %>
           data-id=<%= site.id %>
@@ -43,5 +51,5 @@
         </li>
       <% end %>
     </ol>
-  </div>
+  </aside>
 </div>

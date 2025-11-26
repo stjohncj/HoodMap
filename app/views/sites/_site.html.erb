@@ -21,7 +21,7 @@
                 alt_text = alt_lines.join("\n")
               %>
               <div class="gallery-item <%= 'featured' if index == 0 %>">
-                <%= image_tag(image, alt: alt_text, class: "gallery-image") %>
+                <%= image_tag(image, alt: alt_text, class: "gallery-image", loading: index == 0 ? "eager" : "lazy") %>
               </div>
             <% end %>
           </div>
@@ -79,8 +79,18 @@
         <% if site.latitude.present? && site.longitude.present? %>
           <div class="location-card">
             <h3>Location</h3>
-            <p>Latitude: <%= site.latitude %></p>
-            <p>Longitude: <%= site.longitude %></p>
+            <p class="coordinates">
+              <span class="coordinate-label">Latitude:</span>
+              <span class="coordinate-value"><%= number_with_precision(site.latitude, precision: 6) %>° N</span>
+            </p>
+            <p class="coordinates">
+              <span class="coordinate-label">Longitude:</span>
+              <span class="coordinate-value"><%= number_with_precision(site.longitude, precision: 6) %>° W</span>
+            </p>
+            <%= link_to historic_district_map_path(site: site.id), class: "view-on-map-btn" do %>
+              <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+              <span>View on Map</span>
+            <% end %>
           </div>
         <% end %>
       </div>

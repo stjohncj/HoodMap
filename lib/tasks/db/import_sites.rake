@@ -70,6 +70,54 @@ namespace :db do
     "Arthur Peabody",
     "William Waters"
   ].freeze
+
+  desc "Clear all sites and their associated images from the database"
+  task clear: :environment do
+    puts "Clearing all sites from the database..."
+    puts "=" * 50
+
+    site_count = Site.count
+
+    if site_count == 0
+      puts "No sites to clear."
+    else
+      # Purge all attached images first
+      puts "Purging attached images..."
+      Site.find_each do |site|
+        site.images.purge if site.images.attached?
+      end
+
+      # Delete all sites
+      Site.destroy_all
+
+      puts "✓ Cleared #{site_count} site(s) and their images."
+    end
+
+    puts "=" * 50
+    puts "Clear completed!"
+  end
+
+  desc "Rebuild sites by clearing all existing sites and re-importing from CSV"
+  task rebuild: :environment do
+    puts "=" * 50
+    puts "REBUILDING SITES DATABASE"
+    puts "=" * 50
+    puts ""
+
+    # Run clear task
+    Rake::Task["db:sites:clear"].invoke
+
+    puts ""
+
+    # Run import task
+    Rake::Task["db:sites:import"].invoke
+
+    puts ""
+    puts "=" * 50
+    puts "REBUILD COMPLETED!"
+    puts "=" * 50
+  end
+
   desc "Import sites from CSV file at db/mhd.csv"
   task import: :environment do
     csv_file = Rails.root.join("db", "mhd.csv")

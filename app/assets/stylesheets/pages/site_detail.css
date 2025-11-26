@@ -108,8 +108,88 @@
   color: #6b7280;
 }
 
-.location-card p {
-  margin: 0.5rem 0;
-  font-family: monospace;
-  color: #6b7280;
+/* Enhanced coordinates display */
+.location-card p.coordinates {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: var(--space-3) 0;
+  padding: var(--space-2) var(--space-3);
+  background: white;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--site-primary-a);
+}
+
+.coordinate-label {
+  font-weight: 600;
+  color: var(--site-primary-b);
+  font-size: 0.875rem;
+  font-family: Georgia, serif;
+}
+
+.coordinate-value {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  color: #374151;
+  background: #f3f4f6;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+/* View on Map button */
+.view-on-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, var(--site-primary-b) 0%, var(--site-primary-b-dark) 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.view-on-map-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.view-on-map-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  text-decoration: none;
+}
+
+.view-on-map-btn:hover::before {
+  left: 100%;
+}
+
+.view-on-map-btn:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.view-on-map-btn i {
+  font-size: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.view-on-map-btn:hover i {
+  transform: scale(1.1) rotate(5deg);
 }

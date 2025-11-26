@@ -1,0 +1,137 @@
+/* Reduced Motion Preferences
+ * Respects user's preference for reduced motion (prefers-reduced-motion: reduce)
+ * This is an important accessibility feature for users with vestibular disorders
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Specifically disable problematic animations */
+  .page-header {
+    animation: none !important;
+  }
+
+  .page-header::before,
+  .page-header::after {
+    animation: none !important;
+  }
+
+  .page-header h1 {
+    animation: none !important;
+    /* Keep the text visible but remove gradient animation */
+    background: var(--site-primary-a-light);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Disable hover transform animations but keep color changes */
+  .gallery-image-link:hover {
+    transform: none !important;
+  }
+
+  .gallery-image-link:hover .gallery-image {
+    transform: none !important;
+  }
+
+  .gallery-image-link:hover::after {
+    opacity: 1;
+    transform: none !important;
+  }
+
+  /* Disable button hover animations */
+  .btn:hover,
+  .site-menu-card:hover,
+  .link-card:hover {
+    transform: none !important;
+  }
+
+  /* Disable modal animations */
+  .modal-content,
+  .modal-content-map {
+    animation: none !important;
+  }
+
+  /* Disable close button rotation */
+  .modal-close:hover,
+  .modal-close-button:hover {
+    transform: none !important;
+  }
+
+  /* Disable map marker animations */
+  .custom-marker:hover {
+    transform: none !important;
+  }
+
+  .marker-tag:hover {
+    transform: none !important;
+  }
+
+  /* Disable sidebar item animations */
+  .site-list-item:hover {
+    transform: none !important;
+  }
+
+  /* Disable View on Map button animations */
+  .view-on-map-btn:hover {
+    transform: none !important;
+  }
+
+  .view-on-map-btn:hover i {
+    transform: none !important;
+  }
+
+  .view-on-map-btn::before {
+    display: none !important;
+  }
+
+  /* Disable stat badge animations */
+  .page-header .stat-item:hover {
+    transform: none !important;
+  }
+
+  /* Disable focus animations but keep visibility */
+  *:focus,
+  *:focus-visible {
+    transition: none !important;
+  }
+
+  /* Smooth scroll is disabled at the top level */
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep fade transitions for modals but make them instant */
+  .image-viewer-modal,
+  .site-modal,
+  .site-modal-map-overlay {
+    transition: opacity 0.01ms !important;
+  }
+}
+
+/* Alternative: Respect user preference but allow essential animations */
+@media (prefers-reduced-motion: reduce) {
+  /* Users can still perceive important state changes through instant transitions */
+  .btn,
+  .site-menu-card,
+  .gallery-image-link,
+  .site-list-item,
+  .link-card {
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
+  }
+
+  /* Focus indicators should still be visible immediately */
+  *:focus,
+  *:focus-visible {
+    outline-offset: 2px;
+    transition: none !important;
+  }
+}

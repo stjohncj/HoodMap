@@ -1,0 +1,172 @@
+/* Accessibility Improvements - Focus Indicators and Keyboard Navigation */
+
+/* Global focus styles for better keyboard navigation visibility */
+*:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+}
+
+/* Skip to main content link (will add to layout later) */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--site-primary-b);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  z-index: 10000;
+  font-weight: 600;
+  border-radius: 0 0 0.5rem 0;
+  transition: top 0.3s ease;
+}
+
+.skip-to-main:focus {
+  top: 0;
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: -3px;
+}
+
+/* Enhanced focus for interactive elements */
+a:focus,
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+[tabindex]:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(210, 187, 148, 0.2);
+}
+
+/* Focus styles for navigation menu cards */
+.site-menu-card:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
+              0 0 0 4px rgba(210, 187, 148, 0.2);
+}
+
+.site-menu-card-current:focus {
+  outline: 3px solid var(--site-primary-b);
+  outline-offset: 2px;
+}
+
+/* Focus styles for map sidebar items */
+.site-list-item:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: -3px;
+  background: var(--mhd-light-lighter);
+  border-color: var(--site-primary-b);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(79, 49, 125, 0.2);
+}
+
+/* Focus styles for gallery images */
+.gallery-image-link:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: -3px;
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+/* Focus styles for modal close buttons */
+.modal-close:focus,
+.modal-close-button:focus {
+  outline: 3px solid var(--site-primary-b);
+  outline-offset: 2px;
+  background: rgba(128, 128, 128, 0.4);
+  transform: scale(1.1);
+}
+
+/* Focus styles for buttons */
+.btn:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(210, 187, 148, 0.2),
+              0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Focus styles for link cards (external resources) */
+.link-card:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(30, 58, 138, 0.2),
+              0 0 0 4px rgba(210, 187, 148, 0.2);
+}
+
+/* Focus visible only (for modern browsers that support it) */
+*:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+*:focus-visible {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(210, 187, 148, 0.2);
+}
+
+/* ARIA label visual indicators for screen reader users */
+[aria-label],
+[aria-labelledby],
+[aria-describedby] {
+  /* These elements have proper labels for screen readers */
+  cursor: pointer;
+}
+
+/* Hidden but accessible text for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Improved focus for header stats */
+.page-header .stat-item:focus {
+  outline: 3px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 25px rgba(255, 185, 32, 0.4),
+              0 0 0 4px rgba(255, 255, 255, 0.3);
+}
+
+/* Focus for map markers (when using keyboard navigation) */
+.custom-marker:focus {
+  outline: 3px solid var(--site-primary-a);
+  outline-offset: 2px;
+  transform: scale(1.2);
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+}
+
+.marker-tag:focus {
+  outline: 3px solid var(--site-primary-b);
+  outline-offset: 2px;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(255, 185, 32, 0.5);
+}
+
+/* Improve focus visibility on dark backgrounds */
+.page-header a:focus,
+.page-header button:focus {
+  outline-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.2);
+}
