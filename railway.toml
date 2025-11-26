@@ -1,5 +1,5 @@
 [build]
-builder = "BuildKit"
+builder = "buildkit"
 
 [deploy]
 healthcheckPath = "/up"
