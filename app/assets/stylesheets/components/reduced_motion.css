@@ -101,6 +101,7 @@
   /* Disable focus animations but keep visibility */
   *:focus,
   *:focus-visible {
+    outline-offset: 2px;
     transition: none !important;
   }
 
@@ -115,23 +116,13 @@
   .site-modal-map-overlay {
     transition: opacity 0.01ms !important;
   }
-}
 
-/* Alternative: Respect user preference but allow essential animations */
-@media (prefers-reduced-motion: reduce) {
-  /* Users can still perceive important state changes through instant transitions */
+  /* Allow essential state changes through instant color transitions */
   .btn,
   .site-menu-card,
   .gallery-image-link,
   .site-list-item,
   .link-card {
     transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease !important;
-  }
-
-  /* Focus indicators should still be visible immediately */
-  *:focus,
-  *:focus-visible {
-    outline-offset: 2px;
-    transition: none !important;
   }
 }
