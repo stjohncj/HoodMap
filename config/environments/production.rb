@@ -84,5 +84,6 @@ Rails.application.configure do
   # ]
   #
   # Skip DNS rebinding protection for the default health check endpoint.
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # Railway's health checks come from internal IPs, so we need to allow them
+  config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
