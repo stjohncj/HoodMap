@@ -49,13 +49,20 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
   echo "Running database migrations..."
   ./bin/rails db:migrate
 
-  # Check if sites table is empty - if so, import data in background
+  # Check if sites need to be imported
+  # We check both: 1) if sites exist in DB, and 2) if storage files exist
+  # On Railway, the filesystem is ephemeral so storage files may be lost between deploys
   SITE_COUNT=$(./bin/rails runner "puts Site.count" 2>/dev/null || echo "0")
+  STORAGE_FILES=$(find /rails/storage -type f 2>/dev/null | head -1)
+
   if [ "$SITE_COUNT" = "0" ]; then
     echo "Database is empty - will import sites after server starts..."
     export HOOD_MAP_IMPORT_ON_BOOT=1
+  elif [ -z "$STORAGE_FILES" ]; then
+    echo "Database has $SITE_COUNT sites but storage is empty - will rebuild after server starts..."
+    export HOOD_MAP_IMPORT_ON_BOOT=1
   else
-    echo "Database has $SITE_COUNT sites - skipping import"
+    echo "Database has $SITE_COUNT sites with storage files - skipping import"
   fi
 
   echo "Database setup complete"
