@@ -9,18 +9,18 @@ if ENV["HOOD_MAP_IMPORT_ON_BOOT"] && Rails.env.production?
       # Give the server a moment to fully start
       sleep 5
 
-      Rails.logger.info "Starting background site import..."
+      Rails.logger.info "Starting background site rebuild..."
 
       begin
         # Load tasks if not already loaded
-        Rails.application.load_tasks unless Rake::Task.task_defined?("db:sites:import")
+        Rails.application.load_tasks unless Rake::Task.task_defined?("db:sites:rebuild")
 
-        # Run the import
-        Rake::Task["db:sites:import"].invoke
+        # Run the rebuild
+        Rake::Task["db:sites:rebuild"].invoke
 
-        Rails.logger.info "Background site import completed successfully!"
+        Rails.logger.info "Background site rebuild completed successfully!"
       rescue => e
-        Rails.logger.error "Background site import failed: #{e.message}"
+        Rails.logger.error "Background site rebuild failed: #{e.message}"
         Rails.logger.error e.backtrace.join("\n")
       end
     end
