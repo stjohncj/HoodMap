@@ -1,8 +1,16 @@
 [build]
-builder = "RAILPACK"
+builder = "dockerfile"
 
 [deploy]
 healthcheckPath = "/up"
+healthcheckTimeout = 300
+numReplicas = 1
 
-[environments.production]
-variables = { RAILS_ENV = "production" }
+# Tell Railway the app listens on port 3000
+[[deploy.ports]]
+port = 3000
+protocol = "TCP"
+
+[environments.production.variables]
+RAILS_ENV = "production"
+PORT = "3000"
