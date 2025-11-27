@@ -44,14 +44,18 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
 
   echo "Database connection established after $RETRY_COUNT attempts!"
 
-  # Check if HOOD_MAP_REGENERATE_DATA is set to regenerate the database
-  if [ -n "${HOOD_MAP_REGENERATE_DATA}" ]; then
-    echo "HOOD_MAP_REGENERATE_DATA is set - running db:reset..."
-    ./bin/rails db:reset
-    echo "Database reset complete. Unsetting HOOD_MAP_REGENERATE_DATA for next startup..."
-    unset HOOD_MAP_REGENERATE_DATA
+  # Run database migrations only (don't run seeds which can take a long time)
+  # Seeds with image imports take too long and cause health check timeouts
+  echo "Running database migrations..."
+  ./bin/rails db:migrate
+
+  # Check if sites table is empty - if so, import data in background
+  SITE_COUNT=$(./bin/rails runner "puts Site.count" 2>/dev/null || echo "0")
+  if [ "$SITE_COUNT" = "0" ]; then
+    echo "Database is empty - will import sites after server starts..."
+    export HOOD_MAP_IMPORT_ON_BOOT=1
   else
-    ./bin/rails db:prepare
+    echo "Database has $SITE_COUNT sites - skipping import"
   fi
 
   echo "Database setup complete"
