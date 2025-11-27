@@ -1,11 +1,7 @@
 #!/bin/bash -e
 
-# Set HTTP_PORT from Railway's PORT or default to 80
-export HTTP_PORT="${PORT:-80}"
+echo "Starting Rails server..."
+echo "PORT=${PORT:-3000}"
 
-echo "Starting Rails server with Thruster..."
-echo "PORT=${PORT}"
-echo "HTTP_PORT=${HTTP_PORT}"
-
-# Start Thruster with Rails server
-exec ./bin/thrust ./bin/rails server
+# Start Rails server directly (bypassing Thruster for now)
+exec ./bin/rails server -b 0.0.0.0 -p ${PORT:-3000}
