@@ -2,14 +2,10 @@
 builder = "dockerfile"
 
 [deploy]
-healthcheckPath = "/up"
+# Temporarily disable health check to debug SSL cert issue
+# healthcheckPath = "/up"
 healthcheckTimeout = 300
 numReplicas = 1
-
-# Tell Railway the app listens on port 3000
-[[deploy.ports]]
-port = 3000
-protocol = "TCP"
 
 [environments.production.variables]
 RAILS_ENV = "production"
