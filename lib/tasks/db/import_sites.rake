@@ -77,14 +77,34 @@ namespace :db do
     puts "=" * 50
 
     site_count = Site.count
+    blob_count = ActiveStorage::Blob.count
 
-    if site_count == 0
-      puts "No sites to clear."
+    puts "Current state: #{site_count} sites, #{blob_count} blobs"
+
+    if site_count == 0 && blob_count == 0
+      puts "No sites or blobs to clear."
     else
-      # Purge all attached images first
+      # Purge all attached images first (safely handles missing files)
       puts "Purging attached images..."
       Site.find_each do |site|
-        site.images.purge if site.images.attached?
+        if site.images.attached?
+          site.images.purge
+        end
+      rescue => e
+        puts "  Warning: Could not purge images for site #{site.id}: #{e.message}"
+      end
+
+      # Clean up any orphaned blobs (blobs without attachments)
+      orphaned_blobs = ActiveStorage::Blob.left_joins(:attachments)
+                                          .where(active_storage_attachments: { id: nil })
+      if orphaned_blobs.any?
+        puts "Cleaning up #{orphaned_blobs.count} orphaned blobs..."
+        orphaned_blobs.find_each do |blob|
+          blob.purge
+        rescue => e
+          # If file doesn't exist, just delete the record
+          blob.delete
+        end
       end
 
       # Delete all sites

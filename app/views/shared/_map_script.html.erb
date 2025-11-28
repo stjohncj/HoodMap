@@ -445,8 +445,8 @@ document.addEventListener('turbo:load', () => {
 
     // Shared handler for close button clicks (used by both click and touch events)
     const handleCloseButtonEvent = (e) => {
-      // Check if clicked on .modal-close (static button) or .modal-close-button (dynamic button)
-      const closeButton = e.target.closest('.modal-close') || e.target.closest('.modal-close-button');
+      // Check if clicked on .modal-close (static button in modal header)
+      const closeButton = e.target.closest('.modal-close');
       if (closeButton) {
         e.preventDefault();
         e.stopPropagation();

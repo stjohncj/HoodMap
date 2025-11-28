@@ -53,16 +53,21 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
   # We check both: 1) if sites exist in DB, and 2) if storage files exist
   # On Railway, the filesystem is ephemeral so storage files may be lost between deploys
   SITE_COUNT=$(./bin/rails runner "puts Site.count" 2>/dev/null || echo "0")
-  STORAGE_FILES=$(find /rails/storage -type f 2>/dev/null | head -1)
+
+  # Check for actual blob files in storage directory (not just directories)
+  # Storage structure is /rails/storage/XX/YY/blob_key where XX/YY are first chars of key
+  STORAGE_FILE_COUNT=$(find /rails/storage -type f -name "*" 2>/dev/null | wc -l | tr -d ' ')
+
+  echo "Database sites: $SITE_COUNT, Storage files: $STORAGE_FILE_COUNT"
 
   if [ "$SITE_COUNT" = "0" ]; then
     echo "Database is empty - will import sites after server starts..."
     export HOOD_MAP_IMPORT_ON_BOOT=1
-  elif [ -z "$STORAGE_FILES" ]; then
-    echo "Database has $SITE_COUNT sites but storage is empty - will rebuild after server starts..."
+  elif [ "$STORAGE_FILE_COUNT" = "0" ] || [ "$STORAGE_FILE_COUNT" -lt 5 ]; then
+    echo "Database has $SITE_COUNT sites but storage has only $STORAGE_FILE_COUNT files - will rebuild after server starts..."
     export HOOD_MAP_IMPORT_ON_BOOT=1
   else
-    echo "Database has $SITE_COUNT sites with storage files - skipping import"
+    echo "Database has $SITE_COUNT sites with $STORAGE_FILE_COUNT storage files - skipping import"
   fi
 
   echo "Database setup complete"
