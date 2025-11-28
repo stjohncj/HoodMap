@@ -18,6 +18,11 @@ if ENV["HOOD_MAP_IMPORT_ON_BOOT"] && Rails.env.production?
         # Run the rebuild
         Rake::Task["db:sites:rebuild"].invoke
 
+        # Explicitly refresh the image cache after rebuild
+        # (rebuild already triggers this via enhance, but be explicit)
+        Rails.logger.info "Refreshing site image cache after rebuild..."
+        SiteImageCache.refresh_cache!
+
         Rails.logger.info "Background site rebuild completed successfully!"
       rescue => e
         Rails.logger.error "Background site rebuild failed: #{e.message}"
