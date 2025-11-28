@@ -52,13 +52,12 @@
   font-family: 'Controwell Script', cursive;
   font-size: 4.5rem;
   font-weight: normal;
-  /* Improved text shadow for better readability */
-  text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.6),
-               0 0 30px rgba(0, 0, 0, 0.3),
-               1px 1px 4px rgba(0, 0, 0, 0.8);
+  /* Lighter text shadow with golden glow */
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3),
+               0 0 20px rgba(255, 215, 0, 0.3);
   letter-spacing: -0.01em;
-  /* Simplified gradient with better contrast - more white, less transparency */
-  background: linear-gradient(45deg, #f5e6d3 0%, #ffffff 40%, #f5e6d3 100%);
+  /* Gold-accented gradient for title text with dark accents */
+  background: linear-gradient(45deg, #b8860b 0%, #ffd700 20%, #fffef0 40%, #ffffff 50%, #fffef0 60%, #ffd700 80%, #b8860b 100%);
   background-size: 200% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
