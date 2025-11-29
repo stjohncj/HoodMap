@@ -433,6 +433,12 @@ document.addEventListener('turbo:before-cache', () => {
     // Remove initialization flag so map can be re-initialized when returning to page
     delete coords.dataset.mapInitialized;
   }
+
+  // Also reset modal event listeners flag so they get re-attached after cache restore
+  const modal = document.getElementById('site-modal');
+  if (modal) {
+    delete modal.dataset.eventListenersAdded;
+  }
 });
 
 // Handle Turbo events for proper initialization
