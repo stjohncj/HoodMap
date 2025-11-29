@@ -2,6 +2,18 @@
 // Map script - handles Google Maps initialization and site modal functionality
 (function() {
 
+// Immediately check for site parameter when script loads
+// This catches cases where turbo:load may not fire correctly
+const checkAndOpenSiteModal = () => {
+  const siteId = new URLSearchParams(window.location.search).get('site');
+  if (siteId && typeof showSiteModal === 'function') {
+    const modal = document.getElementById('site-modal');
+    if (modal && modal.style.display !== 'block') {
+      showSiteModal(siteId);
+    }
+  }
+};
+
 // Map configuration constants
 const MAP_ZOOM_INITIAL = 17;
 const MAP_ZOOM_MIN_AFTER_BOUNDS = 17; // Force closer zoom to reduce space around markers
@@ -527,6 +539,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const coords = document.getElementById("sites");
     if (coords && coords.dataset.mapInitialized !== 'true') {
       initializeMap();
+
+      // Also check for site parameter on DOMContentLoaded
+      const siteId = new URLSearchParams(window.location.search).get('site');
+      if (siteId) {
+        setTimeout(() => {
+          showSiteModal(siteId);
+        }, 500);
+      }
     }
   }, 100);
 });
@@ -547,6 +567,12 @@ window.addEventListener('urlStateChanged', (event) => {
     });
   }
 });
+
+// Additional safety net: check for site parameter after a short delay
+// This catches edge cases where other event listeners don't fire
+setTimeout(() => {
+  checkAndOpenSiteModal();
+}, 750);
 
 })(); // End of IIFE
 </script>
