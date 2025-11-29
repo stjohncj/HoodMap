@@ -12,8 +12,9 @@ if ENV["HOOD_MAP_IMPORT_ON_BOOT"] && Rails.env.production?
       Rails.logger.info "Starting background site rebuild..."
 
       begin
-        # Load tasks if not already loaded
-        Rails.application.load_tasks unless Rake::Task.task_defined?("db:sites:rebuild")
+        # Require Rake and load Rails tasks (not loaded by default in server mode)
+        require "rake"
+        Rails.application.load_tasks
 
         # Run the rebuild
         Rake::Task["db:sites:rebuild"].invoke
