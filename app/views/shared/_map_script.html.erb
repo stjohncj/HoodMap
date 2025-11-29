@@ -57,7 +57,10 @@ async function initMap() {
   // Check if map is already initialized for this container
   if (coords.dataset.mapInitialized === 'true') {
     // Even if map is initialized, check for site parameter and open modal
-    const siteIdFromUrl = window.urlState.get('site');
+    // Use urlState if available, otherwise fall back to URLSearchParams
+    const siteIdFromUrl = window.urlState
+      ? window.urlState.get('site')
+      : new URLSearchParams(window.location.search).get('site');
     if (siteIdFromUrl) {
       setTimeout(() => {
         showSiteModal(siteIdFromUrl);
@@ -499,7 +502,16 @@ document.addEventListener('turbo:load', () => {
   initializeMap();
 
   // Check URL parameters and restore state
-  const siteIdFromUrl = window.urlState.get('site');
+  // Use urlState if available, otherwise fall back to URLSearchParams directly
+  // (urlState module may not be loaded yet on full page navigations)
+  const getSiteIdFromUrl = () => {
+    if (window.urlState) {
+      return window.urlState.get('site');
+    }
+    return new URLSearchParams(window.location.search).get('site');
+  };
+
+  const siteIdFromUrl = getSiteIdFromUrl();
   if (siteIdFromUrl) {
     // Wait a bit for map to initialize before opening modal
     setTimeout(() => {
