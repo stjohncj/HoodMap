@@ -71,6 +71,8 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
   fi
 
   echo "Database setup complete"
+  echo "HOOD_MAP_IMPORT_ON_BOOT=${HOOD_MAP_IMPORT_ON_BOOT:-not set}"
 fi
 
-exec "${@}"
+# Use env to ensure exported variables are passed to the exec'd process
+exec env HOOD_MAP_IMPORT_ON_BOOT="${HOOD_MAP_IMPORT_ON_BOOT:-}" "${@}"
