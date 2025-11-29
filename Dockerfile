@@ -54,20 +54,24 @@ RUN SECRET_KEY_BASE=precompile_dummy_key_not_for_production ./bin/rails assets:p
 # Final stage for app image
 FROM base
 
+# Install gosu for dropping privileges in entrypoint
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y gosu && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
-# Remove and recreate storage to ensure proper permissions (volume mounts may override)
+# Create rails user and set up directories
+# Don't switch to USER here - entrypoint will handle it after fixing permissions
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     rm -rf storage && mkdir -p storage && \
     chown -R rails:rails db log storage tmp && \
-    chmod 777 storage
-USER 1000:1000
+    chmod 755 storage
 
-# Entrypoint prepares the database.
+# Entrypoint runs as root, fixes permissions, then drops to rails user
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start server via Thruster by default, this can be overwritten at runtime

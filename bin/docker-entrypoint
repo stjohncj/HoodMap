@@ -6,15 +6,13 @@ if [ -z "${LD_PRELOAD+x}" ]; then
     export LD_PRELOAD
 fi
 
-# Ensure storage directory exists and is writable
-# This is needed when Railway mounts a volume or when permissions are incorrect
+# Fix storage directory permissions (runs as root before dropping privileges)
+# This ensures the rails user can write to storage for Active Storage uploads
+echo "Fixing storage directory permissions..."
 mkdir -p /rails/storage
-# Try to create a test file to check write permissions
-if ! touch /rails/storage/.write_test 2>/dev/null; then
-    echo "WARNING: /rails/storage is not writable. Storage uploads will fail."
-else
-    rm -f /rails/storage/.write_test
-fi
+chown -R rails:rails /rails/storage
+chmod 755 /rails/storage
+echo "Storage directory ready: $(ls -la /rails | grep storage)"
 
 # If running the rails server (either directly or via docker-start wrapper)
 # then create or migrate existing database
@@ -84,5 +82,6 @@ if [[ "${@: -2:1}" == "./bin/rails" && "${@: -1:1}" == "server" ]] || [[ "$1" ==
   echo "HOOD_MAP_IMPORT_ON_BOOT=${HOOD_MAP_IMPORT_ON_BOOT:-not set}"
 fi
 
-# Use env to ensure exported variables are passed to the exec'd process
-exec env HOOD_MAP_IMPORT_ON_BOOT="${HOOD_MAP_IMPORT_ON_BOOT:-}" "${@}"
+# Drop privileges and run as rails user using gosu
+# This ensures the app runs as non-root for security
+exec gosu rails env HOOD_MAP_IMPORT_ON_BOOT="${HOOD_MAP_IMPORT_ON_BOOT:-}" "${@}"
