@@ -10,9 +10,20 @@ fi
 # This ensures the rails user can write to storage for Active Storage uploads
 echo "Fixing storage directory permissions..."
 mkdir -p /rails/storage
-chown -R rails:rails /rails/storage
-chmod 755 /rails/storage
-echo "Storage directory ready: $(ls -la /rails | grep storage)"
+
+# Show current ownership for debugging
+echo "Current storage ownership:"
+ls -la /rails | grep storage || true
+
+# Try chown first (works on most volume types)
+chown -R rails:rails /rails/storage 2>/dev/null || echo "chown failed (volume may not support ownership changes)"
+
+# Also set world-writable permissions as fallback for volumes that don't support chown
+# This is less secure but ensures the app works on all volume types
+chmod -R 777 /rails/storage 2>/dev/null || echo "chmod failed"
+
+echo "Storage directory after fix:"
+ls -la /rails | grep storage || true
 
 # If running the rails server (either directly or via docker-start wrapper)
 # then create or migrate existing database
