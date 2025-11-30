@@ -1,6 +1,4 @@
 // Import and register all your controllers from the importmap via controllers/**/*_controller
-import { application } from "./application"
-import GalleryController from "./gallery_controller"
-
-// Register controllers
-application.register("gallery", GalleryController)
+import { application } from "controllers/application"
+import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading"
+eagerLoadControllersFrom("controllers", application)
