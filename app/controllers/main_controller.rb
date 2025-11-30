@@ -1,6 +1,6 @@
 class MainController < ApplicationController
   def index
-    @sites = Site.all
+    @sites = Site.sorted_by_street_and_number
 
     # Calculate center from actual site bounds with padding
     if @sites.any?
