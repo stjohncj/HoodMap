@@ -22,7 +22,7 @@ const MAP_ZOOM_MAX_AFTER_BOUNDS = 20; // Allow closer zoom for better icon visib
 // Flag to track when a modal is being opened
 let isOpeningModal = false;
 
-// Highlight sidebar item and scroll it into centered view
+// Highlight sidebar item (no scrolling on hover to avoid page jumping)
 function highlightSidebarItem(siteId) {
   const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
   if (!sidebarItem) return;
@@ -34,17 +34,6 @@ function highlightSidebarItem(siteId) {
 
   // Add highlight to current item
   sidebarItem.classList.add('highlighted');
-
-  // Scroll to center the item in the sidebar
-  const sidebar = document.querySelector('.sites-sidebar ol');
-  if (!sidebar) return;
-
-  // Use scrollIntoView with block: 'center' for reliable centering
-  sidebarItem.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center',
-    inline: 'nearest'
-  });
 }
 
 // Remove highlight from sidebar item
