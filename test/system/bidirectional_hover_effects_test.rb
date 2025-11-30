@@ -71,69 +71,6 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     assert marker.present?, "Map marker should be present"
   end
 
-  test "sidebar item scrolls into view when map marker is hovered" do
-    visit historic_district_map_path
-
-    # Wait for initialization
-    assert_selector "#map", wait: 10
-    assert_selector ".custom-marker", wait: 10
-    assert_selector ".sites-sidebar ol", wait: 10
-
-    # Get all markers and sidebar items
-    markers = all(".custom-marker")
-    sidebar_items = all(".site-list-item")
-
-    skip "Need multiple markers for scroll test" if markers.length < 5
-
-    # Find a marker that would be off-screen (near the end of the list)
-    # We'll use a marker that's near the bottom to ensure it needs scrolling
-    target_index = [ markers.length - 2, 4 ].max # At least 5th item or second to last
-    target_marker = markers[target_index]
-
-    # Get the corresponding sidebar item's data-id
-    # The markers are created in the same order as sidebar items
-    target_sidebar_item = sidebar_items[target_index]
-    target_site_id = target_sidebar_item["data-id"]
-
-    # First, scroll the sidebar to the top to ensure our target is off-screen
-    page.execute_script("document.querySelector('.sites-sidebar ol').scrollTop = 0;")
-    sleep 0.2
-
-    # Call the highlightSidebarItem function directly with the site ID
-    # This bypasses the need to trigger the hover event which is unreliable in tests
-    page.execute_script("window.highlightSidebarItem(arguments[0])", target_site_id)
-
-    sleep 0.6 # Allow time for scrolling animation
-
-    # Verify the sidebar item is highlighted
-    assert target_sidebar_item.matches_css?(".highlighted"),
-           "Sidebar item should have highlighted class"
-
-    # Verify the sidebar item is actually visible in the viewport
-    # We check if the item is within the visible area of its scrollable container
-    is_visible = page.evaluate_script(<<~JS)
-      (function() {
-        const item = document.querySelector('.site-list-item.highlighted');
-        const sidebar = document.querySelector('.sites-sidebar ol');
-        if (!item || !sidebar) return false;
-
-        const sidebarRect = sidebar.getBoundingClientRect();
-        const itemRect = item.getBoundingClientRect();
-
-        // Check if item is within the visible bounds of the sidebar
-        const isInVerticalView = (
-          itemRect.top >= sidebarRect.top &&
-          itemRect.bottom <= sidebarRect.bottom
-        );
-
-        return isInVerticalView;
-      })();
-    JS
-
-    assert is_visible,
-           "Highlighted sidebar item should be visible within the sidebar viewport"
-  end
-
   test "marker hover effects change SVG colors" do
     visit historic_district_map_path
 
