@@ -134,9 +134,9 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
     assert_selector "#map", wait: 10
     assert_selector ".custom-marker", wait: 10
 
-    # Test interaction
+    # Test interaction - use JavaScript click to avoid Google Maps controls intercepting
     first_marker = find(".custom-marker", match: :first)
-    first_marker.click
+    page.execute_script("arguments[0].click()", first_marker)
 
     # Modal should open
     assert_selector "#site-modal", visible: true, wait: 5
@@ -248,9 +248,9 @@ class TurboNavigationMapTest < ApplicationSystemTestCase
     visit historic_district_map_path
     assert_selector "#map", wait: 10
 
-    # Open a modal
+    # Open a modal - use JavaScript click to avoid Google Maps controls intercepting
     first_marker = find(".custom-marker", match: :first)
-    first_marker.click
+    page.execute_script("arguments[0].click()", first_marker)
     assert_selector "#site-modal", visible: true, wait: 5
 
     # Navigate away (modal should be cleaned up)
