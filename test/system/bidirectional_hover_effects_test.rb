@@ -154,24 +154,24 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     assert sidebar_item.present?
   end
 
-  # Skip: JavaScript modal interaction not working in test environment
-  # test "clicking sidebar item opens modal" do
-  #   visit historic_district_map_path
-  #
-  #   # Wait for sidebar to be ready
-  #   assert_selector ".site-list-item", wait: 10
-  #
-  #   # Click on the first sidebar item
-  #   first_sidebar_item = find(".site-list-item", match: :first)
-  #   first_sidebar_item.click
-  #
-  #   # Modal should open
-  #   assert_selector "#site-modal[style*='block']", wait: 5
-  #   assert_selector "#modal-site-content", wait: 5
-  #
-  #   # Check that modal has loaded content
-  #   assert page.has_text?(/Built:|Craftsman|Historic|Prairie|Victorian|Marquette/), "Modal should contain site details"
-  # end
+  test "clicking sidebar item opens modal" do
+    visit historic_district_map_path
+
+    # Wait for sidebar to be ready
+    assert_selector "#map", wait: 10
+    assert_selector ".site-list-item", wait: 10
+
+    # Click on the first sidebar item using JavaScript for reliability
+    first_sidebar_item = find(".site-list-item", match: :first)
+    page.execute_script("arguments[0].click()", first_sidebar_item)
+
+    # Modal should open
+    assert_selector "#site-modal", visible: true, wait: 5
+    assert_selector ".modal-site-content", wait: 5
+
+    # Check that modal has loaded content
+    assert page.has_text?(/Built:|Craftsman|Historic|Prairie|Victorian|Marquette/), "Modal should contain site details"
+  end
 
   test "hover effects work correctly after modal close" do
     visit historic_district_map_path
