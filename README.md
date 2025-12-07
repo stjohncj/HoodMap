@@ -28,7 +28,7 @@ This virtual tour application allows visitors to explore the Marquette Historic 
 
 ## Technology Stack
 
-- **Backend**: Rails 8 with SQLite database
+- **Backend**: Rails 8 with PostgreSQL database
 - **Frontend**: Hotwire (Turbo + Stimulus) with vanilla JavaScript
 - **Maps**: Google Maps JavaScript API with Advanced Markers
 - **Styling**: Modern CSS with Propshaft asset pipeline
