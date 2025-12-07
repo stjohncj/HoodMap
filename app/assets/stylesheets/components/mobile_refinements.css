@@ -100,7 +100,8 @@
 
   /* Gallery adjustments for mobile */
   .image-gallery {
-    height: 180px;
+    height: auto;
+    min-height: 720px;
     margin-bottom: var(--space-4);
   }
 

@@ -128,8 +128,15 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .image-gallery {
-    height: 180px;
-    gap: 2px;
+    height: auto;
+    min-height: 720px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .gallery-item {
+    flex: 1 1 calc(50% - 2px);
+    min-height: 180px;
   }
 
   .gallery-image-link::after {
