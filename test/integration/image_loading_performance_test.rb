@@ -113,30 +113,28 @@ class ImageLoadingPerformanceTest < ActionDispatch::IntegrationTest
            "Warm cache (#{warm_duration}s) should be faster than cold cache (#{cold_duration}s)"
   end
 
-  test "historic architecture page displays random images on each request" do
+  test "historic architecture page displays images from cache" do
     skip_unless_images_exist
 
     # Warm the cache
     SiteImageCache.build_and_store_cache
 
-    # Make multiple requests and collect displayed images
-    image_sets = []
-    3.times do
-      get mhd_architecture_path
-      assert_response :success
+    # Make a request and verify images are displayed
+    get mhd_architecture_path
+    assert_response :success
 
-      # Extract image sources from response
-      doc = Nokogiri::HTML(response.body)
-      images = doc.css(".architecture-gallery img").map { |img| img["src"] }
-      image_sets << images if images.any?
+    # Extract image sources from response
+    doc = Nokogiri::HTML(response.body)
+    images = doc.css(".image-gallery img").map { |img| img["src"] }
+
+    # Should have images from the cache
+    assert images.any?, "Page should display images from cache"
+
+    # All images should be Active Storage URLs
+    images.each do |src|
+      assert src.include?("/rails/active_storage") || src.start_with?("/assets/"),
+             "Image should be Active Storage or asset URL: #{src}"
     end
-
-    # Skip if no images found
-    skip "No images found in responses" if image_sets.empty?
-
-    # Check that we got some variation in images (not identical every time)
-    unique_sets = image_sets.uniq
-    assert unique_sets.length > 1, "Should get different image sets on different requests"
   end
 
   test "historic architecture page handles sites without images gracefully" do
