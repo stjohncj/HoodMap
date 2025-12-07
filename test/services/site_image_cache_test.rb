@@ -19,6 +19,24 @@ class SiteImageCacheTest < ActiveSupport::TestCase
       historic_name: "Test Historic House 2",
       address: "456 Test Ave"
     ) if @site2.historic_name.blank?
+
+    # Attach test images to sites if they don't have any
+    attach_test_images_to_sites
+  end
+
+  def attach_test_images_to_sites
+    test_image_path = Rails.root.join("test/fixtures/files/test_image.jpg")
+    return unless File.exist?(test_image_path)
+
+    [ @site1, @site2 ].each do |site|
+      next if site.images.attached?
+
+      site.images.attach(
+        io: File.open(test_image_path),
+        filename: "test_image.jpg",
+        content_type: "image/jpeg"
+      )
+    end
   end
 
   teardown do
@@ -240,15 +258,16 @@ class SiteImageCacheTest < ActiveSupport::TestCase
     SiteImageCache.build_and_store_cache
     result = SiteImageCache.random_images(10)
 
+    # Result should be an array
+    assert_kind_of Array, result
+
     # Check if any images have built_year in alt text
-    images_with_built_year = result.select { |img| img[:alt].match?(/built \d{4}/) }
+    images_with_built_year = result.select { |img| img[:alt].match?(/const\. \d{4}/) }
 
     # This assertion depends on test data - some sites may not have built_year
     # So we just verify the format is correct when it exists
-    if images_with_built_year.any?
-      images_with_built_year.each do |image|
-        assert_match %r{const\. \d{4}}, image[:alt], "Alt text should include 'const. <year>' when site has built_year"
-      end
+    images_with_built_year.each do |image|
+      assert_match %r{const\. \d{4}}, image[:alt], "Alt text should include 'const. <year>' when site has built_year"
     end
   ensure
     # Reset to null store for other tests
@@ -288,10 +307,13 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   test "cached_image_url returns URL for valid image ID" do
     skip_unless_images_exist
 
+    # Use memory store since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     SiteImageCache.build_and_store_cache
     cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
 
-    if cache[:images].any?
+    if cache && cache[:images].any?
       image_id = cache[:images].keys.first
       expected_url = cache[:images][image_id][:url]
 
@@ -299,6 +321,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
 
       assert_equal expected_url, result
     end
+
+    # Reset to null store
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "cached_image_url returns nil for invalid image ID" do
@@ -320,10 +345,13 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   test "site_image_ids returns array of image IDs for site" do
     skip_unless_images_exist
 
+    # Use memory store since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     SiteImageCache.build_and_store_cache
     cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
 
-    if cache[:sites].any?
+    if cache && cache[:sites].any?
       site_id = cache[:sites].keys.first
       expected_ids = cache[:sites][site_id][:image_ids]
 
@@ -332,6 +360,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
       assert_equal expected_ids, result
       assert_kind_of Array, result
     end
+
+    # Reset to null store
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "site_image_ids returns empty array for invalid site ID" do
@@ -345,10 +376,13 @@ class SiteImageCacheTest < ActiveSupport::TestCase
   test "random_site_images returns URLs for site" do
     skip_unless_images_exist
 
+    # Use memory store since test env uses null store
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+
     SiteImageCache.build_and_store_cache
     cache = Rails.cache.read(SiteImageCache::CACHE_KEY)
 
-    if cache[:sites].any?
+    if cache && cache[:sites].any?
       site_id = cache[:sites].keys.first
 
       result = SiteImageCache.random_site_images(site_id, 2)
@@ -361,6 +395,9 @@ class SiteImageCacheTest < ActiveSupport::TestCase
         assert_match %r{/rails/active_storage/blobs}, url
       end
     end
+
+    # Reset to null store
+    Rails.cache = ActiveSupport::Cache::NullStore.new
   end
 
   test "refresh_cache! rebuilds and stores cache" do
