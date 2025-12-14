@@ -100,13 +100,7 @@
 
   /* Gallery adjustments for mobile */
   .image-gallery {
-    height: auto;
-    min-height: 720px;
     margin-bottom: var(--space-4);
-  }
-
-  .gallery-item.featured .gallery-image {
-    height: 250px;
   }
 
   /* Info page content */
