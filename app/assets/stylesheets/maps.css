@@ -638,7 +638,8 @@
 }
 
 .modal-site-content .gallery-image-link {
-  flex: 0 0 calc(33.333% - 6px);
+  flex: 1 1 calc(33.333% - 6px);
+  max-width: calc(33.333% - 6px);
   min-height: 250px;
   display: flex;
   align-items: stretch;
@@ -648,6 +649,15 @@
   border: 3px solid white;
   border-radius: var(--radius-md);
   overflow: hidden;
+}
+
+/* When 3 or fewer images, let them expand to fill space */
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(1),
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(2),
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(2) ~ .gallery-image-link,
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(3),
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(3) ~ .gallery-image-link {
+  max-width: none;
 }
 
 .modal-site-content .gallery-image-link:hover {

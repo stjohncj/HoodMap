@@ -14,7 +14,8 @@
 
 /* Gallery item container */
 .gallery-item {
-  flex: 0 0 calc(33.333% - 6px);
+  flex: 1 1 calc(33.333% - 6px);
+  max-width: calc(33.333% - 6px);
   min-height: 250px;
   display: flex;
   flex-direction: column;
@@ -25,7 +26,8 @@
 }
 
 .gallery-image-link {
-  flex: 0 0 calc(33.333% - 6px);
+  flex: 1 1 calc(33.333% - 6px);
+  max-width: calc(33.333% - 6px);
   min-height: 250px;
   display: flex;
   align-items: stretch;
@@ -35,6 +37,20 @@
   overflow: hidden;
   border: 3px solid white;
   border-radius: var(--radius-md);
+}
+
+/* When 3 or fewer images, let them expand to fill space */
+.image-gallery .gallery-item:first-child:nth-last-child(1),
+.image-gallery .gallery-item:first-child:nth-last-child(2),
+.image-gallery .gallery-item:first-child:nth-last-child(2) ~ .gallery-item,
+.image-gallery .gallery-item:first-child:nth-last-child(3),
+.image-gallery .gallery-item:first-child:nth-last-child(3) ~ .gallery-item,
+.image-gallery .gallery-image-link:first-child:nth-last-child(1),
+.image-gallery .gallery-image-link:first-child:nth-last-child(2),
+.image-gallery .gallery-image-link:first-child:nth-last-child(2) ~ .gallery-image-link,
+.image-gallery .gallery-image-link:first-child:nth-last-child(3),
+.image-gallery .gallery-image-link:first-child:nth-last-child(3) ~ .gallery-image-link {
+  max-width: none;
 }
 
 .gallery-image-link:hover {
