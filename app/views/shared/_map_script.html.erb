@@ -9,7 +9,7 @@ const checkAndOpenSiteModal = () => {
   if (siteId && typeof showSiteModal === 'function') {
     const modal = document.getElementById('site-modal');
     if (modal && modal.style.display !== 'block') {
-      showSiteModal(siteId);
+      showSiteModal(siteId, { scrollSidebar: true });
     }
   }
 };
@@ -22,8 +22,8 @@ const MAP_ZOOM_MAX_AFTER_BOUNDS = 20; // Allow closer zoom for better icon visib
 // Flag to track when a modal is being opened
 let isOpeningModal = false;
 
-// Highlight sidebar item (no scrolling on hover to avoid page jumping)
-function highlightSidebarItem(siteId) {
+// Highlight sidebar item and optionally scroll it into view
+function highlightSidebarItem(siteId, shouldScroll = false) {
   const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
   if (!sidebarItem) return;
 
@@ -34,6 +34,29 @@ function highlightSidebarItem(siteId) {
 
   // Add highlight to current item
   sidebarItem.classList.add('highlighted');
+
+  // Scroll to center the item in the sidebar if requested
+  if (shouldScroll) {
+    const sidebar = document.querySelector('.sites-sidebar ol');
+    if (!sidebar) return;
+
+    const sidebarRect = sidebar.getBoundingClientRect();
+    const itemRect = sidebarItem.getBoundingClientRect();
+
+    // Calculate the item's position within the sidebar's scroll area
+    const itemRelativeTop = itemRect.top - sidebarRect.top + sidebar.scrollTop;
+    const sidebarHeight = sidebar.clientHeight;
+    const itemHeight = sidebarItem.clientHeight;
+
+    // Center the item
+    const targetScrollTop = itemRelativeTop - (sidebarHeight / 2) + (itemHeight / 2);
+
+    // Smooth scroll the sidebar
+    sidebar.scrollTo({
+      top: targetScrollTop,
+      behavior: 'smooth'
+    });
+  }
 }
 
 // Remove highlight from sidebar item
@@ -64,7 +87,7 @@ async function initMap() {
       : new URLSearchParams(window.location.search).get('site');
     if (siteIdFromUrl) {
       setTimeout(() => {
-        showSiteModal(siteIdFromUrl);
+        showSiteModal(siteIdFromUrl, { scrollSidebar: true });
       }, 100);
     }
     return;
@@ -180,7 +203,7 @@ async function initMap() {
           isOpeningModal = true;
 
           const wasInFullscreen = isInFullscreenMode();
-          showSiteModal(siteId, wasInFullscreen);
+          showSiteModal(siteId, { wasInFullscreen });
 
           // Reset flag after a short delay to allow modal to open
           setTimeout(() => {
@@ -360,7 +383,8 @@ function isInFullscreenMode() {
          document.msFullscreenElement;
 }
 
-function showSiteModal(siteId, wasInFullscreen = false) {
+function showSiteModal(siteId, options = {}) {
+  const { wasInFullscreen = false, scrollSidebar = false } = options;
   const modal = document.getElementById('site-modal');
   const modalContent = document.getElementById('modal-site-content');
 
@@ -377,7 +401,7 @@ function showSiteModal(siteId, wasInFullscreen = false) {
   modal.style.display = 'block';
 
   // Highlight and scroll to the corresponding sidebar item
-  highlightSidebarItem(siteId);
+  highlightSidebarItem(siteId, scrollSidebar);
 
   // Fetch site content
   fetch(`/modal/houses/${siteId}`)
@@ -516,7 +540,7 @@ document.addEventListener('turbo:load', () => {
   if (siteIdFromUrl) {
     // Wait a bit for map to initialize before opening modal
     setTimeout(() => {
-      showSiteModal(siteIdFromUrl);
+      showSiteModal(siteIdFromUrl, { scrollSidebar: true });
     }, 500);
   }
 });
@@ -533,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const siteId = new URLSearchParams(window.location.search).get('site');
       if (siteId) {
         setTimeout(() => {
-          showSiteModal(siteId);
+          showSiteModal(siteId, { scrollSidebar: true });
         }, 500);
       }
     }
@@ -547,7 +571,7 @@ window.addEventListener('urlStateChanged', (event) => {
 
   if (siteId) {
     // URL has a site parameter - open the modal
-    showSiteModal(siteId);
+    showSiteModal(siteId, { scrollSidebar: true });
   } else if (modal && modal.style.display === 'block') {
     // No site parameter but modal is open - close it
     modal.style.display = 'none';
