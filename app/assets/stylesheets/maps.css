@@ -660,6 +660,13 @@
   max-width: none;
 }
 
+/* When exactly 4 images, show 2x2 grid */
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(4),
+.modal-site-content .image-gallery .gallery-image-link:first-child:nth-last-child(4) ~ .gallery-image-link {
+  flex: 1 1 calc(50% - 5px);
+  max-width: calc(50% - 5px);
+}
+
 .modal-site-content .gallery-image-link:hover {
   transform: scale(1.05);
 }

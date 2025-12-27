@@ -53,6 +53,15 @@
   max-width: none;
 }
 
+/* When exactly 4 images, show 2x2 grid */
+.image-gallery .gallery-item:first-child:nth-last-child(4),
+.image-gallery .gallery-item:first-child:nth-last-child(4) ~ .gallery-item,
+.image-gallery .gallery-image-link:first-child:nth-last-child(4),
+.image-gallery .gallery-image-link:first-child:nth-last-child(4) ~ .gallery-image-link {
+  flex: 1 1 calc(50% - 5px);
+  max-width: calc(50% - 5px);
+}
+
 .gallery-image-link:hover {
   transform: scale(1.03);
   z-index: 10;
