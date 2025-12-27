@@ -273,6 +273,27 @@ function closeSiteModal() {
 window.showSiteModal = showSiteModal;
 window.closeSiteModal = closeSiteModal;
 
+// Handle URL site parameter on page load
+function handleSiteUrlParameter() {
+  // Only run on the map page
+  if (!document.getElementById('sites')) return;
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const siteId = urlParams.get('site');
+
+  if (siteId) {
+    // Small delay to ensure sidebar is rendered
+    setTimeout(() => {
+      highlightSidebarItem(siteId);
+      // Also open the modal for this site
+      showSiteModal(siteId);
+    }, 100);
+  }
+}
+
+// Listen for Turbo page loads (handles both initial load and navigation)
+document.addEventListener('turbo:load', handleSiteUrlParameter);
+
 // Event listeners for modal
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('site-modal');
