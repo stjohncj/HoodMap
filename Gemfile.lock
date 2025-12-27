@@ -272,7 +272,7 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.1)
-    rdoc (6.16.1)
+    rdoc (7.0.3)
       erb
       psych (>= 4.0.0)
       tsort
@@ -380,16 +380,16 @@ DEPENDENCIES
   csv
   debug
   dotenv-rails
-  image_processing (~> 1.2)
+  image_processing
   importmap-rails
   jbuilder
   kamal
-  pg (~> 1.1)
+  pg
   propshaft
   puma (>= 5.0)
-  rails (~> 8.1.0)
+  rails (~> 8)
   rails-controller-testing
-  rdoc (~> 6.16.1)
+  rdoc
   rubocop-rails-omakase
   selenium-webdriver
   stimulus-rails
