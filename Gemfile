@@ -43,7 +43,7 @@ gem "image_processing", "~> 1.2"
 
 gem "dotenv-rails"
 gem "csv"
-gem "rdoc", "~> 6.16.1"
+gem "rdoc", "~> 7.0.3"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
