@@ -43,7 +43,8 @@
   }
 }
 
-.image-gallery {
+/* Site detail page gallery - uses grid layout */
+.site-detail .image-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
