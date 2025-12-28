@@ -79,6 +79,14 @@
   max-width: calc(25% - 6px);
 }
 
+/* Map header gallery - show 6 images in a single row */
+.map-header-gallery .image-gallery .gallery-item:first-child:nth-last-child(6),
+.map-header-gallery .image-gallery .gallery-item:first-child:nth-last-child(6) ~ .gallery-item {
+  flex: 1 1 calc(16.666% - 6px);
+  max-width: calc(16.666% - 6px);
+  min-height: 180px;
+}
+
 .gallery-image-link:hover {
   transform: scale(1.03);
   z-index: 10;
