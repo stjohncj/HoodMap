@@ -22,6 +22,41 @@ const MAP_ZOOM_MAX_AFTER_BOUNDS = 20; // Allow closer zoom for better icon visib
 // Flag to track when a modal is being opened
 let isOpeningModal = false;
 
+// Track the last selected site to keep it highlighted after modal close
+let lastSelectedSiteId = null;
+
+// Global marker map for accessing markers from showSiteModal
+let globalMarkerMap = null;
+
+// Reset a marker to its default (non-highlighted) state
+function resetMarkerToDefault(siteId) {
+  if (!globalMarkerMap || !globalMarkerMap.has(siteId)) return;
+
+  const { markerContent, houseIconColor } = globalMarkerMap.get(siteId);
+  markerContent.style.transform = 'scale(1)';
+
+  const svg = markerContent.querySelector('svg');
+  if (svg) {
+    const paths = svg.querySelectorAll('path');
+    const rect = svg.querySelector('rect');
+    const originalStrokeColor = '#1e293b';
+    const originalFillColor = '#fef3c7';
+
+    paths.forEach(path => {
+      if (path.getAttribute('stroke') && path.getAttribute('stroke') !== 'none') {
+        path.setAttribute('stroke', originalStrokeColor);
+      }
+      const fillValue = path.getAttribute('fill');
+      if (fillValue && fillValue !== 'none') {
+        path.setAttribute('fill', originalFillColor);
+      }
+    });
+    if (rect) {
+      rect.setAttribute('fill', originalStrokeColor);
+    }
+  }
+}
+
 // Highlight sidebar item and optionally scroll it into view
 function highlightSidebarItem(siteId, shouldScroll = false) {
   const sidebarItem = document.querySelector(`li.site-list-item[data-id="${siteId}"]`);
@@ -135,6 +170,7 @@ async function initMap() {
 
     // Store marker references for hover effects
     const markerMap = new Map();
+    globalMarkerMap = markerMap;
 
     // Z-index counter starting at base map z-index + 100
     let baseZIndex = 100;
@@ -244,6 +280,11 @@ async function initMap() {
         });
 
         marker.content.addEventListener("mouseleave", () => {
+          // Keep marker highlighted if this is the last selected site
+          if (lastSelectedSiteId === siteId) {
+            return;
+          }
+
           markerContent.style.transform = 'scale(1)';
 
           // Reset colors on mouse leave
@@ -321,6 +362,11 @@ async function initMap() {
       });
 
       site.addEventListener("mouseleave", () => {
+        // Keep marker highlighted if this is the last selected site
+        if (lastSelectedSiteId === siteId) {
+          return;
+        }
+
         // Reset marker appearance
         markerContent.style.transform = 'scale(1)';
 
@@ -396,6 +442,14 @@ function showSiteModal(siteId, options = {}) {
     return;
   }
 
+  // Reset the previous marker if selecting a different site
+  if (lastSelectedSiteId && lastSelectedSiteId !== siteId) {
+    resetMarkerToDefault(lastSelectedSiteId);
+  }
+
+  // Track the selected site so it stays highlighted after modal close
+  lastSelectedSiteId = siteId;
+
   // Update URL to reflect selected site
   window.urlState.set('site', siteId);
 
@@ -442,10 +496,8 @@ function closeSiteModal() {
   // Remove site from URL
   window.urlState.remove('site');
 
-  // Clear all sidebar highlighting when modal closes
-  document.querySelectorAll('.site-list-item.highlighted').forEach(item => {
-    item.classList.remove('highlighted');
-  });
+  // Keep sidebar highlighting - the last selected site stays highlighted
+  // until a new site is selected or the user navigates away
 }
 
 // Make closeSiteModal globally available
@@ -578,9 +630,14 @@ window.addEventListener('urlStateChanged', (event) => {
   } else if (modal && modal.style.display === 'block') {
     // No site parameter but modal is open - close it
     modal.style.display = 'none';
+    // Clear highlighting and reset marker when navigating back
     document.querySelectorAll('.site-list-item.highlighted').forEach(item => {
       item.classList.remove('highlighted');
     });
+    if (lastSelectedSiteId) {
+      resetMarkerToDefault(lastSelectedSiteId);
+      lastSelectedSiteId = null;
+    }
   }
 });
 

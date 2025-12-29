@@ -125,7 +125,7 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     assert sidebar_item.present?
   end
 
-  test "modal close button removes sidebar highlighting" do
+  test "modal close button keeps sidebar highlighting" do
     visit historic_district_map_path
 
     # Wait for initialization
@@ -134,10 +134,15 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
 
     # Click marker to open modal - use JavaScript click to avoid Google Maps UI interference
     first_marker = find(".custom-marker", match: :first)
+    first_sidebar_item = find(".site-list-item", match: :first)
     page.execute_script("arguments[0].click()", first_marker)
 
     # Wait for modal
     assert_selector "#site-modal", visible: true, wait: 5
+
+    # Verify sidebar is highlighted while modal is open
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should be highlighted when modal is open"
 
     # Close modal - use JavaScript directly for reliability in CI
     page.execute_script("window.closeSiteModal()")
@@ -145,13 +150,10 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     # Modal should close
     assert_no_selector "#site-modal", visible: true, wait: 5
 
-    # Sidebar highlighting should be cleared
-    site_id = @site1.id.to_s
-    sidebar_item = find("[data-id='#{site_id}']")
-
-    # Check that highlighting styles are cleared
-    # The JavaScript should have reset the styles
-    assert sidebar_item.present?
+    # Sidebar highlighting should PERSIST after modal close (new behavior)
+    # The last selected site stays highlighted until a new site is selected
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should keep highlighted class after modal closes"
   end
 
   test "clicking sidebar item opens modal" do
@@ -350,9 +352,10 @@ class BidirectionalHoverEffectsTest < ApplicationSystemTestCase
     page.execute_script("window.closeSiteModal()")
     assert_no_selector "#site-modal", visible: true, wait: 5
 
-    # Verify highlighted class is removed after modal close
-    assert_not first_sidebar_item.matches_css?(".highlighted"),
-               "Sidebar item should not have highlighted class after modal closes"
+    # Verify highlighted class PERSISTS after modal close (new behavior)
+    # The last selected site stays highlighted until a new site is selected
+    assert first_sidebar_item.matches_css?(".highlighted"),
+           "Sidebar item should keep highlighted class after modal closes"
 
     # Test 2: Directly apply highlighting via highlightSidebarItem function
     # This tests that the .highlighted class applies the same styling

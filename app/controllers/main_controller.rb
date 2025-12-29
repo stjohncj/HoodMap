@@ -1,6 +1,21 @@
 class MainController < ApplicationController
+  # Header images for the map page - specific sites representing architectural styles
+  HEADER_SITE_ADDRESSES = [
+    "815 Milwaukee Street",   # Duvall House, Italianate, Built: 1881
+    "1020 Milwaukee Street",  # William J. Kowalke House, Tudor Revival, Built: 1926
+    "1017 Milwaukee Street",  # George and Maude Duvall House, Queen Anne, Built: 1895
+    "903 Dodge Street",       # John and Augusta Dishmaker House, Queen Anne, Built: 1900
+    "1102 Dodge Street",      # Louis and Amelia Bruemmer House, Second Empire, Built: 1885
+    "805 Dodge Street"        # John and Marie Borgman House, Colonial Revival, Built: 1909
+  ].freeze
+
   def index
     @sites = Site.sorted_by_street_and_number
+
+    # Get header images from specific sites
+    @header_images = HEADER_SITE_ADDRESSES.map do |address|
+      SiteImageCache.find_by_address(address)
+    end.compact
 
     # Calculate center from actual site bounds with padding
     if @sites.any?
